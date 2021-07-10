@@ -1,13 +1,57 @@
-import { Logger } from "../Logger/Logger.js";
-export { EventMap, eventsListenAt, event };
+import { Logger } from "../Logger/Logger";
+export {
+  EventMap,
+  eventsListenAt,
+  event,
+  EventMapListenAt
+};
+
+
+/** 
+ * Generic constructor type
+ */
+type GenericConstructor<T = {}> = new (...args: any[]) => T;
+
 
 /**
- * A CustomElement class mixin which supports attaching and detaching DOM events declaratively.
+ * Used for setting the HTMLElement as a base class constraint
+ */
+type HTMLElementType = GenericConstructor<HTMLElement>;
+
+
+interface EventMapCtor {
+  prototype: Object,
+  eventsListenAt? : EventMapListenAt,
+  events?: EventMapCtorEvents
+}
+
+interface EventMapCtorEvents {
+  [key: string]: string | {
+    listenAt: EventMapListenAt,
+    handler: string
+  }
+}
+
+enum EventMapListenAt {
+  Self = "self",
+  Parent = "parent",
+  Window = "window"
+};
+
+
+
+/**
+ * An HTMLElement class mixin which supports attaching
+ * and detaching DOM events declaratively.
  * @param {HTMLElement} superclass 
  */
-const EventMap = (superclass : HTMLElement) => class extends superclass {
+ function EventMap<TBase extends HTMLElementType>(Base: TBase) {
+  return class EventMap extends Base {
+
+    __eventMapProcessed? : Boolean;
+    __eventMapHandlers? : Object;
     
-   /** adds event listeners */
+   /** Attaches event listeners */
     connectedCallback() {
       super.connectedCallback && super.connectedCallback();
 
@@ -19,7 +63,7 @@ const EventMap = (superclass : HTMLElement) => class extends superclass {
       }        
     }
 
-    /** removes event listners */
+    /** Removes event listners */
     disconnectedCallback() {
       super.disconnectedCallback && super.disconnectedCallback();
       this._unbindEvents();
@@ -29,7 +73,7 @@ const EventMap = (superclass : HTMLElement) => class extends superclass {
     _bindEvents() { 
       this.__eventMapHandlers = {};
       const constructorName = this.constructor.name;
-      const events = getAllEvents(this);     
+      const events = getAllEvents(this.constructor);     
       if (!events) {
         return;
       }
@@ -89,28 +133,36 @@ const EventMap = (superclass : HTMLElement) => class extends superclass {
 
         delete this.__eventMapHandlers;
     }
-};
+  };
+}
 
 
-const getAllEvents = (el) => {
-  const eventMaps = [];
-  let ctor = el.constructor;
+/**
+ * Combines and expands events from all constructors
+ * in the chain.
+ * @param ctor {EventMapCtor}
+ * @returns {EventMapCtorEvents}
+ */
+const getAllEvents = (ctor: EventMapCtor): EventMapCtorEvents | null => {
+  const eventMaps : Array<EventMapCtorEvents> = [];
 
   while (ctor.prototype) {
     if (ctor.events) {            
-      const listenAt = ctor.eventsListenAt || null;
-      const events = Object.keys(ctor.events).reduce((events, eventName) => {                
-        const handlerOrDef = ctor.events[eventName];
+      const listenAt = ctor.eventsListenAt || EventMapListenAt.Self;
+      const token : EventMapCtorEvents = {}
+      const events = Object.keys(ctor.events).reduce((events, eventName: string) => {                
+        const handlerOrDef = ctor.events ? ctor.events[eventName] : "";
         events[eventName] = typeof handlerOrDef === "string" ?
           { listenAt, handler: handlerOrDef} :
           handlerOrDef                                      
         return events;
-      }, {});
+      }, token);
       eventMaps.unshift(events);
     }
     ctor = Object.getPrototypeOf(ctor.prototype.constructor);
   }
-  return eventMaps.length > 0 ? Object.assign(...eventMaps) : null;
+
+  return eventMaps.length > 0 ? Object.assign({}, ...eventMaps) : null;
 };
 
 
