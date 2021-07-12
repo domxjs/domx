@@ -4,6 +4,9 @@
   "license": "MIT",
   "author": "John Horback",
   "main": "index.js",
+  "workspaces": [
+    "packages/*"
+  ],
   "files": [
     "dist",
     "types"
@@ -11,8 +14,9 @@
   "scripts": {
     "dev": "vite",
     "build": "tsc && vite build",
-    "test": "jest src",
-    "test:coverage": "jest src --coverage"
+    "test": "jest",
+    "test:coverage": "jest --coverage",
+    "test:watch": "jest --watch"
   },
   "dependencies": {
     "lit-element": "^2.4.0"

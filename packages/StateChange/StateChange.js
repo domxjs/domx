@@ -1,5 +1,5 @@
-import { compose } from "./compose";
-import { Logger } from "../Logger/Logger";
+import { compose } from "../functional/compose";
+import { Logger } from "../../src/Logger/Logger";
 export { StateChange };
 
 /**

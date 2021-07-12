@@ -1,0 +1,7 @@
+{
+  "name": "@harbor/logger",
+  "version": "0.1.0",
+  "license": "MIT",
+  "author": "John Horback",
+  "main": "Logger.ts"
+}

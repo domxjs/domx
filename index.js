@@ -2,4 +2,4 @@ export {
     EventMap,
     event,
     eventsListenAt
-} from "./EventMap";
+} from "@harbor/eventmap";
