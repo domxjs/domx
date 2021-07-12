@@ -26,17 +26,36 @@ interface EventMapCtor {
 }
 
 interface EventMapCtorEvents {
-  [key: string]: string | {
-    listenAt: EventMapListenAt,
-    handler: string
-  }
+  [key: string]: string | EventMapHandlerDetail
+}
+
+interface EventMapHandlers {
+  [key: string]: EventMapHandlerDetail
+}
+
+interface EventMapHandlerDetail {
+  listenAt: EventMapListenAt,
+  handler: string | Function
 }
 
 enum EventMapListenAt {
   Self = "self",
   Parent = "parent",
   Window = "window"
-};
+}
+
+/**
+ * Middleware information when an event
+ * handler is called.
+ * e.g. window@some-event -> class.handler -> detail
+ */
+interface EventMapHandlerInfo {
+  listenAt: EventMapListenAt,
+  eventName: string,
+  constructorName: string,
+  eventHandlerName: string,
+  eventDetail?: Object
+}
 
 
 
@@ -49,7 +68,7 @@ enum EventMapListenAt {
   return class EventMap extends Base {
 
     __eventMapProcessed? : Boolean;
-    __eventMapHandlers? : Object;
+    __eventMapHandlers? : EventMapCtorEvents;
     
    /** Attaches event listeners */
     connectedCallback() {
@@ -79,31 +98,41 @@ enum EventMapListenAt {
       }
 
       Object.keys(events).forEach((key) => {
-        // support a string or object
-        const detail = events[key];
+        const detail = events[key] as EventMapHandlerDetail;
 
-        if (!this[detail.handler]) {
+        // @ts-ignore dynamic access of method
+        const eventHandler = this[detail.handler] as Function;
+
+        if (!eventHandler) {
           throw new Error(`EventMap method does not exist: ${detail.handler}`);
         }
 
-        const listenAt = (detail.listenAt) === "window" 
+        const listenAt = ((detail.listenAt) === EventMapListenAt.Window
             ? window 
-            : (detail.listenAt) === "parent" 
+            : (detail.listenAt) === EventMapListenAt.Parent
                 ? this.parentNode 
-                : (!detail.listenAt || detail.listenAt === "this") 
+                : (!detail.listenAt || detail.listenAt === EventMapListenAt.Self) 
                     ? this 
-                    : null;
+                    : null); // as Node;
 
         if (!listenAt) {
           throw new Error(`EventMap could not set up a listener at ${detail.listenAt}`); // jch! add test
         }
 
         // The handler logs the event, stops propagation, and calls the assigned event handler
-        const handler = (event) => {
-          const eventHandler = this[detail.handler];
+        const handler = (event: CustomEvent) => {
           const listenAtName = listenAt.constructor.name === "ShadowRoot" ?
             listenAt.host.constructor.name : listenAt.constructor.name;
           
+          const handlerInfo : EventMapHandlerInfo = {
+            listenAt: listenAtName,
+            eventName: key,
+            constructorName,
+            eventHandlerName: eventHandler.name,
+            eventDetail: event.detail
+          }
+
+          // listenAt, eventName, constructorName, eventHandlerName, eventDetail
           Logger.log(this, "group", `> EVENTMAP: ${listenAtName}@${key} => ${constructorName}.${eventHandler.name}()`);
           Logger.log(this, "info", (`=> event.detail`, event.detail || "(none)"));
           event.stopPropagation();
