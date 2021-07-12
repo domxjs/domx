@@ -4,7 +4,6 @@ import { compose, composeAsync } from "./compose";
 
 describe("compose", () => {
 
-    // JCH HERE _ TRYING TO PROVE THE ORDER OF EXECUTION
     it("runs multiple functions in order", () => {
         const returnValue = compose(
             (x: number) => x + 2,
