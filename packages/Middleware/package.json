@@ -1,9 +1,9 @@
 {
-  "name": "@harbor/logger",
-  "version": "0.1.0",
+  "name": "@harbor/middleware",
+  "version": "0.2.0",
   "license": "MIT",
   "author": "John Horback",
-  "main": "Logger.ts",
+  "main": "index.js",
   "scripts": {
     "test": "jest"
   },
