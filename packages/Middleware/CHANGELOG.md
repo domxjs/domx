@@ -9,6 +9,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ### TODO 
 - Convert to TypeScript
 - Review methods and implementation
+- Add middleware
 
 
 ## [0.1.0] - 2019-07-05
