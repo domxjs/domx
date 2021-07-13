@@ -1,7 +1,7 @@
 # Harbor Utilities &middot; ![GitHub license](https://img.shields.io/badge/license-MIT-blue.svg)
 @harbor-utils
 
-Contains multiple small packages containing utility scripts for common concerns.
+Contains multiple packages with utility scripts for common concerns.
 
 ## Packages
 
