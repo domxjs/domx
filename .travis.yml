@@ -16,11 +16,24 @@ install:
 - npm install
 
 matrix:
-    include:
-        - env: TARGET=packages/functional
-        - env: TARGET=packages/EventMap
-        - env: TARGET=packages/Logger
+  include:
+  - name: functional
+    env: PACKAGE_LOCATION=packages/functional
+  - name: EventMap
+    env: PACKAGE_LOCATION=packages/EventMap
+  - name: Logger
+    env: PACKAGE_LOCATION=packages/Logger
 
 script:
-- npm run test
-- if .travis/build-condition.sh $TRAVIS_COMMIT_RANGE $TARGET; then echo "$TARGET is being built" && cd $TARGET && npm install && npm run test; else echo "$TARGET is NOT being built"; fi
+  - cd $PACKAGE_LOCATION
+  - npm run test
+
+# matrix:
+#     include:
+#         - env: TARGET=packages/functional
+#         - env: TARGET=packages/EventMap
+#         - env: TARGET=packages/Logger
+
+#script:
+#- npm run test
+#- if .travis/build-condition.sh $TRAVIS_COMMIT_RANGE $TARGET; then echo "$TARGET is being built" && cd $TARGET && npm install && npm run test; else echo "$TARGET is NOT being built"; fi
