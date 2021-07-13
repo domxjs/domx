@@ -1,6 +1,6 @@
 //@ts-ignore
 
-import { Logger } from "@harbor/logger";
+import { Logger } from "@harbor/middleware";
 export {
   EventMap,
   eventsListenAt,

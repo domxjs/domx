@@ -1,4 +1,4 @@
-# Functional
+# Functional &middot; [![Build Status](https://travis-ci.com/jhorback/harbor-utils.svg?branch=packages/functional)](https://travis-ci.com/jhorback/harbor-utils)
 
 Contains methods for functional JavaScript patterns.
 

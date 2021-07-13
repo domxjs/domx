@@ -9,7 +9,7 @@ branches:
   - master
   - packages/functional
   - packages/EventMap
-  - packages/Logger
+  - packages/Middleware
 cache:
   directories:
   - node_modules
@@ -30,8 +30,8 @@ matrix:
     env: PACKAGE_LOCATION=packages/EventMap
     if: branch = packages/EventMap
   - name: Logger
-    env: PACKAGE_LOCATION=packages/Logger
-    if: branch = packages/Logger
+    env: PACKAGE_LOCATION=packages/Middleware
+    if: branch = packages/Middleware
 
 script:
   - cd $PACKAGE_LOCATION

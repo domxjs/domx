@@ -3,7 +3,7 @@
   "version": "0.1.0",
   "license": "MIT",
   "author": "John Horback",
-  "description": "Contains multiple packages with utility scripts for common concerns.",
+  "description": "A mono repo containing packages with common web application script utilities.",
   "main": "index.js",
   "workspaces": [
     "packages/*"
@@ -20,6 +20,7 @@
     "test:watch": "jest --watch"
   },
   "dependencies": {
+    "@vanillawc/wc-markdown": "^1.6.10",
     "lit-element": "^2.4.0"
   },
   "devDependencies": {
