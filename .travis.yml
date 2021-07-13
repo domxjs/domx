@@ -21,13 +21,13 @@ matrix:
     env: PACKAGE_LOCATION=.
   - name: functional
     env: PACKAGE_LOCATION=packages/functional
-    if: branch = functional
+    if: branch = packages/functional
   - name: EventMap
     env: PACKAGE_LOCATION=packages/EventMap
-    if: branch = EventMap
+    if: branch = packages/EventMap
   - name: Logger
     env: PACKAGE_LOCATION=packages/Logger
-    if: branch = Logger
+    if: branch = packages/Logger
 
 script:
   - cd $PACKAGE_LOCATION
