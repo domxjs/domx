@@ -5,6 +5,8 @@ The `debounce` function returns a function that is only called once during a set
 If setting the `immediate` option to true, the function executes at the beginning 
 instead of at the end of the delay.
 
+## TODO
+Need to convert to TypeScript.
 
 ## Usage
 
