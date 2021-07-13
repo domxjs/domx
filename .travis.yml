@@ -17,23 +17,18 @@ install:
 
 matrix:
   include:
+  - name: harbor/utils
+    env: PACKAGE_LOCATION=.
   - name: functional
     env: PACKAGE_LOCATION=packages/functional
+    if: branch = functional
   - name: EventMap
     env: PACKAGE_LOCATION=packages/EventMap
+    if: branch = EventMap
   - name: Logger
     env: PACKAGE_LOCATION=packages/Logger
+    if: branch = Logger
 
 script:
   - cd $PACKAGE_LOCATION
   - npm run test
-
-# matrix:
-#     include:
-#         - env: TARGET=packages/functional
-#         - env: TARGET=packages/EventMap
-#         - env: TARGET=packages/Logger
-
-#script:
-#- npm run test
-#- if .travis/build-condition.sh $TRAVIS_COMMIT_RANGE $TARGET; then echo "$TARGET is being built" && cd $TARGET && npm install && npm run test; else echo "$TARGET is NOT being built"; fi
