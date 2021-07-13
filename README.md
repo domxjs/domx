@@ -15,3 +15,5 @@ A mono repo containing packages with common web application script utilities.
 | [functional](https://github.com/jhorback/harbor-utils/tree/master/packages/functional) | [![Build Status](https://travis-ci.com/jhorback/harbor-utils.svg?branch=packages/functional)](https://travis-ci.com/jhorback/harbor-utils) | 0.2.0 
 
 
+<!-- | [debounce](./packages/debounce/README.md) | | Needs conversion -->
+

@@ -1,4 +1,4 @@
-# EventMap.js &middot; [![Build Status](https://travis-ci.com/jhorback/harbor-utils.svg?branch=packages/EventMap)]
+# EventMap.js &middot; [![Build Status](https://travis-ci.com/jhorback/harbor-utils.svg?branch=packages/EventMap)](https://travis-ci.com/jhorback/harbor-utils)
 
 [CHANGELOG](./CHANGELOG.md)
 
