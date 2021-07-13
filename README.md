@@ -1,4 +1,4 @@
-# Harbor Utilities &middot; ![GitHub license](https://img.shields.io/badge/license-MIT-blue.svg)
+# Harbor Utilities &middot; ![GitHub license](https://img.shields.io/badge/license-MIT-blue.svg) [![Build Status](https://travis-ci.com/jhorback/harbor-utils.svg?branch=master)](https://travis-ci.com/jhorback/harbor-utils)
 @harbor-utils
 
 Contains multiple packages with utility scripts for common concerns.
