@@ -3,6 +3,5 @@
   "version": "0.2.0",
   "license": "MIT",
   "author": "John Horback",
-  "description": "Contains multiple packages with utility scripts for common concerns.",
   "main": "index.js"
 }
