@@ -1,4 +1,5 @@
 import { LitElement, html, customElement, property, css } from 'lit-element';
+import "@vanillawc/wc-markdown";
 import logoUrl from "./favicon.svg";
 
 /**
@@ -8,26 +9,42 @@ import logoUrl from "./favicon.svg";
 export class MyElement extends LitElement {
   static styles = css`
     :host {
+      background: #0d1117;
+      color: #c9d1d9;
       display: flex;
       flex-direction: column;
       padding: 1rem;
       max-width: 800px;
       margin: auto;
-      font-family: arial;
+      margin-bottom: 5rem;
+      font-family: roboto, arial;      
     }
     h1 {
       margin: 0;
     }
-    img {
-      width: 200px;
-      margin: auto;
+    img.logo {
+      width: 150px;
+      margin: 2rem auto 3rem;
+    }
+    table {      
+      width: 100%;
+      border-collapse: collapse;    
+    }
+    th, td {
+      padding: 0.5rem 1rem;
+      border: 1px solid #555555;
+    }
+    a {
+      color: #4283db;
     }
   `
 
   render() {
     return html`
-      <h1>Harbor Utils</h1>
-      <img src="${logoUrl}"/>    
+      <img class="logo" src="${logoUrl}"/>
+      <wc-markdown
+        src="https://raw.githubusercontent.com/jhorback/harbor-utils/master/README.md"
+      ></wc-markdown>   
     `
   }
 }

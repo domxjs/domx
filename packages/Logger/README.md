@@ -1,4 +1,4 @@
-# Logger
+# Logger &middot; [![Build Status](https://travis-ci.com/jhorback/harbor-utils.svg?branch=packages/Logger)
 
 [CHANGELOG](./CHANGELOG.md)
 
