@@ -7,20 +7,11 @@ A mono repo containing packages with common web application script utilities.
 
 | Package   | Status   | Notes
 |:---       |:---      |:---
-| [EventMap](./packages/EventMap/README.md) | [![Build Status](https://travis-ci.com/jhorback/harbor-utils.svg?branch=packages/EventMap)](https://travis-ci.com/jhorback/harbor-utils) | Converting to TypeScript 
-| [StateChange](./packages/StateChange/README.md) | | Needs conversion 
+| [EventMap](https://github.com/jhorback/harbor-utils/tree/master/packages/EventMap) | [![Build Status](https://travis-ci.com/jhorback/harbor-utils.svg?branch=packages/EventMap)](https://travis-ci.com/jhorback/harbor-utils) | Converting to TypeScript 
+| [StateChange](https://github.com/jhorback/harbor-utils/tree/master/packages/StateChange) | | Needs conversion 
 | linkProp || Needs conversion 
 | Middleware | | TODO
 | Logger | [![Build Status](https://travis-ci.com/jhorback/harbor-utils.svg?branch=packages/Logger)](https://travis-ci.com/jhorback/harbor-utils) | May put under Middleware, Needs conversion
-| [functional](./packages/functional/README.md) | [![Build Status](https://travis-ci.com/jhorback/harbor-utils.svg?branch=packages/functional)](https://travis-ci.com/jhorback/harbor-utils) | 0.2.0 
-| [debounce](./packages/debounce/README.md) | | Needs conversion
-
-
-
-
-
-
-
-
+| [functional](https://github.com/jhorback/harbor-utils/tree/master/packages/functional) | [![Build Status](https://travis-ci.com/jhorback/harbor-utils.svg?branch=packages/functional)](https://travis-ci.com/jhorback/harbor-utils) | 0.2.0 
 
 
