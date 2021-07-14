@@ -52,11 +52,12 @@ enum EventMapListenAt {
  * e.g. window@some-event -> class.handler -> detail
  */
 interface EventMapHandlerInfo {
+  class: object,
   listenAt: EventMapListenAt,
   eventName: string,
   constructorName: string,
   eventHandlerName: string,
-  eventDetail?: Object
+  eventDetail?: object
 }
 
 
@@ -69,7 +70,7 @@ interface EventMapHandlerInfo {
  function EventMap<TBase extends HTMLElementType>(Base: TBase) {
   return class EventMap extends Base {
 
-    __eventMapProcessed? : Boolean;
+    __eventMapProcessed? : boolean;
     __eventMapHandlers? : EventMapCtorEvents;
     
    /** Attaches event listeners */
@@ -127,6 +128,7 @@ interface EventMapHandlerInfo {
             listenAt.host.constructor.name : listenAt.constructor.name;
           
           const handlerInfo : EventMapHandlerInfo = {
+            class: this,
             listenAt: listenAtName,
             eventName: key,
             constructorName,

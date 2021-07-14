@@ -1,5 +1,7 @@
 
 import { compose } from "../functional/compose.js";
+export { Middleware }
+
 /*
 
 Module.use((p1, p2, next) => {

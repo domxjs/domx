@@ -1,10 +1,14 @@
-import { describe, it, expect } from "@jest/globals";
+import { describe, it, expect, jest } from "@jest/globals";
+import {Logger} from "./Logger";
 
 
 describe("Logger", () => {
 
-    it("test test", () => {
-        expect(true).toBe(true);
+    it("can log to the console", () => {
+        const spy = jest.spyOn(console, "log");
+        Logger.log({}, "log", "hello world");
+        expect(spy).toHaveBeenCalledWith("hello world");
+        spy.mockRestore();
     });
     
 });
