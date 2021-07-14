@@ -30,13 +30,13 @@ enum ConsoleMethod {
 }
 
 interface LoggerConfig {
-  onlyThis: boolean,
-  level: ConsoleMethod
+  onlyThis?: boolean,
+  level: ConsoleMethod | String
 }
 
 
 class Logger {
-  static log(obj: object, level: ConsoleMethod | string, ...args: Array<any>) {
+  static log(obj: HTMLElement, level: ConsoleMethod | string, ...args: Array<any>) {
     
     const config = (obj.constructor as any).__loggerConfig;
     
