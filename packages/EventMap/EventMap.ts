@@ -1,6 +1,6 @@
 //@ts-ignore
 
-import { Logger } from "@harbor/middleware";
+import { Logger } from "@harbor/middleware/Logger";
 export {
   EventMap,
   eventsListenAt,
@@ -138,13 +138,13 @@ interface EventMapHandlerInfo {
 
           // listenAt, eventName, constructorName, eventHandlerName, eventDetail
           Logger.log(this, "group", `> EVENTMAP: ${listenAtName}@${key} => ${constructorName}.${eventHandler.name}()`);
-          Logger.log(this, "info", (`=> event.detail`, event.detail || "(none)"));
+          Logger.log(this, "info", (`=> event.detail`, event.detail || "(none)", handlerInfo));
           event.stopPropagation();
           eventHandler.call(this, event);
           Logger.log(this, "groupEnd");
         };        
 
-        this.__eventMapHandlers[key] = {
+        this.__eventMapHandlers?[key] = {
           listenAt: listenAt,
           handler: handler
         };
