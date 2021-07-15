@@ -6,7 +6,7 @@
   "description": "A mono repo containing packages with common web application script utilities.",
   "main": "index.js",
   "workspaces": [
-    "packages/*"
+    "./packages/*"
   ],
   "files": [
     "dist",
@@ -33,6 +33,7 @@
   },
   "jest": {
     "preset": "ts-jest",
+    "testEnvironment": "jsdom",
     "globals": {
       "ts-jest": {
         "diagnostics": false

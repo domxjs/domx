@@ -1,15 +1,33 @@
-
-import { compose } from "../functional/compose.js";
+import { compose } from "@harbor/functional/compose";
+import { pipe } from "@harbor/functional/pipe";
 export { Middleware }
 
-/*
 
-Module.use((p1, p2, next) => {
-	// do something
-	next();
-})
+/**
+ * A class to use to run Middleware in various ways.
+ */
+class Middleware {
+    private stack: Array<any> = [];
+    
+    /**
+     * Expose this method for others to add to the stack of middleware.
+     * @param next {Funciton} the function to use as middleware
+     */
+    use(next: Function) {
+        this.stack.push(next);
+    }
 
+    /**
+     * The simplest form of running the composed set of middleware functions.
+     * @param next {Function} The main function to run first.
+     * @returns any
+     */
+    execute(next: Function): any {
+        const result = compose(...this.stack)(next);
+        return result;
+    }
 
+     /*
 //  el[prop] = composeMixinsWith(this, fn)(this.getState());
 const composeMixinsWith = (stateChange, fn) => {
   const mixins = stateChangeMixins.map(m => m(stateChange));
@@ -24,67 +42,38 @@ const errorCatcher = stateChange => next => stateOrStateChange => {
     throw (error);
   }
 };
-
-mw.execute(this, next, state)
-
+)
 */
 
 
-
-/**
- * This should work - need to think of where to put this class
- * Researching that now...
- * 
- * Create tests:
- * Tests to consider
- *  for execute what happens if you dont call next?
- */
-class Middleware {
-    private stack: Array<Function> = [];
-    
-    use(next: Function) {
-        this.stack.push(next);
+    /**
+     * The same as execute but allows for arguments to be passed to the middleare stack.
+     * @param next {Function}
+     * @param args {Array<any>}
+     * @returns any
+     */
+    executeWithArgs(next: Function, args:Array<any>): any {
+        return (compose(...this.stack)(next) as Function)(...args);
     }
 
-    execute(next: Function) {
-        return compose(...this.stack)(next);
+    /**
+     * The same as execute but maps an argument to all functions in the stack before calling next.
+     * @param argToMap {any}
+     * @param next {Function}
+     * @returns any
+     */
+    mapThenExecute(argToMap: any, next: Function): any {
+        return compose(...this.stack.map(fn => fn(argToMap)))(next);
     }
 
-    executeWithArgs<T>(next: Function, args:Array<any>) {
-        return <T> compose(...this.stack)(next)(...args);
-    }
-
-    mapThenExecute<T>(argToMap: any, next: Function) {
-        return <T>compose(...this.stack.map(fn => fn(argToMap)))(next);
-    }
-
-    mapThenExecuteWithArgs<T>(argToMap: any, next: Function, args: Array<any>){
-        return <T>compose(...this.stack.map(fn => fn(argToMap)))(next)(...args);
+    /**
+     * Enables mapping an argument to all middleware functions, then the next statement, and finally function arguments.
+     * @param argToMap {any}
+     * @param next {Function}
+     * @param args {Array<any>}
+     * @returns any
+     */
+    mapThenExecuteWithArgs(argToMap: any, next: Function, args: Array<any>): any{
+        return (<Function>compose(...this.stack.map(fn => fn(argToMap)))(next))(...args);
     }
 }
-
-
-/* REDUX DEVTOOLS
-
-https://github.com/zalmoxisus/redux-devtools-extension/blob/master/docs/API/Methods.md
-
-
-Exists if there is the dev tools extension
-window.__REDUX_DEVTOOLS_EXTENSION__
-connect({name,...}): returns DevTools
-disconnect()
-send(action, state, [options, instanceId])
-listen(onMessage, instanceId)
-open
-notifyErrors
-
-
-DevTools Instance
-subscribe(listener) - adds a change listener. It will be called any time an action is dispatched from the monitor. Returns a function to unsubscribe the current listener.
-unsubscribe() - unsubscribes all listeners.
-send(action, state) - sends a new action and state manually to be shown on the monitor. If action is null then we suppose we send liftedState.
-init(state) - sends the initial state to the monitor.
-error(message) - sends the error message to be shown in the extension's monitor.
-
-*Note: instanceId seems to be an auto id generated when calling connect.
-*/
