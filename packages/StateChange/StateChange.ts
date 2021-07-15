@@ -2,19 +2,19 @@ import { compose } from "../functional/compose";
 import { Logger } from "../../src/Logger/Logger";
 export { StateChange };
 
-/**
- * @typedef StateChangeOptions
- * @property {String="state"} prop the state property name
- * @property {String="state-changed"} changeEventName the name
- * of the state change event to dispatch
- */
 
-/**
- * @typedef StateChangeMetaData
- * @property {HTMLElement} el
- * @property {String} prop
- * @property {String} changeEventName
- */
+interface StateChangeOptions {
+  /** The state property name (default "state") */
+  prop: string,
+  /** The name of the state change event to dispatch (default "state-changed") */
+  changeEventName: string
+}
+
+interface StateChangeMetaData extends StateChangeOptions {
+  el: HTMLElement
+}
+
+const metaKey = Symbol();
 
 /**
  * A monad like class that promotes functional style
@@ -23,28 +23,28 @@ export { StateChange };
 class StateChange {
   /**
    * Creates a new StateChange object.
-   * @param {HTMLElement} el the data HTML element
-   * @param {StateChangeOptions} options additional options
+   * @param el {HTMLElement} The data HTML element
+   * @param options {StateChangeOptions} Additional options
    * @returns {StateChange}
    */
-  static of(el, options) {
+  static of(el: HTMLElement, options: StateChangeOptions) {
     return new StateChange(el, options);
   }
 
   /** A lifting function that calls next */
-  static nextWith = stateChange => fn => stateChange.continue().next(fn);
+  static nextWith = (stateChange: StateChange) => (fn:Function) => stateChange.continue().next(fn);
   /** A lifting function that calls tap */
-  static tapWith = stateChange => fn => stateChange.continue().tap(fn);
+  static tapWith = (stateChange: StateChange) => (fn:Function) => stateChange.continue().tap(fn);
   /** A chainable call to dispatch */
-  static dispatch = stateChange => stateChange.dispatch();
+  static dispatch = (stateChange: StateChange) => stateChange.dispatch();
   /** A chainable call to dispatchEvent */
-  static dispatchEvent = event => stateChange => stateChange.dispatchEvent(event);
+  static dispatchEvent = (event:CustomEvent) => (stateChange: StateChange) => stateChange.dispatchEvent(event);
   /** A chainable call to next */
-  static next = fn => stateChange => stateChange.next(fn);
+  static next = (fn:Function) => (stateChange: StateChange) => stateChange.next(fn);
   /** A chainable call to tap */
-  static tap = fn => stateChange => stateChange.tap(fn);
+  static tap = (fn:Function) => (stateChange: StateChange) => stateChange.tap(fn);
   /** Returns the current state */
-  static getState = stateChange => stateChange.getState();
+  static getState = (stateChange: StateChange) => stateChange.getState();
 
   /**
    * Creates a new StateChange object.
@@ -63,6 +63,8 @@ class StateChange {
     };
   }
 
+  [metaKey]: StateChangeMetaData;
+
   /**
    * Returns a snapshot of the elements state property.
    * Similar to a flatten method.
@@ -78,7 +80,7 @@ class StateChange {
    * @param {Function} fn a function that recieves state and should return updated state.
    * @returns {StateChange}
    */
-  next(fn) {
+  next(fn: Function) {
     const {el, prop} = this.meta;
     el[prop] = composeMixinsWith(this, fn)(this.getState());
     return this.continue();
@@ -89,7 +91,7 @@ class StateChange {
    * @param {Function} fn a function which will recieve the currrent StateChange object.
    * @returns {StateChange}
    */
-  tap(fn) {
+  tap(fn: Function) {
     composeMixinsWith(this, fn)(this);
     return this.continue();
   }
@@ -99,7 +101,7 @@ class StateChange {
    * @param  {...any} fns a series of functions to call next on.
    * @returns {StateChange}
    */
-  pipeNext(...fns) {
+  pipeNext(...fns: Array<Function>) {
     return fns.reduce((v, f) => v.next(f), this);
   }
 
@@ -108,7 +110,7 @@ class StateChange {
    * @param  {...any} fns a series of functions to call tap on.
    * @returns {StateChange}
    */
-  pipeTap(...fns) {
+  pipeTap(...fns: Array<Function>) {
     return fns.reduce((v, f) => v.tap(f), this);
   }
 
@@ -124,10 +126,10 @@ class StateChange {
 
   /**
    * A proxy to the HTML element dispatchEvent method.
-   * @param {Event} event the event to dispatch
+   * @param {CustomEvent} event The event to dispatch
    * @returns {StateChange}
    */
-  dispatchEvent(event) {
+  dispatchEvent(event: CustomEvent) {
     const {el} = this.meta;
     el.dispatchEvent(event);
     return this.continue();
@@ -147,13 +149,13 @@ class StateChange {
    * Returns meta data stored when creating the initial StateChange object.
    * @returns {StateChangeMetaData}
    */
-  get meta() {
+  get meta(): StateChangeMetaData {
     return this[metaKey];
   }
 }
 
 
-const metaKey = Symbol();
+
 
 const composeMixinsWith = (stateChange, fn) => {
   const mixins = stateChangeMixins.map(m => m(stateChange));
