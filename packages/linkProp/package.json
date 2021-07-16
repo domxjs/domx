@@ -1,0 +1,14 @@
+{
+  "name": "@harbor/linkprop",
+  "version": "0.2.0",
+  "license": "MIT",
+  "author": "John Horback",
+  "main": "index.js",
+  "scripts": {
+    "test": "jest"
+  },
+  "jest": {
+    "preset": "ts-jest",
+    "testEnvironment": "jsdom"
+  }
+}
