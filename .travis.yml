@@ -23,7 +23,7 @@ matrix:
   include:
   - name: harbor/utils
     env: PACKAGE_LOCATION=.
-    if: branc = master
+    if: branch = master
   - name: functional
     env: PACKAGE_LOCATION=packages/functional
     if: branch = packages/functional
