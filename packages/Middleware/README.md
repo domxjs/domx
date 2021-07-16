@@ -1,5 +1,6 @@
 # Middleware &middot; [![Build Status](https://travis-ci.com/jhorback/harbor-utils.svg?branch=packages/Middleware)](https://travis-ci.com/jhorback/harbor-utils)
 
+Contains low level patterns for middleware and HTMLElement mixin logging.
 
 ## Installation
 ```sh
@@ -9,6 +10,79 @@ npm install @harbor/middleware
 
 ## Middleware
 A class that can be used to implement a middleware pattern.
+Middleware can be used for common concerns such as logging, error handling, reporting, etc.
+
+### Adding middleware
+The Middleware class is to be used by modules wanting to expose middleware.
+To 
+```js
+export {useMiddleware};
+const mw = new Middleware();
+const useMiddleware = (fn) => mw.use(fn);
+```
+
+### Executing middleware
+There are two function structures that can be used when executing the middleware.
+Both take a `next` method and an arguments array to be passed to the `next` function.
+Each middleware function is required call the `next` function with
+arguments and return the `next` functions return value.
+
+#### Full Example
+`TestMiddleware.ts`
+```js
+import {Middleware} from "@harbor/middleware";
+export {TestMiddleware, useMiddleware};
+
+ interface MwContext {
+    test: Array<string>
+}
+
+const mw: Middleware = new Middleware();
+const useMiddleware: Function = (fn: Function) => mw.use(fn);
+
+class TestMiddleware {
+    logTest() {
+        const context = {test: ["it"]};
+        const returnValue = mw.execute((context: MwContext) => {
+            context.test.push("work");
+            return "!";
+        }, [context]);
+        context.test.push(returnValue);
+        return context.test.join(" ");
+    }
+}
+
+```
+`addMiddleware.ts`
+```js
+import {useMiddleware} from "./TestMiddleware";
+
+useMiddleware((next: Function) => (context: MwContext) => {
+    context.test.push("did");
+    return next(context);
+});
+
+```
+`runTest.ts`
+```js
+import {TestMiddleware} from "./TestMiddleware";
+import "./addMiddleware.ts";
+const testMw = new TestMiddleware();
+const returnValue = testMw.logTest();
+console.log(returnValue); // logs: "it did work!"
+```
+
+#### Using Mapped Arguments
+In some cases it may be useful to map an argument to all of the middle ware functions before execution.
+This would allow for the following middleware function signagure:
+```js
+const middlewareFunction = mappedArgument => next => passedArgument => {
+  // do something with mappedArgument
+  return next(passedArgument);
+};
+
+```
+
 
 
 ## Logger

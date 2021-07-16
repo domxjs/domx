@@ -50,4 +50,35 @@ describe("Middleware", () => {
         console.log(testStr);
         expect(testStr).toBe("it did mapped 1 work mapped 1 meet 1 return");
     });
+
+    it("works with full example", () => {
+
+        interface MwContext {
+            test: Array<string>
+        }
+
+        const mw: Middleware = new Middleware();
+        const useMiddleware: Function = (fn: Function) => mw.use(fn);
+
+        class TestMiddleware {
+            logTest() {
+                const context = {test: ["it"]};
+                const returnValue = mw.execute((context: MwContext) => {
+                    context.test.push("work");
+                    return "!";
+                }, [context]);
+                context.test.push(returnValue);
+                return context.test.join(" ");
+            }
+        }
+
+        useMiddleware((next: Function) => (context: MwContext) => {
+            context.test.push("did");
+            return next(context);
+        });
+
+        const testMw = new TestMiddleware();
+        const ret = testMw.logTest();
+        expect(ret).toBe("it did work !");
+    })
 });
