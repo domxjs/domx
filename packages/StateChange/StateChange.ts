@@ -72,6 +72,7 @@ class StateChange {
    */
   getState() {
     const {el, prop} = this.meta;
+    //@ts-ignore TS7503 - returing a dynamic property
     return el[prop];
   }
 
@@ -82,6 +83,7 @@ class StateChange {
    */
   next(fn: Function) {
     const {el, prop} = this.meta;
+    //@ts-ignore TS7503 - setting a dynamic property
     el[prop] = composeMixinsWith(this, fn)(this.getState());
     return this.continue();
   }
