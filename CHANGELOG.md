@@ -8,8 +8,12 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## [0.2.0]
+### Changed
+- Updated middleware package to 0.2.0
 
 ## [0.1.0] - 2021-07-13
+### Changed
 - Got travis-ci running tests
 - Added tests
 - Converted functional package to TypeScript
