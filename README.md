@@ -1,4 +1,4 @@
-# Harbor Utilities &middot; ![GitHub license](https://img.shields.io/badge/license-MIT-blue.svg) [![Build Status](https://travis-ci.com/jhorback/harbor-utils.svg?branch=master)](https://travis-ci.com/jhorback/harbor-utils)
+# Harbor Utilities &middot; ![GitHub license](https://img.shields.io/badge/license-MIT-blue.svg) [![Build Status](https://travis-ci.com/jhorback/harbor-utils.svg?branch=master)](https://travis-ci.com/jhorback/harbor-utils) ![GitHub package.json version](https://img.shields.io/github/package-json/v/jhorback/harbor-utils)
 @harbor-utils
 
 A mono repo containing packages with common web application script utilities.
