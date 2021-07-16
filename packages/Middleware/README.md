@@ -14,7 +14,6 @@ Middleware can be used for common concerns such as logging, error handling, repo
 
 ### Adding middleware
 The Middleware class is to be used by modules wanting to expose middleware.
-To 
 ```js
 export {useMiddleware};
 const mw = new Middleware();
@@ -33,7 +32,7 @@ arguments and return the `next` functions return value.
 import {Middleware} from "@harbor/middleware";
 export {TestMiddleware, useMiddleware};
 
- interface MwContext {
+interface MwContext {
     test: Array<string>
 }
 
@@ -73,16 +72,20 @@ console.log(returnValue); // logs: "it did work!"
 ```
 
 #### Using Mapped Arguments
-In some cases it may be useful to map an argument to all of the middle ware functions before execution.
+In some cases it may be useful to map an argument to all of the middleware functions before execution.
 This would allow for the following middleware function signagure:
 ```js
 const middlewareFunction = mappedArgument => next => passedArgument => {
   // do something with mappedArgument
   return next(passedArgument);
 };
-
 ```
-
+Use `mapThenExecute` to run this middleware function signature.
+```js
+const mw = new Middleware();
+mw.use(middlewareFunction);
+mw.mapThenExecute((mappedFunction, nextFn, passedArgument));
+```
 
 
 ## Logger

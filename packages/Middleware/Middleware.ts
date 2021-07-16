@@ -1,42 +1,12 @@
 import { compose } from "@harbor/functional/compose";
-// import { pipe } from "@harbor/functional/pipe";
 export { Middleware }
-
-/*
-
-stack = [c, b, a];
-main = n;
-
-b(a(n))
-
-
-*/
-/*
-el[prop] = composeMixinsWith(this, fn)(this.getState());
-const composeMixinsWith = (stateChange, fn) => {
-  const mixins = stateChangeMixins.map(m => m(stateChange));
-  return compose(...mixins)(fn);
-};
-const errorCatcher = stateChange => next => stateOrStateChange => {
-  try {
-    return next(stateOrStateChange);
-  } catch (error) {
-    const {el} = stateChange.meta;
-    Logger.log(el, "error", "PIPESTATE error!", error);
-    throw (error);
-  }
-};
-)
-*/
-
-
 
 
 /**
- * A class to use to run Middleware in various ways.
+ * A class used to execute middleware.
  */
 class Middleware {
-    /*private*/ stack: Array<any> = [];
+    private stack: Array<any> = [];
     
     /**
      * Expose this method for others to add to the stack of middleware.
@@ -47,21 +17,21 @@ class Middleware {
     }
 
     /**
-     * The same as execute but allows for arguments to be passed to the middleare stack.
-     * @param next {Function}
-     * @param args {Array<any>}
-     * @returns any
+     * Executes middleware functions given the passed arguments.
+     * @param next {Function} The main function to execute.
+     * @param args {Array<any>} Arguments to pass to the next function.
+     * @returns any The value returned from the next function.
      */
     execute(next: Function, args:Array<any>): any {
         return (compose(...this.stack)(next) as Function)(...args);
     }
 
     /**
-     * Enables mapping an argument to all middleware functions, then the next statement, and finally function arguments.
-     * @param argToMap {any}
-     * @param next {Function}
-     * @param args {Array<any>}
-     * @returns any
+     * Enables mapping an argument to all middleware functions before executing.
+     * @param argToMap {any} The arugment mapped to the middleware functions.
+     * @param next {Function} The main function to execute.
+     * @param args {Array<any>} Arguments to pass to the next function.
+     * @returns any The value returned from the next function.
      */
     mapThenExecute(argToMap: any, next: Function, args: Array<any>): any{
         return (<Function>compose(...this.stack.map(fn => fn(argToMap)))(next))(...args);
