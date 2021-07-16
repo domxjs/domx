@@ -1,6 +1,6 @@
 //@ts-ignore
 
-import { Logger } from "@harbor/middleware";
+import { Logger } from "@harbor/middleware/Logger";
 export {
   EventMap,
   eventsListenAt,
@@ -52,11 +52,12 @@ enum EventMapListenAt {
  * e.g. window@some-event -> class.handler -> detail
  */
 interface EventMapHandlerInfo {
+  class: object,
   listenAt: EventMapListenAt,
   eventName: string,
   constructorName: string,
   eventHandlerName: string,
-  eventDetail?: Object
+  eventDetail?: object
 }
 
 
@@ -69,7 +70,7 @@ interface EventMapHandlerInfo {
  function EventMap<TBase extends HTMLElementType>(Base: TBase) {
   return class EventMap extends Base {
 
-    __eventMapProcessed? : Boolean;
+    __eventMapProcessed? : boolean;
     __eventMapHandlers? : EventMapCtorEvents;
     
    /** Attaches event listeners */
@@ -127,6 +128,7 @@ interface EventMapHandlerInfo {
             listenAt.host.constructor.name : listenAt.constructor.name;
           
           const handlerInfo : EventMapHandlerInfo = {
+            class: this,
             listenAt: listenAtName,
             eventName: key,
             constructorName,
@@ -136,7 +138,7 @@ interface EventMapHandlerInfo {
 
           // listenAt, eventName, constructorName, eventHandlerName, eventDetail
           Logger.log(this, "group", `> EVENTMAP: ${listenAtName}@${key} => ${constructorName}.${eventHandler.name}()`);
-          Logger.log(this, "info", (`=> event.detail`, event.detail || "(none)"));
+          Logger.log(this, "info", (`=> event.detail`, event.detail || "(none)", handlerInfo));
           event.stopPropagation();
           eventHandler.call(this, event);
           Logger.log(this, "groupEnd");
