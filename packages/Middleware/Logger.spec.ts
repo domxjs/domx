@@ -57,7 +57,6 @@ describe("Logger", () => {
             testLogger.testLog();
             expect(spy).toHaveBeenCalledTimes(0);
             spy.mockRestore();
-    
         });
     
         it("respects onlyThis", () => {

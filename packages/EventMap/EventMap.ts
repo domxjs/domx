@@ -144,7 +144,7 @@ interface EventMapHandlerInfo {
           Logger.log(this, "groupEnd");
         };        
 
-        this.__eventMapHandlers?[key] = {
+        this.__eventMapHandlers[key] = {
           listenAt: listenAt,
           handler: handler
         };
