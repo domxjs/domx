@@ -1,4 +1,5 @@
-import { compose } from "@harbor/functional/compose";
+// import { compose } from "@harbor/functional/compose";
+import { compose } from "../functional/compose";
 export { Middleware }
 
 
