@@ -8,10 +8,19 @@
     "test": "jest"
   },
   "dependencies": {
-    "@harbor/functional": "0.2.0"
+    "@harbor/functional": "0.2.0",
+    "lit-element": "^2.4.0",
+    "lit-html": "^1.4.1"
   },
   "jest": {
     "preset": "ts-jest",
     "testEnvironment": "jsdom"
+  },
+  "devDependencies": {
+    "@types/jest": "^26.0.24",
+    "jest": "^27.0.6",
+    "ts-jest": "^27.0.3",
+    "ts-node": "^10.1.0",
+    "typescript": "4.3.3"
   }
 }

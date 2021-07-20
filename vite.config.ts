@@ -6,9 +6,6 @@ export default defineConfig({
     lib: {
       entry: 'src/my-element.ts',
       formats: ['es']
-    },
-    rollupOptions: {
-      external: /^lit-element/
     }
   }
 })

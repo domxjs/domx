@@ -1,24 +1,22 @@
 {
   "compilerOptions": {
+    "strict": true,
     "target": "ESNext",
-    "module": "esnext",
-    "lib": ["es2017", "dom", "dom.iterable"],
+    "module": "ESNext",
+    "composite": true,
+    "esModuleInterop": true,
+    "allowSyntheticDefaultImports": true,
+    "allowJs": true,
+    "experimentalDecorators": true,
+
     "declaration": true,
     "emitDeclarationOnly": true,
-    "outDir": "./types",
-    "rootDir": "./packages",
-    "strict": true,
+
+    "forceConsistentCasingInFileNames": true,
     "noUnusedLocals": true,
     "noUnusedParameters": true,
     "noImplicitReturns": true,
-    "noFallthroughCasesInSwitch": true,
-    "moduleResolution": "node",
-    "allowSyntheticDefaultImports": true,
-    "experimentalDecorators": true,
-    "forceConsistentCasingInFileNames": true
+    "noFallthroughCasesInSwitch": true
   },
-  "include": ["src/**/*.ts", "packages/**/*.ts"],
-  "exclude": [
-    "node_modules"
-  ]
+  "include": ["packages/**/*.ts"]
 }
