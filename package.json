@@ -6,6 +6,7 @@
   "author": "John Horback",
   "description": "A mono repo containing packages with common web application script utilities.",
   "main": "index.js",
+  "types": "index.d.ts",
   "workspaces": [
     "packages/*"
   ],
@@ -16,6 +17,7 @@
   "scripts": {
     "dev": "vite",
     "build": "tsc && vite build",
+    "tsc": "tsc",
     "test": "jest",
     "test2": "node --experimental-vm-modules node_modules/jest/bin/jest.js",
     "test:coverage": "node --experimental-vm-modules node_modules/jest/bin/jest.js --coverage",
@@ -41,7 +43,7 @@
       "^.+\\.(js|ts)$": "ts-jest"
     },
     "transformIgnorePatterns": [
-      "node_modules/(?!lit-(html|element))"
+      "node_modules/(?!(lit-html|lit-element|@harbor))"
     ]
   },
   "globals": {

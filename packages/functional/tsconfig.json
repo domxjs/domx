@@ -1,5 +1,5 @@
 {
-    "composite": true,
-    "extends": "../../tsconfig.json",
-    "references": [{ "path": "../../" }]
+    "composite": false,
+    "extendss": "../../tsconfig.json",
+    "references": []
   }

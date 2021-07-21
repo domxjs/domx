@@ -5,7 +5,8 @@
   "author": "John Horback",
   "main": "index.js",
   "scripts": {
-    "test": "jest"
+    "test": "jest",
+    "tsc": "tsc"
   },
   "jest": {
     "preset": "ts-jest"
