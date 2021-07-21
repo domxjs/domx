@@ -1,23 +1,10 @@
 {
-  "compilerOptions": {
-    "strict": true,
-    "target": "ESNext",
-    "module": "ESNext",
-    "moduleResolution": "node",
-    "composite": true,
-    "esModuleInterop": true,
-    "allowSyntheticDefaultImports": true,
-    "allowJs": true,
-    "experimentalDecorators": true,
-
-    "declaration": true,
-    "emitDeclarationOnly": false,
-
-    "forceConsistentCasingInFileNames": true,
-    "noUnusedLocals": true,
-    "noUnusedParameters": true,
-    "noImplicitReturns": true,
-    "noFallthroughCasesInSwitch": true
+  // @harbor/functional
+  "composite": true,
+  "extends": "../../tsconfig.json",
+  "compilerOptions": {    
+    "outDir": "dist",
+    "rootDir": "src"    
   },
   "include": [
     "src/**/*"

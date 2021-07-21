@@ -1,5 +1,17 @@
 {
-    "composite": true,
-    "extends": "../../tsconfig.json",
-    "references": [{ "path": "../functional" }]
-  }
+  // @harbor/Middleware
+  "composite": true,
+  "extends": "../../tsconfig.json",
+  "compilerOptions": {    
+    "outDir": "dist",
+    "rootDir": "src",
+    "noEmit": true 
+  },
+  "include": [
+    "*"
+  ],
+  "exclude": [
+    "*.spec.ts"
+  ],
+  "references": [{ "path": "../functional" }]
+}

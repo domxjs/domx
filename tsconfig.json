@@ -6,20 +6,24 @@
     "module": "ESNext",
     "moduleResolution": "node",
     "composite": true,
-    "esModuleInterop": true,
-    "allowSyntheticDefaultImports": true,
-    "allowJs": true,
-    "experimentalDecorators": true,
-
+    "sourceMap": true,
     "declaration": true,
     "emitDeclarationOnly": false,
+    "allowJs": true,
+    "esModuleInterop": true,
+    "allowSyntheticDefaultImports": true,
+    "noEmitOnError": true,
 
+    "experimentalDecorators": true,
     "forceConsistentCasingInFileNames": true,
     "noUnusedLocals": true,
     "noUnusedParameters": true,
     "noImplicitReturns": true,
     "noFallthroughCasesInSwitch": true
   },
+
+  // change this back when done to build the src folder
+  // for the harbor-utils page
   "include": ["packages/functional/**/*.ts"],
   "exclude": ["packages/**/*.spec.ts"]
 }
