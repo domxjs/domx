@@ -1,9 +1,10 @@
 {
-  // hello
+  // harbor-utils
   "compilerOptions": {
     "strict": true,
     "target": "ESNext",
     "module": "ESNext",
+    "moduleResolution": "node",
     "composite": true,
     "esModuleInterop": true,
     "allowSyntheticDefaultImports": true,
@@ -11,7 +12,7 @@
     "experimentalDecorators": true,
 
     "declaration": true,
-    "emitDeclarationOnly": true,
+    "emitDeclarationOnly": false,
 
     "forceConsistentCasingInFileNames": true,
     "noUnusedLocals": true,
@@ -19,5 +20,6 @@
     "noImplicitReturns": true,
     "noFallthroughCasesInSwitch": true
   },
-  "include": ["packages/**/*.ts"]
+  "include": ["packages/functional/**/*.ts"],
+  "exclude": ["packages/**/*.spec.ts"]
 }
