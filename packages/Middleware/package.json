@@ -7,7 +7,7 @@
   "scripts": {
     "test": "jest",
     "build": "tsc",
-    "clean": "tsc --build -- clean"
+    "clean": "tsc --build --clean"
   },
   "dependencies": {
     "@harbor/functional": "0.2.0"

@@ -4,11 +4,13 @@
   "extends": "../../tsconfig.json",
   "compilerOptions": {    
     "outDir": "dist",
-    "rootDir": "src",
-    "noEmit": true 
+    "rootDir": ".",
+    // "paths": {
+    //   "@harbor/*": ["../*"]
+    // }
   },
   "include": [
-    "*"
+    "*.ts"
   ],
   "exclude": [
     "*.spec.ts"

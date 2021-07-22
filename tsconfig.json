@@ -22,8 +22,9 @@
     "noFallthroughCasesInSwitch": true
   },
 
-  // change this back when done to build the src folder
-  // for the harbor-utils page
-  "include": ["packages/functional/**/*.ts"],
-  "exclude": ["packages/**/*.spec.ts"]
+  "files": [],
+  "references": [
+    { "path": "./packages/functional" },
+    { "path": "./packages/Middleware" }
+  ]
 }

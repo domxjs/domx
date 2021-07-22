@@ -16,7 +16,8 @@
   ],
   "scripts": {
     "dev": "vite",
-    "build": "tsc && vite build",
+    "build": "tsc --build && vite build",
+    "clean": "tsc --build --clean",
     "test": "jest",
     "test:coverage": "jest --coverage",
     "test:watch": "jest --watch"

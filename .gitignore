@@ -5,3 +5,4 @@ types
 *.local
 coverage
 .vscode
+*.tsbuildinfo
