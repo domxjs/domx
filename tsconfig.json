@@ -1,21 +1,31 @@
 {
+  // harbor-utils
   "compilerOptions": {
-    "module": "esnext",
-    "lib": ["es2017", "dom", "dom.iterable"],
-    "declaration": true,
-    "emitDeclarationOnly": true,
-    "outDir": "./types",
-    "rootDir": "./packages",
     "strict": true,
+    "target": "ESNext",
+    "module": "ESNext",
+    "moduleResolution": "node",
+    "composite": true,
+    "sourceMap": true,
+    "declaration": true,
+    "emitDeclarationOnly": false,
+    "allowJs": true,
+    "esModuleInterop": true,
+    "allowSyntheticDefaultImports": true,
+    "noEmitOnError": true,
+
+    "experimentalDecorators": true,
+    "forceConsistentCasingInFileNames": true,
     "noUnusedLocals": true,
     "noUnusedParameters": true,
     "noImplicitReturns": true,
     "noFallthroughCasesInSwitch": true,
-    "moduleResolution": "node",
-    "allowSyntheticDefaultImports": true,
-    "experimentalDecorators": true,
-    "forceConsistentCasingInFileNames": true
   },
-  "include": ["src/**/*.ts", "packages/**/*.ts"],
-  "exclude": []
+
+  "files": [],
+  "references": [
+    { "path": "./packages/functional" },
+    { "path": "./packages/Middleware" },
+    { "path": "./packages/linkProp" }
+  ]
 }
