@@ -1,5 +1,5 @@
 import { describe, it, expect } from "@jest/globals";
-import { compose, composeAsync } from "./compose";
+import { compose, composeAsync } from "../compose";
 
 
 describe("compose", () => {
