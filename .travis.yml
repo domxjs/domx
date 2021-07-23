@@ -38,5 +38,4 @@ matrix:
     if: branch = packages/linkProp
 
 script:
-  - cd $PACKAGE_LOCATION
-  - npm run test
+  - npm run test $PACKAGE_LOCATION
