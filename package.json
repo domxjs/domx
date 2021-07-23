@@ -42,7 +42,7 @@
       "^.+\\.(js|ts)$": "ts-jest"
     },
     "transformIgnorePatterns": [
-      "node_modules/(?!(lit-html|lit-element|@harbor))"
+      "node_modules/(?!(lit-html|lit-element))"
     ]
   }
 }
