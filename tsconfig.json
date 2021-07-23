@@ -20,19 +20,12 @@
     "noUnusedParameters": true,
     "noImplicitReturns": true,
     "noFallthroughCasesInSwitch": true,
-
-    // "paths": {
-    //   "@harbor/functional/*": ["./packages/functional/src/*"]
-    // }
   },
-  
-  // "moduleNameMapper": {
-  //   "@harbor/functional(.*)": "<rootDir>/packages/functional/src/$1"
-  // },
 
   "files": [],
   "references": [
     { "path": "./packages/functional" },
-    { "path": "./packages/Middleware" }
+    { "path": "./packages/Middleware" },
+    { "path": "./packages/linkProp" }
   ]
 }
