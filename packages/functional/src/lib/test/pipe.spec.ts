@@ -1,5 +1,5 @@
 import { describe, it, expect } from "@jest/globals";
-import { pipe, pipeAsync } from "./pipe";
+import { pipe, pipeAsync } from "../pipe";
 
 
 describe("pipe", () => {

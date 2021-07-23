@@ -20,7 +20,7 @@ const defaultListenAtHtml = html`
 `;
 
 
-describe("EventMap", function () {
+describe.skip("EventMap", function () {
   beforeEach(function () {
       window.firedEvents = {};
   });
