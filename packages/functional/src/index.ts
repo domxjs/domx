@@ -1,5 +1,5 @@
-import {pipe, pipeAsync} from "./pipe";
-import {compose, composeAsync} from "./compose";
+import {pipe, pipeAsync} from "./lib/pipe";
+import {compose, composeAsync} from "./lib/compose";
 export {
   pipe,
   pipeAsync,

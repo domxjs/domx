@@ -19,8 +19,16 @@
     "noUnusedLocals": true,
     "noUnusedParameters": true,
     "noImplicitReturns": true,
-    "noFallthroughCasesInSwitch": true
+    "noFallthroughCasesInSwitch": true,
+
+    // "paths": {
+    //   "@harbor/functional/*": ["./packages/functional/src/*"]
+    // }
   },
+  
+  // "moduleNameMapper": {
+  //   "@harbor/functional(.*)": "<rootDir>/packages/functional/src/$1"
+  // },
 
   "files": [],
   "references": [

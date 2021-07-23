@@ -3,7 +3,8 @@
   "composite": true,
   "extends": "../../tsconfig.json",
   "compilerOptions": {    
-    "outDir": "dist",
+    "tsBuildInfoFile": "./tsconfig.functional.tsbuildinfo",
+    "outDir": "./",
     "rootDir": "src"    
   },
   "include": [
