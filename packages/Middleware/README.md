@@ -105,7 +105,7 @@ Any classes that include mixins that use the logger can use the `loggerConfig` d
 class SomeClass extends SomeMixinThatLogs(HTMLElement) {
   someMethod() {
     Logger.log(this, "debug", "This will log");
-    Logger.log(this, "log", "This will NOT log");
+    Logger.log(this, "log", "This will log but at the set 'debug' level.");
   }
 }
 customElements.define("some-class", SomeClass);
