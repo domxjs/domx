@@ -1,18 +1,18 @@
 {
   "name": "@harbor/linkprop",
+  "type": "module",
   "version": "0.2.0",
   "license": "MIT",
   "author": "John Horback",
-  "main": "index.js",
+  "main": "linkProp.js",
+  "types": "linkProp.d.ts",
   "scripts": {
-    "test": "jest"
+    "test": "jest",
+    "test:coverage": "jest --coverage",
+    "build": "tsc --build",
+    "clean": "tsc --build --clean"
   },
   "devDependencies": {
-    "@types/jest": "^26.0.24",
-    "jest": "^27.0.6",
-    "ts-jest": "^27.0.3",
-    "ts-node": "^10.1.0",
-    "typescript": "4.3.3",
     "lit-html": "^1.4.1"
   },
   "jest": {

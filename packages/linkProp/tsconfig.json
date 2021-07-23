@@ -1,5 +1,16 @@
 {
-    "composite": true,
-    "extends": "../../tsconfig.json",
-    "references": [{ "path": "../../" }, { "path": "../functional" }]
-  }
+  // @harbor/linkProp
+  "composite": true,
+  "extends": "../../tsconfig.json",  
+  "compilerOptions": {
+    "tsBuildInfoFile": "./tsconfig.linkProp.tsbuildinfo",
+    "outDir": "./",
+    "rootDir": "./src",
+  },
+  "include": [
+    "./src/**/*"
+  ],
+  "exclude": [
+    "./src/**/*.spec.ts"
+  ]
+}
