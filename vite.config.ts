@@ -4,11 +4,8 @@ import { defineConfig } from 'vite'
 export default defineConfig({
   build: {
     lib: {
-      entry: 'src/my-element.ts',
+      entry: 'src/hbr-utils.ts',
       formats: ['es']
-    },
-    rollupOptions: {
-      external: /^lit-element/
     }
   }
 })

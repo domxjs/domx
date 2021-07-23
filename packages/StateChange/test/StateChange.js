@@ -4,7 +4,7 @@ import { fixture, html, yieldFor } from '../../testHelpers/index';
 import { StateChange } from '../StateChange';
 
 
-describe("StateChange", () => {
+describe.skip("StateChange", () => {
 
   describe("next", () => {
     it("sets the state", () => {
