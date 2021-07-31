@@ -7,9 +7,12 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 
 ## [0.3.0-beta.1] - 2021-07-23
+### Added
+- Renovate
 ### Updated
 - Updated linkProp package to 0.2.0
 - Restructured packages for TypeScript output
+
 
 ## [0.2.0]
 ### Changed
