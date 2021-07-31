@@ -2,6 +2,12 @@
 
 [CHANGELOG](./CHANGELOG.md)
 
+## TODO
+- Document middleware
+- - EventMap.use(fn);
+- applyEventMapLogging - applying the logging middleware
+
+
 
 ## Description
 A CustomElement class mixin which supports attaching and detaching DOM events declaratively.
