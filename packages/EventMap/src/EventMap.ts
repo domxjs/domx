@@ -66,7 +66,8 @@ interface ProcessedEventMapDefinitionItem  {
  * handler is called.
  */
 interface EventMapHandlerInfo {
-  class: object,
+  /** The class that is mixed in */
+  class: HTMLElement,
   listenAt: EventMapListenAt,
   eventName: string,
   constructorName: string,
