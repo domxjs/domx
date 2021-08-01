@@ -19,23 +19,24 @@ const defaultListenAtHtml = html`
 `;
 
 
-let __firedEvents: any = {
-    _toTrigger: null,
-};
+let __firedEvents: any = {};
 
-interface RestorableElement extends Element {
+interface RestorableElement extends HTMLElement {
     restore: Function
 };
 
-const fixture = (html: TemplateResult): RestorableElement => {
-    render(html, document.body);
-    const el = document.body.firstElementChild || {};
-    /** @ts-ignore TS2339 */
-    el.restore = () => {
-        document.body.innerHTML = "";
-    };
-    return el as RestorableElement;
-};
+function fixture(html:TemplateResult): RestorableElement {
+  let fixture = document.createElement("div");
+  fixture.setAttribute("fixture", "");
+  document.body.appendChild(fixture);
+
+  render(html, fixture);
+  const el = fixture.firstElementChild as RestorableElement;
+
+  // set the remove method to remove the fixture
+  el.restore = () => fixture.remove()
+  return el;
+}
 
 
 describe("EventMap", function () {
@@ -57,7 +58,8 @@ describe("EventMap", function () {
           * make sure there is no error with an element that
           * does not define the static events property.
           */
-          expect(frag instanceof HTMLElement).toBe(true);
+          const isHTMLElement = frag instanceof HTMLElement;
+          expect(isHTMLElement).toBe(true);
           frag.restore();
       });
 
@@ -83,7 +85,7 @@ describe("EventMap", function () {
       });
   });
 
-  describe.skip("Events", function () {
+  describe("Events", function () {
     var frag:RestorableElement, child:Element, event:CustomEvent;
 
     beforeEach(function () {
@@ -118,7 +120,7 @@ describe("EventMap", function () {
     });
   });
 
-  describe.skip("Events at parent", function () {
+  describe("Events at parent", function () {
     var frag:RestorableElement, child:Element, event:CustomEvent;
 
     beforeEach(function () {
@@ -153,7 +155,7 @@ describe("EventMap", function () {
     });
   });
 
-  describe.skip("Events at window", function () {
+  describe("Events at window", function () {
     var frag:RestorableElement, event:CustomEvent;
 
     beforeEach(function () {
@@ -177,7 +179,7 @@ describe("EventMap", function () {
     });
   });
 
-  describe.skip("Mixed in events", () => {
+  describe("Mixed in events", () => {
     let el:RestorableElement;
 
     beforeEach(() => {
@@ -204,7 +206,7 @@ describe("EventMap", function () {
     });
   });
 
-  describe.skip("eventsListenAt", () => {
+  describe("eventsListenAt", () => {
     let frag:RestorableElement;
 
     beforeEach(() => {
@@ -227,7 +229,7 @@ describe("EventMap", function () {
     });
   });
 
-  describe.skip("decorators", () => {
+  describe("decorators", () => {
     describe("eventsListenAt", () => {
       it("can be used on the class in place of the static eventsListenAtProperty", () => {
         const el = fixture(html`<events-listen-at-descriptor></events-listen-at-descriptor>`);
@@ -255,33 +257,35 @@ describe("EventMap", function () {
   });
 
 
-  describe.skip("multiple handlers", () => {
+  describe("multiple handlers", () => {
 
-    // it("handles both event types", () => {
-    //   const el = fixture(html`<event-map-multiple-handlers></event-map-multiple-handlers>`);
-    //   const spy = sinon.spy(el, "handler1");
-    //   el.dispatchEvent(new CustomEvent("handle-first-event"));
-    //   expect(spy.callCount).toBe(1);
-    //   el.dispatchEvent(new CustomEvent("handle-second-event"));
-    //   expect(spy.callCount).toBe(2);
-    //   el.restore();
-    //   spy.restore();
-    // });
+    beforeEach(function () {
+      __firedEvents = {};
+    });
 
-    // it("removes both handlers", () => {
-    //   const el = fixture(html`<event-map-multiple-handlers></event-map-multiple-handlers>`);
-    //   const spy = sinon.spy(el, "handler1");
-    //   el.dispatchEvent(new CustomEvent("handle-first-event"));
-    //   expect(spy.callCount).toBe(1);
-    //   el.dispatchEvent(new CustomEvent("handle-second-event"));
-    //   expect(spy.callCount).toBe(2);
-    //   el.restore();
-    //   el.dispatchEvent(new CustomEvent("handle-first-event"));
-    //   expect(spy.callCount).toBe(2);
-    //   el.dispatchEvent(new CustomEvent("handle-second-event"));
-    //   expect(spy.callCount).toBe(2);
-    //   spy.restore();
-    // });
+    it("handles both event types", () => {
+      __firedEvents.handler1Count = 0;
+      const el = fixture(html`<event-map-multiple-handlers></event-map-multiple-handlers>`);
+      el.dispatchEvent(new CustomEvent("handle-first-event"));
+      expect(__firedEvents.handler1Count).toBe(1);
+      el.dispatchEvent(new CustomEvent("handle-second-event"));
+      expect(__firedEvents.handler1Count).toBe(2);
+      el.restore();
+    });
+
+    it("removes both handlers", () => {
+      const el = fixture(html`<event-map-multiple-handlers></event-map-multiple-handlers>`);
+      __firedEvents.handler1Count = 0;
+      el.dispatchEvent(new CustomEvent("handle-first-event"));
+      expect(__firedEvents.handler1Count).toBe(1);
+      el.dispatchEvent(new CustomEvent("handle-second-event"));
+      expect(__firedEvents.handler1Count).toBe(2);
+      el.restore();
+      el.dispatchEvent(new CustomEvent("handle-first-event"));
+      expect(__firedEvents.handler1Count).toBe(2);
+      el.dispatchEvent(new CustomEvent("handle-second-event"));
+      expect(__firedEvents.handler1Count).toBe(2);
+    });
   });
 });
 
@@ -440,7 +444,7 @@ class MultipleHandlers extends EventMap(HTMLElement) {
   @event("handle-first-event")
   @event("handle-second-event")
   handler1() {
-
+    __firedEvents.handler1Count++;
   }
 }
 customElements.define("event-map-multiple-handlers", MultipleHandlers);

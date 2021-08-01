@@ -194,11 +194,7 @@ const middleware = new Middleware();
     }
 
     _unbindEvents() {
-        const handlers = this.__eventMapHandlers;
-        if (!handlers) {
-            return;
-        }
-
+        const handlers = this.__eventMapHandlers || {};
         Object.keys(handlers).forEach((key) => {
             const info = handlers[key] as ProcessedEventMapDefinitionItem;
             (info.listenAt as Node | Window).removeEventListener(key, info.handler as EventListener);
@@ -243,7 +239,7 @@ const getAllEvents = (ctor: EventMapMixin): ProcessedEventMapDefinition | null =
  * @param {String} eventName 
  * @param {EventMapListenAt?} options an object to define the listenAt property
  */
-const event = (eventName: string, {listenAt}:{listenAt?: EventMapListenAt} = {}) => {
+const event = (eventName: string, {listenAt}:{listenAt?:EventMapListenAt|string} = {}) => {
   return (prototype: any, handler: string) => {
     const {events = {}} = prototype.constructor;
     listenAt ? events[eventName] = { listenAt, handler} :
@@ -258,8 +254,8 @@ const event = (eventName: string, {listenAt}:{listenAt?: EventMapListenAt} = {})
  * eventsListenAt static property.
  * @param {EventMapListenAt} listenAt
  */
-const eventsListenAt = (listenAt: EventMapListenAt) => {
+const eventsListenAt = (listenAt: EventMapListenAt | string) => {
   return (ctor: EventMapMixin) => {
-    ctor.eventsListenAt = listenAt;
+    ctor.eventsListenAt = listenAt as EventMapListenAt;
   };
 };
