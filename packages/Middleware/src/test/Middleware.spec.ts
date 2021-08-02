@@ -1,9 +1,5 @@
 // import { describe, it, expect } from "@jest/globals";
 import {Middleware} from "../Middleware";
-import {LitElement} from "lit-element/lit-element";
-import {render } from "lit-html";
-
-
 
 
 describe("Middleware", () => {
@@ -11,8 +7,6 @@ describe("Middleware", () => {
     it("has a use function", () => {
         const mw = new Middleware();
         expect(mw.use).not.toBeNull();
-        expect(render).not.toBeNull();
-        expect(LitElement).not.toBeNull();
     });
 
     it("can execute with arguments", () => {
@@ -86,5 +80,12 @@ describe("Middleware", () => {
         const testMw = new TestMiddleware();
         const ret = testMw.logTest();
         expect(ret).toBe("it did work !");
-    })
+    });
+
+    it("can clear middleware", () => {
+        const mw = new Middleware();
+        expect(mw.clear).not.toBeNull();
+        mw.use(() => {});
+        expect(() => mw.clear()).not.toThrow();
+    });
 });
