@@ -6,7 +6,7 @@
   "main": "EventMap.js",
   "types": "EventMap.d.ts",
   "dependencies": {
-    "@harbor/middleware": "0.2.1"
+    "@harbor/middleware": "0.2.2"
   },
   "scripts": {
     "build": "tsc",
