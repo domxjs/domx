@@ -1,7 +1,7 @@
 
 import { describe, it, expect } from "@jest/globals";
 import { html, TemplateResult, render } from "lit-html";
-import { EventMap, eventsListenAt, event } from "./EventMap";
+import { EventMap, EventMapHandlerInfo, eventsListenAt, event } from "./EventMap";
 
 
 const test1Html = html`
@@ -47,13 +47,13 @@ describe("EventMap", function () {
   describe("Setup", function () {
 
       it("is an HTMLElement", function () {
-          let frag = fixture(test1Html);
+          const frag = fixture(test1Html);
           expect(frag instanceof HTMLElement).toBe(true);
           frag.restore();
       });
 
       it("supports not defining a static events property", function () {
-          let frag = fixture(noEventsTestHtml);
+          const frag = fixture(noEventsTestHtml);
           /*
           * make sure there is no error with an element that
           * does not define the static events property.
@@ -253,6 +253,28 @@ describe("EventMap", function () {
         expect(__firedEvents._triggerOnListenAt).toBe(true);
         el.restore();
       });
+    });
+
+    describe("Middleware", () => {
+      it("can apply middleware", () => {
+        __firedEvents = {};
+        EventMap.applyMiddleware((handlerInfo:EventMapHandlerInfo) => (next:Function) => () => {
+          expect(handlerInfo.eventName).toBe("event-to-trigger");
+          expect(handlerInfo.constructorName).toBe("EventMapTest1");
+          expect(handlerInfo.eventHandlerName).toBe("_toTrigger");
+          next();
+        });
+  
+        const frag = fixture(test1Html);
+        const child = frag.querySelector("#child") as RestorableElement;
+        const event = new CustomEvent('event-to-trigger', { bubbles: true, composed: true });      
+        expect(__firedEvents._toTrigger).toBeUndefined();
+        child.dispatchEvent(event);
+        expect(__firedEvents._toTrigger).toBe("triggered");
+        frag.restore();
+        __firedEvents = {};
+        EventMap.clearMiddleware();
+      });   
     });
   });
 

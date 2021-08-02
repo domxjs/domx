@@ -105,10 +105,6 @@ const middleware = new Middleware();
  function EventMap<TBase extends HTMLElementType>(Base: TBase) {
   return class EventMap extends Base {
 
-    static useMiddleware(fn: Function) {
-      middleware.use(fn);
-    }
-
     __eventMapProcessed? : boolean;
     __eventMapHandlers? : ProcessedEventMapDefinition;
     
@@ -204,6 +200,22 @@ const middleware = new Middleware();
     }
   };
 }
+
+/**
+ * Exposes middleware
+ * @param fn {Function}
+ */
+EventMap.applyMiddleware = (fn: Function) => {
+  middleware.use(fn);
+};
+
+/**
+ * Removes all middleware associated with
+ * the EventMap.
+ */
+EventMap.clearMiddleware = () => {
+  middleware.clear();
+};
 
 
 /**

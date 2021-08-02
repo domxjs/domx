@@ -1,10 +1,11 @@
-import {EventMapHandlerInfo} from "./EventMap";
+import {EventMap, EventMapHandlerInfo} from "./EventMap";
 import {Logger} from "@harbor/middleware";
 export { applyEventMapLogging };
 
 
-const applyEventMapLogging = (handlerInfo:EventMapHandlerInfo) =>
-    (next:Function) => {
+const applyEventMapLogging = () => EventMap.applyMiddleware(
+    (handlerInfo:EventMapHandlerInfo) =>
+    (next:Function) => () => {        
     const el = handlerInfo.class;
     const detail:any = handlerInfo.eventDetail || "(none)";
 
@@ -15,4 +16,4 @@ const applyEventMapLogging = (handlerInfo:EventMapHandlerInfo) =>
     Logger.log(el, "info", `=> event.detail`, detail);
     next();
     Logger.log(el, "groupEnd");
-};
+});
