@@ -1,5 +1,5 @@
-import { compose } from "../functional/compose";
-import { Logger } from "../../src/Logger/Logger";
+import { compose } from "@harbor/functional/lib/compose";
+import { Logger } from "@harbor/Middleware/Logger";
 export { StateChange };
 
 
