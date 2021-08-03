@@ -6,7 +6,7 @@ export { applyEventMapLogging };
 const applyEventMapLogging = () => EventMap.applyMiddleware(
     (handlerInfo:EventMapHandlerInfo) =>
     (next:Function) => () => {        
-    const el = handlerInfo.class;
+    const el = handlerInfo.element;
     const detail:any = handlerInfo.eventDetail || "(none)";
 
     Logger.log(el,"group",
