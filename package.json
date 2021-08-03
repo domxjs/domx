@@ -1,7 +1,7 @@
 {
   "name": "@harbor/utils",
   "type": "module",
-  "version": "0.3.0-beta.1",
+  "version": "0.4.0",
   "license": "MIT",
   "author": "John Horback",
   "description": "A mono repo containing packages with common web application script utilities.",
@@ -18,9 +18,9 @@
     "dev": "vite",
     "build": "tsc --build && vite build",
     "clean": "tsc --build --clean",
-    "test": "jest",
-    "test:coverage": "jest --coverage",
-    "test:watch": "jest --watch"
+    "test": "tsc --build && jest",
+    "test:coverage": "tsc --build && jest --coverage",
+    "test:watch": "tsc --build && jest --watch"
   },
   "dependencies": {
     "@vanillawc/wc-markdown": "^1.6.10",

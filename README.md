@@ -7,7 +7,7 @@ A mono repo containing packages with common web application script utilities.
 
 | Package   | Status   | Notes
 |:---       |:---      |:---
-| [EventMap](https://github.com/jhorback/harbor-utils/tree/master/packages/EventMap) | [![Build Status](https://travis-ci.com/jhorback/harbor-utils.svg?branch=packages/EventMap)](https://travis-ci.com/jhorback/harbor-utils) | Converting to TypeScript 
+| [EventMap](https://github.com/jhorback/harbor-utils/tree/master/packages/EventMap) | [![Build Status](https://travis-ci.com/jhorback/harbor-utils.svg?branch=packages/EventMap)](https://travis-ci.com/jhorback/harbor-utils) | 0.3.0 
 | [StateChange](https://github.com/jhorback/harbor-utils/tree/master/packages/StateChange) | | Needs conversion 
 | [linkProp](https://github.com/jhorback/harbor-utils/tree/master/packages/linkProp) | [![Build Status](https://travis-ci.com/jhorback/harbor-utils.svg?branch=packages/linkProp)](https://travis-ci.com/jhorback/harbor-utils) | 0.2.0
 | [Middleware](https://github.com/jhorback/harbor-utils/tree/master/packages/Middleware) | [![Build Status](https://travis-ci.com/jhorback/harbor-utils.svg?branch=packages/Middleware)](https://travis-ci.com/jhorback/harbor-utils) | 0.2.1

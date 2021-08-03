@@ -7,12 +7,7 @@
   "main": "index.js",
   "types": "index.d.ts",
   "scripts": {
-    "test": "jest",
-    "test:coverage": "jest --coverage",
     "build": "tsc",
     "clean": "tsc --build --clean"
-  },
-  "jest": {
-    "preset": "ts-jest"
   }
 }

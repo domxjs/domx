@@ -1,26 +1,16 @@
 {
   "name": "@harbor/middleware",
   "type": "module",
-  "version": "0.2.1",
+  "version": "0.2.2",
   "license": "MIT",
   "author": "John Horback",
   "main": "index.js",
   "types": "index.d.ts",
   "scripts": {
-    "test": "jest",
-    "test:coverage": "jest --coverage",
     "build": "tsc --build",
     "clean": "tsc --build --clean"
   },
   "dependencies": {
     "@harbor/functional": "0.2.0"
-  },
-  "devDependencies": {
-    "lit-element": "^2.4.0",
-    "lit-html": "^1.4.1"
-  },
-  "jest": {
-    "preset": "ts-jest",
-    "testEnvironment": "jsdom"
   }
 }

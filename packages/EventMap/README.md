@@ -1,76 +1,10 @@
-# EventMap.js &middot; [![Build Status](https://travis-ci.com/jhorback/harbor-utils.svg?branch=packages/EventMap)](https://travis-ci.com/jhorback/harbor-utils)
+# EventMap &middot; [![Build Status](https://travis-ci.com/jhorback/harbor-utils.svg?branch=packages/EventMap)](https://travis-ci.com/jhorback/harbor-utils)
 
-[CHANGELOG](./CHANGELOG.md)
-
-
-## Description
 A CustomElement class mixin which supports attaching and detaching DOM events declaratively.
 
-## Usage
-When "some-dom-event" is dispatched, the "_someHandler" method gets called;
-__stopPropagation()__ is called on the event before passing it to the handler.
+There are two ways to use the mixin. Using decorators or by adding static properties to the class.
 
-```js
-class MyCass extends EventMap(HTMLElement) {
-  static events = {
-    "some-dom-event": "_someHandler",
-    "another-dom-event": "_anotherHandler"
-  };
-
-  _someHandler(event) {
-    // handle event... *
-  }
-
-  _anotherHandler(event) {
-    // handle event...
-  }
-}
-```
-
-## Listening at the parent or window
-Each event can be configured to add the listener to its parent
-or to the window object. By default the listeners are attached
-to the element itself.
-
- ```js
-class MyCass extends EventMap(HTMLElement) {
-  static events = {
-    "some-dom-event": "_someHandler",
-    "event-to-handle-at-parent": {
-      listenAt: "parent",
-      handler: "_someHandler2"
-    },
-    "event-to-handle-at-window",  {
-      listenAt: "window",
-      handler: "_someHandler3"
-    }
-  };
-
-  _someHandler(event) {
-    // handle event...
-  }
-
-  _someHandler2(event) {
-    // handle event...
-  }
-
-   _someHandler3(event) {
-    // handle event...
-  }
-}
-```
-
-## Changing the default
-The default can be changed from the element itself to "window" or "parent"
-using a static eventsListenAt property:
-```js
-class MyCass extends EventMap(HTMLElement) {
-  static eventsListenAt = "window";
-}
-```
-
-## Decorator usage
-There are two decorators that can be used instead of the static `events` and `eventsListenAt` properties.
+## Using Decorators
 ```js
 @eventsListenAt("parent")
 class MyCass extends EventMap(HTMLElement) {
@@ -80,16 +14,84 @@ class MyCass extends EventMap(HTMLElement) {
     // handle event...
   }
 
-  @event("event-to-handle-at-window, {listenAt: "window"})
-  _someHandler2(event) {
+  @event("event-to-handle-at-window", {
+    listenAt: "window"
+  })
+  _anotherHandler(event) {
+    // handle event...
+  }
+}
+```
+### `@eventsListenAt` decorator
+The `eventsListenAt` decorator can be used on a class to define where to add event listeners by default.
+
+**Possible values** 
+- self (the default behavior)
+- parent
+- window
+
+### `@event` decorator
+Add the `event` decorator on methods to handle the event.
+
+The decorator takes a second argument to override the default `listenAt` property.
+
+
+
+## Using Static Properties
+The following example is identical in behavior to the above example using decorators.
+```js
+class MyCass extends EventMap(HTMLElement) {
+
+  static eventsListenAt = "window";
+
+  static events = {
+    "event-to-handle-at-parent": "_someHandler",
+    "event-to-handle-at-window": {
+      listenAt: "window",
+      handler: "_anotherHandler"
+    }
+  };
+
+  _someHandler(event) {
+    // handle event...
+  }
+
+  _anotherHandler(event) {
     // handle event...
   }
 }
 ```
 
+## Logging and Middleware
+`EventMap` supports adding middleware to add custom behaviors.
+You can also use the `applyEventMapLogging` method to log
+event  information to the console.
 
-## Multiple event maps
-If any mixin or class uses the EventMap, all subclass and mixin event maps
-will be merged.
+**Add Logging**
+```js
+import {applyEventMapLogging} from "@harbor/EventMap/applyEventMapLogging";
+
+applyEventMapLogging();
+```
+**Applying Custom Middleware**
+```js
+import {EventMap} from "@harbor/EventMap";
+
+EventMap.applyMiddleware(handlerInfo => next => () => {
+  // add custom behaviors and call next
+  next();
+});
+```
+
+
+## Notes on Behavior
+
+### Multiple event maps
+If any mixin or class uses the EventMap, all subclass and mixin event maps will be merged.
 
 The event maps higher in the chain will take precident.
+
+
+### Event Propagation
+When an event handler is matched, __stopPropagation()__
+is called on the event before passing it to the handler.

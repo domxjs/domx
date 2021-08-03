@@ -1,8 +1,7 @@
 
-import sinon from 'sinon/lib/sinon.js';
-import { expect } from 'chai';
-import { fixture, html } from '../../testHelpers/index';
-import { EventMap, eventsListenAt, event } from '../EventMap.js';
+import { describe, it, expect } from "@jest/globals";
+import { html, TemplateResult, render } from "lit-html";
+import { EventMap, EventMapHandlerInfo, eventsListenAt, event } from "./EventMap";
 
 
 const test1Html = html`
@@ -20,26 +19,47 @@ const defaultListenAtHtml = html`
 `;
 
 
-describe.skip("EventMap", function () {
+let __firedEvents: any = {};
+
+interface RestorableElement extends HTMLElement {
+    restore: Function
+};
+
+function fixture(html:TemplateResult): RestorableElement {
+  let fixture = document.createElement("div");
+  fixture.setAttribute("fixture", "");
+  document.body.appendChild(fixture);
+
+  render(html, fixture);
+  const el = fixture.firstElementChild as RestorableElement;
+
+  // set the remove method to remove the fixture
+  el.restore = () => fixture.remove()
+  return el;
+}
+
+
+describe("EventMap", function () {
   beforeEach(function () {
-      window.firedEvents = {};
+      __firedEvents = {};
   });
 
   describe("Setup", function () {
 
       it("is an HTMLElement", function () {
-          let frag = fixture(test1Html);
-          expect(frag instanceof HTMLElement).to.be.true;
+          const frag = fixture(test1Html);
+          expect(frag instanceof HTMLElement).toBe(true);
           frag.restore();
       });
 
       it("supports not defining a static events property", function () {
-          let frag = fixture(noEventsTestHtml);
+          const frag = fixture(noEventsTestHtml);
           /*
           * make sure there is no error with an element that
           * does not define the static events property.
           */
-          expect(frag instanceof HTMLElement).to.be.true;
+          const isHTMLElement = frag instanceof HTMLElement;
+          expect(isHTMLElement).toBe(true);
           frag.restore();
       });
 
@@ -52,7 +72,7 @@ describe.skip("EventMap", function () {
           let el = document.createElement("event-map-with-bad-event-handler");
           el.connectedCallback();         
         };
-        expect(badFn).to.throw(Error, "EventMap method does not exist: _doesNotExist");
+        expect(badFn).toThrowError(new Error("EventMap method does not exist: _doesNotExist"));
       });
 
       it("throws an error if a listener could not be attached", () => {
@@ -61,16 +81,16 @@ describe.skip("EventMap", function () {
             el.connectedCallback();            
           };
 
-          expect(badFn).to.throw(Error, "EventMap could not set up a listener at invalidListener");
+          expect(badFn).toThrowError(new Error("EventMap could not set up a listener at invalidListener"));
       });
   });
 
   describe("Events", function () {
-    var frag, child, event;
+    var frag:RestorableElement, child:Element, event:CustomEvent;
 
     beforeEach(function () {
       frag = fixture(test1Html);
-      child = frag.querySelector("#child");
+      child = frag.querySelector("#child") as RestorableElement;
       event = new CustomEvent('event-to-trigger', { bubbles: true, composed: true });      
     });
 
@@ -80,31 +100,32 @@ describe.skip("EventMap", function () {
 
     it("handles an event", function () {
       child.dispatchEvent(event);
-      expect(window.firedEvents._toTrigger).to.be.equal("triggered");
+      expect(__firedEvents._toTrigger).toBe("triggered");
     });
 
     it("detaches the event", function () {
       frag.restore();
       child.dispatchEvent(event);
-      expect(window.firedEvents._toTrigger).to.be.equal();
+      expect(__firedEvents._toTrigger).toBeUndefined();
     });
 
     it("stops event propagation", function () {
-      let listener = (event) => {
+      let listener = () => {
           throw new Error("IT BUBBLED");
       };
 
       window.addEventListener("event-to-trigger", listener);
-      expect(() => child.dispatchEvent(event)).to.not.throw();
+      expect(() => child.dispatchEvent(event)).not.toThrow();
       window.removeEventListener("event-to-trigger", listener);
     });
   });
 
   describe("Events at parent", function () {
-    var frag, event;
+    var frag:RestorableElement, child:Element, event:CustomEvent;
 
     beforeEach(function () {
       frag = fixture(test1Html);
+      child = frag.querySelector("#child") as Element;
       event = new CustomEvent('event-to-test-parent', { bubbles: true, composed: true });
     });
 
@@ -114,28 +135,28 @@ describe.skip("EventMap", function () {
 
     it("handles an event", function () {
       frag.dispatchEvent(event);
-      expect(window.firedEvents._toTrigger).to.be.equal("triggeredOnParent");
+      expect(__firedEvents._toTrigger).toBe("triggeredOnParent");
     });
 
     it("detaches the event", function () {
       frag.remove();
       frag.dispatchEvent(event);
-      expect(window.firedEvents._toTrigger).to.be.equal();
+      expect(__firedEvents._toTrigger).toBeUndefined();
     });
 
     it("stops event propagation", function () {
-      let listener = (event) => {
+      let listener = () => {
           throw new Error("IT BUBBLED");
       };
 
       window.addEventListener("event-to-test-parent", listener);
-      expect(() => child.dispatchEvent(event)).to.not.throw();
+      expect(() => child.dispatchEvent(event)).not.toThrow();
       window.removeEventListener("event-to-test-parent", listener);
     });
   });
 
   describe("Events at window", function () {
-    var frag, event;
+    var frag:RestorableElement, event:CustomEvent;
 
     beforeEach(function () {
       frag = fixture(test1Html);
@@ -148,18 +169,18 @@ describe.skip("EventMap", function () {
 
     it("handles an event", function () {
       frag.dispatchEvent(event);
-      expect(window.firedEvents._toTrigger).to.be.equal("triggeredOnWindow");
+      expect(__firedEvents._toTrigger).toBe("triggeredOnWindow");
     });
 
     it("detaches the event", function () {
       frag.restore();
       frag.dispatchEvent(event);
-      expect(window.firedEvents._toTrigger).to.be.equal();
+      expect(__firedEvents._toTrigger).toBeUndefined();
     });
   });
 
   describe("Mixed in events", () => {
-    let el = null;
+    let el:RestorableElement;
 
     beforeEach(() => {
       el = fixture(html`<element-with-mixed-in-events></element-with-mixed-in-events>`);
@@ -171,22 +192,22 @@ describe.skip("EventMap", function () {
 
     it("handles the mixed in event", () => {
       el.dispatchEvent(new CustomEvent("mixed-in-event"));
-      expect(window.firedEvents._mixedInEvent).to.be.equal(true);
+      expect(__firedEvents._mixedInEvent).toBe(true);
     });
 
     it("handles a stomped event", () => {
       el.dispatchEvent(new CustomEvent("stomped-event"));
-      expect(window.firedEvents._stompedEvent).to.be.equal(true);
+      expect(__firedEvents._stompedEvent).toBe(true);
     });
 
     it("handles a normal event", () => {
       el.dispatchEvent(new CustomEvent("normal-event"));
-      expect(window.firedEvents._normalEvent).to.be.equal(true);
+      expect(__firedEvents._normalEvent).toBe(true);
     });
   });
 
   describe("eventsListenAt", () => {
-    let frag;
+    let frag:RestorableElement;
 
     beforeEach(() => {
       frag = fixture(defaultListenAtHtml);
@@ -199,12 +220,12 @@ describe.skip("EventMap", function () {
     it("changes the defualt listenAt:to window", () => {
       frag = frag;
       window.dispatchEvent(new CustomEvent("trigger-on-default", { bubbles: true, composed: true }));
-      expect(window.firedEvents._triggerOnDefault).to.be.equal(true);
+      expect(__firedEvents._triggerOnDefault).toBe(true);
     });
 
     it("still respects listenAt:on parent", () => {
       frag.dispatchEvent(new CustomEvent("trigger-on-listen-at", { bubbles: true }));
-      expect(window.firedEvents._triggerOnListenAt).to.be.equal(true);
+      expect(__firedEvents._triggerOnListenAt).toBe(true);
     });
   });
 
@@ -213,7 +234,7 @@ describe.skip("EventMap", function () {
       it("can be used on the class in place of the static eventsListenAtProperty", () => {
         const el = fixture(html`<events-listen-at-descriptor></events-listen-at-descriptor>`);
         window.dispatchEvent(new CustomEvent("trigger-on-default", { bubbles: true, composed: true }));
-        expect(window.firedEvents._triggerOnDefault).to.be.equal(true);
+        expect(__firedEvents._triggerOnDefault).toBe(true);
         el.restore();
       });
     });
@@ -222,46 +243,70 @@ describe.skip("EventMap", function () {
       it("can be used on a method to define an event handler", () => {
         const el = fixture(html`<event-descriptor></event-descriptor>`);
         window.dispatchEvent(new CustomEvent("trigger-on-default", { bubbles: true, composed: true }));
-        expect(window.firedEvents._triggerOnDefault).to.be.equal(true);
+        expect(__firedEvents._triggerOnDefault).toBe(true);
         el.restore();
       });
       
       it("can be used on a method to define an event handler and change the listenAt", () => {
         const el = fixture(html`<event-descriptor></event-descriptor>`);
         el.dispatchEvent(new CustomEvent("trigger-on-listen-at", { bubbles: true, composed: true }));
-        expect(window.firedEvents._triggerOnListenAt).to.be.equal(true);
+        expect(__firedEvents._triggerOnListenAt).toBe(true);
         el.restore();
       });
+    });
+
+    describe("Middleware", () => {
+      it("can apply middleware", () => {
+        __firedEvents = {};
+        EventMap.applyMiddleware((handlerInfo:EventMapHandlerInfo) => (next:Function) => () => {
+          expect(handlerInfo.eventName).toBe("event-to-trigger");
+          expect(handlerInfo.constructorName).toBe("EventMapTest1");
+          expect(handlerInfo.eventHandlerName).toBe("_toTrigger");
+          next();
+        });
+  
+        const frag = fixture(test1Html);
+        const child = frag.querySelector("#child") as RestorableElement;
+        const event = new CustomEvent('event-to-trigger', { bubbles: true, composed: true });      
+        expect(__firedEvents._toTrigger).toBeUndefined();
+        child.dispatchEvent(event);
+        expect(__firedEvents._toTrigger).toBe("triggered");
+        frag.restore();
+        __firedEvents = {};
+        EventMap.clearMiddleware();
+      });   
     });
   });
 
 
   describe("multiple handlers", () => {
 
+    beforeEach(function () {
+      __firedEvents = {};
+    });
+
     it("handles both event types", () => {
+      __firedEvents.handler1Count = 0;
       const el = fixture(html`<event-map-multiple-handlers></event-map-multiple-handlers>`);
-      const spy = sinon.spy(el, "handler1");
       el.dispatchEvent(new CustomEvent("handle-first-event"));
-      expect(spy.callCount).to.be.equal(1);
+      expect(__firedEvents.handler1Count).toBe(1);
       el.dispatchEvent(new CustomEvent("handle-second-event"));
-      expect(spy.callCount).to.be.equal(2);
+      expect(__firedEvents.handler1Count).toBe(2);
       el.restore();
-      spy.restore();
     });
 
     it("removes both handlers", () => {
       const el = fixture(html`<event-map-multiple-handlers></event-map-multiple-handlers>`);
-      const spy = sinon.spy(el, "handler1");
+      __firedEvents.handler1Count = 0;
       el.dispatchEvent(new CustomEvent("handle-first-event"));
-      expect(spy.callCount).to.be.equal(1);
+      expect(__firedEvents.handler1Count).toBe(1);
       el.dispatchEvent(new CustomEvent("handle-second-event"));
-      expect(spy.callCount).to.be.equal(2);
+      expect(__firedEvents.handler1Count).toBe(2);
       el.restore();
       el.dispatchEvent(new CustomEvent("handle-first-event"));
-      expect(spy.callCount).to.be.equal(2);
+      expect(__firedEvents.handler1Count).toBe(2);
       el.dispatchEvent(new CustomEvent("handle-second-event"));
-      expect(spy.callCount).to.be.equal(2);
-      spy.restore();
+      expect(__firedEvents.handler1Count).toBe(2);
     });
   });
 });
@@ -283,13 +328,13 @@ class EventMapTest1 extends EventMap(HTMLElement) {
     }
   };
   _toTrigger() {
-      window.firedEvents._toTrigger = "triggered";
+      __firedEvents._toTrigger = "triggered";
   }
   _toTestParent() {
-      window.firedEvents._toTrigger = "triggeredOnParent";
+      __firedEvents._toTrigger = "triggeredOnParent";
   }
   _toTestWindow() {
-      window.firedEvents._toTrigger = "triggeredOnWindow";
+      __firedEvents._toTrigger = "triggeredOnWindow";
   }
 }
 customElements.define("event-map-test-1", EventMapTest1);
@@ -333,7 +378,7 @@ customElements.define("child-element", ChildElement);
 /**
  * A mixin to test mixed in events.
  */
-let MixedInEvents = (superclass) => class extends EventMap(superclass) {
+let MixedInEvents = (superclass:any) => class extends EventMap(superclass) {
   static events = {
     "stomped-event": "_stompedEvent",
     "mixed-in-event": "_mixedInEvent"
@@ -342,25 +387,27 @@ let MixedInEvents = (superclass) => class extends EventMap(superclass) {
       throw new Error("This handler should not be called");
   }
   _mixedInEvent() {
-      window.firedEvents._mixedInEvent = true;
+      __firedEvents._mixedInEvent = true;
   }
 };
 
 /**
  * A class to test mixed in events
  */
+/**@ts-ignore TS2417 */
 class ElementWithMixedInEvents extends MixedInEvents(HTMLElement) {
   static events = {
     "stomped-event": "_stompedEvent",
     "normal-event": "_normalEvent"
   };
   _stompedEvent() {
-      window.firedEvents._stompedEvent = true;
+      __firedEvents._stompedEvent = true;
   }
   _normalEvent() {
-      window.firedEvents._normalEvent = true;
+      __firedEvents._normalEvent = true;
   }
 }
+/** @ts-ignore TS2345 */
 customElements.define("element-with-mixed-in-events", ElementWithMixedInEvents);
 
 /**
@@ -377,10 +424,10 @@ class DefaultListenAt extends EventMap(HTMLElement) {
       }
   };
   _triggerOnDefault() {
-      window.firedEvents._triggerOnDefault = true;
+      __firedEvents._triggerOnDefault = true;
   }
   _triggerOnListenAt() {
-      window.firedEvents._triggerOnListenAt = true;
+      __firedEvents._triggerOnListenAt = true;
   }
 }
 customElements.define("default-listen-at", DefaultListenAt);
@@ -392,7 +439,7 @@ class EventsListenAtDescriptor extends EventMap(HTMLElement) {
       "trigger-on-default": "_triggerOnDefault",
   };
   _triggerOnDefault() {
-      window.firedEvents._triggerOnDefault = true;
+      __firedEvents._triggerOnDefault = true;
   }
 }
 customElements.define("events-listen-at-descriptor", EventsListenAtDescriptor);
@@ -403,12 +450,12 @@ class EventDescriptor extends EventMap(HTMLElement) {
 
   @event("trigger-on-default")
   _triggerOnDefault() {
-      window.firedEvents._triggerOnDefault = true;
+      __firedEvents._triggerOnDefault = true;
   }
 
   @event("trigger-on-listen-at", {listenAt: "parent"})
   _triggerOnListenAt() {
-    window.firedEvents._triggerOnListenAt = true;
+    __firedEvents._triggerOnListenAt = true;
   }
 }
 customElements.define("event-descriptor", EventDescriptor);
@@ -418,8 +465,8 @@ customElements.define("event-descriptor", EventDescriptor);
 class MultipleHandlers extends EventMap(HTMLElement) {
   @event("handle-first-event")
   @event("handle-second-event")
-  handler1(event) {
-
+  handler1() {
+    __firedEvents.handler1Count++;
   }
 }
 customElements.define("event-map-multiple-handlers", MultipleHandlers);

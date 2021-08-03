@@ -7,17 +7,11 @@
   "main": "linkProp.js",
   "types": "linkProp.d.ts",
   "scripts": {
-    "test": "jest",
-    "test:coverage": "jest --coverage",
     "build": "tsc --build",
     "clean": "tsc --build --clean"
   },
   "devDependencies": {
     "lit-html": "^1.4.1"
-  },
-  "jest": {
-    "preset": "ts-jest",
-    "testEnvironment": "jsdom"
   }
 }
 
