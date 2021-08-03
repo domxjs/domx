@@ -63,8 +63,9 @@ class MyCass extends EventMap(HTMLElement) {
 ```
 
 ## Logging and Middleware
-`EventMap` supports adding middleware to add custom behaviors. You can also use `applyEventMapLogging` which 
-applies middleware which logs information to the console.
+`EventMap` supports adding middleware to add custom behaviors.
+You can also use the `applyEventMapLogging` method to log
+event  information to the console.
 
 **Add Logging**
 ```js

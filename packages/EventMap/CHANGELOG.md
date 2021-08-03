@@ -5,9 +5,14 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
 
-## [Unreleased]
-- Converting to TypeScript
-- Updating tests
+## [0.3.0] - 2021-08-02
+### Added
+- Middleware
+- Logging by middleware
+### Changed
+- Converted to TypeScript
+### Removed
+- Logging by default
 
 
 ## [0.2.0] - 2019-06-26
