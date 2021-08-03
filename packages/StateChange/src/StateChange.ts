@@ -1,5 +1,5 @@
-import { compose } from "@harbor/functional/lib/compose";
-import { Logger } from "@harbor/Middleware/Logger";
+import { Logger } from "@harbor/Middleware";
+import { Middleware } from "@harbor/Middleware";
 export { StateChange };
 
 
@@ -15,6 +15,8 @@ interface StateChangeMetaData extends StateChangeOptions {
 }
 
 const metaKey = Symbol();
+const nextMiddleware = new Middleware();
+const tapMiddleware = new Middleware();
 
 /**
  * A monad like class that promotes functional style
@@ -46,12 +48,26 @@ class StateChange {
   /** Returns the current state */
   static getState = (stateChange: StateChange) => stateChange.getState();
 
+
+  static applyNextMiddleware(fn:Function) {
+    nextMiddleware.use(fn);
+  }
+
+  static applyTapMiddleware(fn:Function) {
+    tapMiddleware.use(fn);
+  }
+
+  static clearMiddleware() {
+    nextMiddleware.clear();
+    tapMiddleware.clear();
+  }
+
   /**
    * Creates a new StateChange object.
    * @param {HTMLElement} el the data HTML element
    * @param {StateChangeOptions} options additional options
    */
-  constructor(el, options = {
+  constructor(el: HTMLElement, options = {
       prop: "state",
       changeEventName: "state-changed"
     }) {
@@ -83,8 +99,8 @@ class StateChange {
    */
   next(fn: Function) {
     const {el, prop} = this.meta;
-    //@ts-ignore TS7503 - setting a dynamic property
-    el[prop] = composeMixinsWith(this, fn)(this.getState());
+    //@ts-ignore TS7503 - setting a dynamic property    
+    el[prop] = nextMiddleware.mapThenExecute(this, fn, [this.getState()]);
     return this.continue();
   }
 
@@ -94,7 +110,7 @@ class StateChange {
    * @returns {StateChange}
    */
   tap(fn: Function) {
-    composeMixinsWith(this, fn)(this);
+    tapMiddleware.execute(fn, [this]);
     return this.continue();
   }
 
@@ -104,7 +120,7 @@ class StateChange {
    * @returns {StateChange}
    */
   pipeNext(...fns: Array<Function>) {
-    return fns.reduce((v, f) => v.next(f), this);
+    return fns.reduce((v:StateChange, f) => v.next(f), this);
   }
 
   /**
@@ -113,7 +129,7 @@ class StateChange {
    * @returns {StateChange}
    */
   pipeTap(...fns: Array<Function>) {
-    return fns.reduce((v, f) => v.tap(f), this);
+    return fns.reduce((v:StateChange, f) => v.tap(f), this);
   }
 
   /**
@@ -156,43 +172,3 @@ class StateChange {
   }
 }
 
-
-
-
-const composeMixinsWith = (stateChange, fn) => {
-  const mixins = stateChangeMixins.map(m => m(stateChange));
-  return compose(...mixins)(fn);
-};
-
-/**
- * Adds logging.
- * @param {StateChange} stateChange
- */
-const insertLogger = stateChange => next => stateOrStateChange => {
-  const fnName = next.name || "anonymous";
-  const {el} = stateChange.meta;
-  const isTap = stateOrStateChange instanceof StateChange;
-  isTap ?
-    Logger.log(el, "group", `> STATECHANGE.tap: ${el.constructor.name}.${fnName}()`) :
-    Logger.log(el, "groupCollapsed", `> STATECHANGE.next: ${el.constructor.name}.${fnName}()`);
-  const result = next(stateOrStateChange);
-  !isTap && Logger.log(el, "info", `> STATECHANGE next state:`, result);
-  Logger.log(el, "groupEnd");
-  return result
-};
-
-/**
- * Logs errors.
- * @param {StateChange} stateChange
- */
-const errorCatcher = stateChange => next => stateOrStateChange => {
-  try {
-    return next(stateOrStateChange);
-  } catch (error) {
-    const {el} = stateChange.meta;
-    Logger.log(el, "error", "PIPESTATE error!", error);
-    throw (error);
-  }
-};
-
-const stateChangeMixins = [errorCatcher, insertLogger];

@@ -6,7 +6,6 @@
   "main": "StateChange.js",
   "types": "StateChange.d.ts",
   "dependencies": {
-    "@harbor/functional": "0.2.0",
     "@harbor/middleware": "0.2.2"
   },
   "scripts": {

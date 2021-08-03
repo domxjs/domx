@@ -1,2 +1,4 @@
 /StateChange.*
 /applyRdtLogging.*
+/applyConsoleLogging.*
+/applyErrorCatching.*
