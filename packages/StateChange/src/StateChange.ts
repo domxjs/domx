@@ -29,7 +29,7 @@ class StateChange {
    * @param options {StateChangeOptions} Additional options
    * @returns {StateChange}
    */
-  static of(el: HTMLElement, options: StateChangeOptions) {
+  static of(el: HTMLElement, options?: StateChangeOptions) {
     return new StateChange(el, options);
   }
 
