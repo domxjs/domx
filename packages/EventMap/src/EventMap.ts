@@ -67,7 +67,7 @@ interface ProcessedEventMapDefinitionItem  {
  */
 interface EventMapHandlerInfo {
   /** The class that is mixed in */
-  class: HTMLElement,
+  element: HTMLElement,
   listenAt: EventMapListenAt,
   eventName: string,
   constructorName: string,
@@ -129,7 +129,6 @@ const middleware = new Middleware();
 
     _bindEvents() { 
       this.__eventMapHandlers = {};
-      const constructorName = this.constructor.name;
       const events = getAllEvents(this.constructor);     
       if (!events) {
         return;
@@ -140,48 +139,20 @@ const middleware = new Middleware();
 
         // @ts-ignore TS2538 dynamic access of method
         const eventHandler = this[detail.handler] as Function;
-
         if (!eventHandler) {
           throw new Error(`EventMap method does not exist: ${detail.handler}`);
         }
 
-        const listenAt = ((detail.listenAt) === EventMapListenAt.Window
-            ? window 
-            : (detail.listenAt) === EventMapListenAt.Parent
-                ? this.parentNode 
-                : (!detail.listenAt || detail.listenAt === EventMapListenAt.Self) 
-                    ? this 
-                    : null);
-
+        const listenAt = getListenAt({listenAt: detail.listenAt, element: this});
         if (!listenAt) {
-          throw new Error(`EventMap could not set up a listener at ${detail.listenAt}`); // jch! add test
+          throw new Error(`EventMap could not set up a listener at ${detail.listenAt}`);
         }
 
-        // The handler logs the event, stops propagation, and calls the assigned event handler
-        const handler: EventListener = (event: Event) => {
-          const listenAtName = listenAt.constructor.name === "ShadowRoot" ?
-            // @ts-ignore TS2339 - provided check for ShadowRoot
-            listenAt.host.constructor.name : listenAt.constructor.name;
-          
-          const handlerInfo : EventMapHandlerInfo = {
-            class: this,
-            listenAt: listenAtName,
-            eventName: key,
-            constructorName,
-            eventHandlerName: eventHandler.name,
-            // @ts-ignore TS2339 EventListener only takes Event and not CustomEvent
-            eventDetail: event.detail
-          };
-
-          middleware.mapThenExecute(handlerInfo, () => {
-            event.stopPropagation();
-            eventHandler.call(this, event);
-          }, [event, eventHandler]);
-        };
+        const handler = getHandler({listenAt, element: this, eventName:key, eventHandler});
 
         /* @ts-ignore TS2488 setting dynamic property */
         this.__eventMapHandlers[key] = {
-          listenAt: listenAt,
+          listenAt,
           handler: handler
         };
 
@@ -208,6 +179,7 @@ const middleware = new Middleware();
 EventMap.applyMiddleware = (fn: Function) => {
   middleware.use(fn);
 };
+
 
 /**
  * Removes all middleware associated with
@@ -246,19 +218,73 @@ const getAllEvents = (ctor: EventMapMixin): ProcessedEventMapDefinition | null =
 };
 
 
+interface ListenAtInfo {
+  listenAt: EventMapListenAt | Node | Window,
+  element: HTMLElement,
+}
+
+/**
+ * Returns the node to attach the event listener to.
+ * @param listenAtInfo {ListenAtInfo}
+ * @returns {Window|Node}
+ */
+const getListenAt = ({listenAt, element}:ListenAtInfo) => listenAt === EventMapListenAt.Window
+    ? window 
+    : listenAt === EventMapListenAt.Parent
+        ? element.parentNode 
+        : (!listenAt || listenAt === EventMapListenAt.Self) 
+            ? element 
+            : null;
+
+
+interface HandlerInfo extends ListenAtInfo {
+  eventName: string,
+  eventHandler: Function
+}
+
+/**
+ * The handler logs the event, stops propagation, and calls the assigned event handler
+ * @param handlerInfo {HandlerInfo}
+ * @returns EventListener
+ */
+const getHandler = ({listenAt, element, eventName, eventHandler}:HandlerInfo):EventListener => {
+  const handler: EventListener = (event: Event) => {
+    const listenAtName = listenAt.constructor.name === "ShadowRoot" ?
+      // @ts-ignore TS2339 - provided check for ShadowRoot
+      listenAt.host.constructor.name : listenAt.constructor.name;
+    
+    const handlerInfo : EventMapHandlerInfo = {
+      element,
+      listenAt: listenAtName,
+      eventName,
+      constructorName: element.constructor.name,
+      eventHandlerName: eventHandler.name,
+      // @ts-ignore TS2339 EventListener only takes Event and not CustomEvent
+      eventDetail: event.detail
+    };
+
+    middleware.mapThenExecute(handlerInfo, () => {
+      event.stopPropagation();
+      eventHandler.call(this, event);
+    }, [event, eventHandler]);
+  };
+
+  return handler;
+}
+
+
 /**
  * A method decorator to define an event handler.
  * @param {String} eventName 
  * @param {EventMapListenAt?} options an object to define the listenAt property
  */
-const event = (eventName: string, {listenAt}:{listenAt?:EventMapListenAt|string} = {}) => {
-  return (prototype: any, handler: string) => {
+const event = (eventName: string, {listenAt}:{listenAt?:EventMapListenAt|string} = {}) =>
+  (prototype: any, handler: string) => {
     const {events = {}} = prototype.constructor;
     listenAt ? events[eventName] = { listenAt, handler} :
       events[eventName] = handler;
     prototype.constructor.events = events;
   };
-};
 
 
 /**
@@ -266,8 +292,7 @@ const event = (eventName: string, {listenAt}:{listenAt?:EventMapListenAt|string}
  * eventsListenAt static property.
  * @param {EventMapListenAt} listenAt
  */
-const eventsListenAt = (listenAt: EventMapListenAt | string) => {
-  return (ctor: EventMapMixin) => {
+const eventsListenAt = (listenAt: EventMapListenAt | string) =>
+  (ctor: EventMapMixin) => {
     ctor.eventsListenAt = listenAt as EventMapListenAt;
   };
-};
