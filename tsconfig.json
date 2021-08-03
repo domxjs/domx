@@ -27,6 +27,7 @@
   "references": [
     { "path": "./packages/functional" },
     { "path": "./packages/Middleware" },
-    { "path": "./packages/linkProp" }
+    { "path": "./packages/linkProp" },
+    { "path": "./packages/EventMap" }
   ]
 }
