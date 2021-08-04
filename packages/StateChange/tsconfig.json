@@ -1,0 +1,17 @@
+{
+  // @harbor/eventmap
+  "composite": true,
+  "extends": "../../tsconfig.json",
+  "compilerOptions": {    
+    "tsBuildInfoFile": "./tsconfig.StateChange.tsbuildinfo",
+    "outDir": "./",
+    "rootDir": "src"    
+  },
+  "include": [
+    "src/**/*"
+  ],
+  "exclude": [
+    "src/test/**/*"
+  ],
+  "references": [{ "path": "../Middleware" }]
+}

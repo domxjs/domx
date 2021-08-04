@@ -1,5 +1,5 @@
 import { describe, it, expect } from "@jest/globals";
-import {Middleware} from "./Middleware";
+import {Middleware} from "../Middleware";
 
 
 describe("Middleware", () => {
@@ -80,5 +80,12 @@ describe("Middleware", () => {
         const testMw = new TestMiddleware();
         const ret = testMw.logTest();
         expect(ret).toBe("it did work !");
-    })
+    });
+
+    it("can clear middleware", () => {
+        const mw = new Middleware();
+        expect(mw.clear).not.toBeNull();
+        mw.use(() => {});
+        expect(() => mw.clear()).not.toThrow();
+    });
 });

@@ -1,16 +1,17 @@
 {
-  "name": "@harbor/middleware",
+  "name": "@harbor/linkprop",
   "type": "module",
-  "version": "0.2.2",
+  "version": "0.2.0",
   "license": "MIT",
   "author": "John Horback",
-  "main": "index.js",
-  "types": "index.d.ts",
+  "main": "linkProp.js",
+  "types": "linkProp.d.ts",
   "scripts": {
     "build": "tsc --build",
     "clean": "tsc --build --clean"
   },
-  "dependencies": {
-    "@harbor/functional": "0.2.0"
+  "devDependencies": {
+    "lit-html": "1.4.1"
   }
 }
+

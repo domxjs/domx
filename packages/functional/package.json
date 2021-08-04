@@ -1,13 +1,13 @@
 {
   "name": "@harbor/functional",
+  "type": "module",
   "version": "0.2.0",
   "license": "MIT",
   "author": "John Horback",
   "main": "index.js",
+  "types": "index.d.ts",
   "scripts": {
-    "test": "jest"
-  },
-  "jest": {
-    "preset": "ts-jest"
+    "build": "tsc",
+    "clean": "tsc --build --clean"
   }
 }

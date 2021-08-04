@@ -49,8 +49,7 @@ class Logger {
       return;
     }
     
-    // @ts-ignore spreading args to console method
-    console[logLevel](...args);
+    (<Function>console[logLevel])(...args);
   }
 }
 

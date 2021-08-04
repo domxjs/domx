@@ -10,6 +10,8 @@ branches:
   - packages/functional
   - packages/EventMap
   - packages/Middleware
+  - packages/linkProp
+  - packages/StateChange
 cache:
   directories:
   - node_modules
@@ -22,7 +24,7 @@ matrix:
   include:
   - name: harbor/utils
     env: PACKAGE_LOCATION=.
-    if: branc = master
+    if: branch = master
   - name: functional
     env: PACKAGE_LOCATION=packages/functional
     if: branch = packages/functional
@@ -32,7 +34,14 @@ matrix:
   - name: Logger
     env: PACKAGE_LOCATION=packages/Middleware
     if: branch = packages/Middleware
+  - name: linkProp
+    env: PACKAGE_LOCATION=packages/linkProp
+    if: branch = packages/linkProp
+  - name: StateChange
+    env: PACKAGE_LOCATION=packages/StateChange
+    if: branch = packages/StateChange
 
 script:
-  - cd $PACKAGE_LOCATION
-  - npm run test
+  - npm run clean
+  - npm run build
+  - npm run test $PACKAGE_LOCATION

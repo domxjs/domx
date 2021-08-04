@@ -1,6 +1,5 @@
-import { compose } from "../functional/compose";
-import { Logger } from "../../src/Logger/Logger";
-export { StateChange };
+import { Middleware } from "@harbor/middleware";
+export { StateChange, StateChangeMetaData };
 
 
 interface StateChangeOptions {
@@ -14,7 +13,8 @@ interface StateChangeMetaData extends StateChangeOptions {
   el: HTMLElement
 }
 
-const metaKey = Symbol();
+const nextMiddleware = new Middleware();
+const tapMiddleware = new Middleware();
 
 /**
  * A monad like class that promotes functional style
@@ -27,7 +27,7 @@ class StateChange {
    * @param options {StateChangeOptions} Additional options
    * @returns {StateChange}
    */
-  static of(el: HTMLElement, options: StateChangeOptions) {
+  static of(el: HTMLElement, options?: StateChangeOptions) {
     return new StateChange(el, options);
   }
 
@@ -46,24 +46,38 @@ class StateChange {
   /** Returns the current state */
   static getState = (stateChange: StateChange) => stateChange.getState();
 
+
+  static applyNextMiddleware(fn:Function) {
+    nextMiddleware.use(fn);
+  }
+
+  static applyTapMiddleware(fn:Function) {
+    tapMiddleware.use(fn);
+  }
+
+  static clearMiddleware() {
+    nextMiddleware.clear();
+    tapMiddleware.clear();
+  }
+
   /**
    * Creates a new StateChange object.
    * @param {HTMLElement} el the data HTML element
    * @param {StateChangeOptions} options additional options
    */
-  constructor(el, options = {
+  constructor(el: HTMLElement, options = {
       prop: "state",
       changeEventName: "state-changed"
     }) {
     const { prop, changeEventName} = options;
-    this[metaKey] = {
+    this.metaData = {
       el,
       prop,
       changeEventName
     };
   }
 
-  [metaKey]: StateChangeMetaData;
+  private metaData: StateChangeMetaData;
 
   /**
    * Returns a snapshot of the elements state property.
@@ -83,8 +97,8 @@ class StateChange {
    */
   next(fn: Function) {
     const {el, prop} = this.meta;
-    //@ts-ignore TS7503 - setting a dynamic property
-    el[prop] = composeMixinsWith(this, fn)(this.getState());
+    //@ts-ignore TS7503 - setting a dynamic property    
+    el[prop] = nextMiddleware.mapThenExecute(this, fn, [this.getState()]);
     return this.continue();
   }
 
@@ -94,7 +108,7 @@ class StateChange {
    * @returns {StateChange}
    */
   tap(fn: Function) {
-    composeMixinsWith(this, fn)(this);
+    tapMiddleware.execute(fn, [this]);
     return this.continue();
   }
 
@@ -104,7 +118,7 @@ class StateChange {
    * @returns {StateChange}
    */
   pipeNext(...fns: Array<Function>) {
-    return fns.reduce((v, f) => v.next(f), this);
+    return fns.reduce((v:StateChange, f) => v.next(f), this);
   }
 
   /**
@@ -113,7 +127,7 @@ class StateChange {
    * @returns {StateChange}
    */
   pipeTap(...fns: Array<Function>) {
-    return fns.reduce((v, f) => v.tap(f), this);
+    return fns.reduce((v:StateChange, f) => v.tap(f), this);
   }
 
   /**
@@ -152,47 +166,7 @@ class StateChange {
    * @returns {StateChangeMetaData}
    */
   get meta(): StateChangeMetaData {
-    return this[metaKey];
+    return this.metaData;
   }
 }
 
-
-
-
-const composeMixinsWith = (stateChange, fn) => {
-  const mixins = stateChangeMixins.map(m => m(stateChange));
-  return compose(...mixins)(fn);
-};
-
-/**
- * Adds logging.
- * @param {StateChange} stateChange
- */
-const insertLogger = stateChange => next => stateOrStateChange => {
-  const fnName = next.name || "anonymous";
-  const {el} = stateChange.meta;
-  const isTap = stateOrStateChange instanceof StateChange;
-  isTap ?
-    Logger.log(el, "group", `> STATECHANGE.tap: ${el.constructor.name}.${fnName}()`) :
-    Logger.log(el, "groupCollapsed", `> STATECHANGE.next: ${el.constructor.name}.${fnName}()`);
-  const result = next(stateOrStateChange);
-  !isTap && Logger.log(el, "info", `> STATECHANGE next state:`, result);
-  Logger.log(el, "groupEnd");
-  return result
-};
-
-/**
- * Logs errors.
- * @param {StateChange} stateChange
- */
-const errorCatcher = stateChange => next => stateOrStateChange => {
-  try {
-    return next(stateOrStateChange);
-  } catch (error) {
-    const {el} = stateChange.meta;
-    Logger.log(el, "error", "PIPESTATE error!", error);
-    throw (error);
-  }
-};
-
-const stateChangeMixins = [errorCatcher, insertLogger];

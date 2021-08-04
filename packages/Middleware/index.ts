@@ -5,4 +5,4 @@ export {
 
 export {
   Middleware
-} from "./Middleware";
+} from "./src/Middleware";

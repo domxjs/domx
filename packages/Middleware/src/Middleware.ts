@@ -1,4 +1,4 @@
-import { compose } from "@harbor/functional/compose";
+import { compose } from "@harbor/functional/lib/compose";
 export { Middleware }
 
 
@@ -14,6 +14,13 @@ class Middleware {
      */
     use(next: Function) {
         this.stack.push(next);
+    }
+
+    /**
+     * Removes all middleware methods from the stack.
+     */
+    clear() {
+        this.stack = [];
     }
 
     /**

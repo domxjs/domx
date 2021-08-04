@@ -1,0 +1,17 @@
+{
+  // @harbor/middleware
+  "composite": true,
+  "extends": "../../tsconfig.json",  
+  "compilerOptions": {
+    "tsBuildInfoFile": "./tsconfig.Middleware.tsbuildinfo",
+    "outDir": "./",
+    "rootDir": "./src",
+  },
+  "include": [
+    "./src/**/*"
+  ],
+  "exclude": [
+    "./src/**/*.spec.ts"
+  ],
+  "references": [{ "path": "../functional" }]
+}

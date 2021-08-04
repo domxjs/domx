@@ -1,5 +1,5 @@
 import { describe, it, expect, jest } from "@jest/globals";
-import {Logger, loggerConfig } from "./Logger";
+import {Logger, loggerConfig } from "../Logger";
 
 
 @loggerConfig({
@@ -8,6 +8,9 @@ import {Logger, loggerConfig } from "./Logger";
 class TestLogger extends HTMLElement{
     testLog() {
         Logger.log(this, "debug", "log from test logger");
+    }
+    testGroupEnd() {
+        Logger.log(this, "groupEnd");
     }
 }
 customElements.define("test-logger", TestLogger);
@@ -47,16 +50,27 @@ describe("Logger", () => {
             testLogger.testLog();
             expect(spy).toHaveBeenCalledTimes(1);
             expect(spy).toHaveBeenCalledWith("log from test logger");
-            spy.mockRestore();
-    
+            spy.mockRestore();    
         });
     
-        it("does not log if level does not match", () => {
+        it("logs only on configured level if level does not match", () => {
+            const debugSpy = jest.spyOn(console, "debug").mockImplementation(() => {});
             const spy = jest.spyOn(console, "log").mockImplementation(() => {});
             const testLogger = new TestLogger();
             testLogger.testLog();
             expect(spy).toHaveBeenCalledTimes(0);
+            expect(debugSpy).toHaveBeenCalledTimes(1);
+            expect(debugSpy).toHaveBeenCalledWith("log from test logger");
             spy.mockRestore();
+            debugSpy.mockRestore();
+        });
+
+        it("does not log if a config level is set and the log level is groupEnd", () => {
+            const debugSpy = jest.spyOn(console, "debug").mockImplementation(() => {});
+            const testLogger = new TestLogger();
+            testLogger.testGroupEnd();
+            expect(debugSpy).toHaveBeenCalledTimes(0);
+            debugSpy.mockRestore();
         });
     
         it("respects onlyThis", () => {
