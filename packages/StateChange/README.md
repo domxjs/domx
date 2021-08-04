@@ -167,8 +167,14 @@ StateChange.of(this, {
 `StateChange` exposes middleware to hook into both the `next` and
 the `tap` functions.
 
-There are also two functions available to apply logging and error handling middleware.
+There are also three functions available to apply logging and error handling middleware.
 
+### Redux Dev Tool Logging
+Logs next and tap calls to the Redux dev tools extension.
+```js
+import {applyRdtLogging} from "@harbor/StateChange/applyRdtLogging";
+applyRdtLogging();
+```
 ### Logging
 Logs next and tap calls with state snapshots.
 ```js
