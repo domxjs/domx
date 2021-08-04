@@ -5,7 +5,7 @@ A mono repo containing packages with common web application script utilities.
 
 ## Packages
 
-| Package   | Status   | Notes
+| Package   | Status   | Latest
 |:---       |:---      |:---
 | [EventMap](https://github.com/jhorback/harbor-utils/tree/master/packages/EventMap) | [![Build Status](https://travis-ci.com/jhorback/harbor-utils.svg?branch=packages/EventMap)](https://travis-ci.com/jhorback/harbor-utils) | 0.3.1 
 | [StateChange](https://github.com/jhorback/harbor-utils/tree/master/packages/StateChange) |[![Build Status](https://travis-ci.com/jhorback/harbor-utils.svg?branch=packages/StateChange)](https://travis-ci.com/jhorback/harbor-utils) | 0.2.0
