@@ -1,5 +1,5 @@
 import { Middleware } from "@harbor/middleware";
-export { StateChange };
+export { StateChange, StateChangeMetaData };
 
 
 interface StateChangeOptions {
