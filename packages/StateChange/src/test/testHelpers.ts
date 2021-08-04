@@ -28,7 +28,7 @@ interface FixtureElement extends HTMLElement {
   }
   
   
-  class TestStateChange extends HTMLElement {
+class TestStateChange extends HTMLElement {
     state = {
       foo: false,
       bar: false
@@ -81,8 +81,8 @@ interface FixtureElement extends HTMLElement {
           composed: true
         }));
     }
-  }
-  customElements.define("test-state-change", TestStateChange);
+}
+customElements.define("test-state-change", TestStateChange);
   
   
   

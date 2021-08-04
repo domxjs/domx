@@ -1,7 +1,7 @@
 # StateChange &middot; [![Build Status](https://travis-ci.com/jhorback/harbor-utils.svg?branch=packages/StateChange)](https://travis-ci.com/jhorback/harbor-utils)
 
 
-`StateChange` is an object that enables changing a property on an HTMLElement in a `functional` way.
+`StateChange` is a monad-like object that enables changing a property on an HTMLElement in a `functional` way.
 
 [Basic usage](#basic-usage) \
 [Configuration](#configuration) \
@@ -22,12 +22,9 @@ const defaultState = {
 and this HTMLElement
 
 ```js
-import { EventMap } from "@harbor/EventMap";
-
-class UserListElement extends EventMap(HTMLElement) {
+class UserListElement extends HTMLElement {
     state = defaultState
 }
-
 window.customElements.define("user-list", UserListElement);
 ```
 
@@ -84,7 +81,7 @@ class UserListElement extends HTMLElement {
 ### Async or branching functions
 
 #### Using `tap`
-When needing to do more than just setting the next state object, a `tap ` function can be used to perform any logic, branching, or asynchronous operations.
+When needing to do more than just setting the next state object, a `tap` function can be used to perform any logic, branching, or asynchronous operations.
 
 ```js
 import { EventMap, event } from "@harbor/EventMap";
@@ -170,8 +167,14 @@ StateChange.of(this, {
 `StateChange` exposes middleware to hook into both the `next` and
 the `tap` functions.
 
-There are also two functions available to apply logging and error handling middleware.
+There are also three functions available to apply logging and error handling middleware.
 
+### Redux Dev Tool Logging
+Logs next and tap calls to the Redux dev tools extension.
+```js
+import {applyRdtLogging} from "@harbor/StateChange/applyRdtLogging";
+applyRdtLogging();
+```
 ### Logging
 Logs next and tap calls with state snapshots.
 ```js
