@@ -11,6 +11,7 @@ branches:
   - packages/EventMap
   - packages/Middleware
   - packages/linkProp
+  - packages/StateChange
 cache:
   directories:
   - node_modules
