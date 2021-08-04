@@ -22,12 +22,9 @@ const defaultState = {
 and this HTMLElement
 
 ```js
-import { EventMap } from "@harbor/EventMap";
-
-class UserListElement extends EventMap(HTMLElement) {
+class UserListElement extends HTMLElement {
     state = defaultState
 }
-
 window.customElements.define("user-list", UserListElement);
 ```
 
@@ -84,7 +81,7 @@ class UserListElement extends HTMLElement {
 ### Async or branching functions
 
 #### Using `tap`
-When needing to do more than just setting the next state object, a `tap ` function can be used to perform any logic, branching, or asynchronous operations.
+When needing to do more than just setting the next state object, a `tap` function can be used to perform any logic, branching, or asynchronous operations.
 
 ```js
 import { EventMap, event } from "@harbor/EventMap";
