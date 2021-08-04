@@ -11,7 +11,7 @@ const applyConsoleLogging = () => {
         insertLogger(stateChange, next, state);
     });
 
-    StateChange.applyTapMiddleware((stateChange:StateChange)  => (next:Function) => (stateChange:StateChange) =>{
+    StateChange.applyTapMiddleware((next:Function) => (stateChange:StateChange) =>{
         insertLogger(stateChange, next, stateChange);
     });
 };

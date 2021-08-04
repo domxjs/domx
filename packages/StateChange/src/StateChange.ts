@@ -1,4 +1,3 @@
-import { Logger } from "@harbor/Middleware";
 import { Middleware } from "@harbor/Middleware";
 export { StateChange };
 
@@ -14,7 +13,6 @@ interface StateChangeMetaData extends StateChangeOptions {
   el: HTMLElement
 }
 
-const metaKey = Symbol();
 const nextMiddleware = new Middleware();
 const tapMiddleware = new Middleware();
 
@@ -72,14 +70,14 @@ class StateChange {
       changeEventName: "state-changed"
     }) {
     const { prop, changeEventName} = options;
-    this[metaKey] = {
+    this.metaData = {
       el,
       prop,
       changeEventName
     };
   }
 
-  [metaKey]: StateChangeMetaData;
+  private metaData: StateChangeMetaData;
 
   /**
    * Returns a snapshot of the elements state property.
@@ -168,7 +166,7 @@ class StateChange {
    * @returns {StateChangeMetaData}
    */
   get meta(): StateChangeMetaData {
-    return this[metaKey];
+    return this.metaData;
   }
 }
 

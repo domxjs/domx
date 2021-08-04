@@ -1,17 +1,17 @@
 import {StateChange} from "./StateChange";
 import {Logger} from "@harbor/middleware";
-export { applyConsoleLogging };
+export { applyErrorCatching };
 
 
 /**
  * Adds error catching middleware to StateChange.
  */
-const applyConsoleLogging = () => {
+const applyErrorCatching = () => {
     StateChange.applyNextMiddleware((stateChange:StateChange)  => (next:Function) => (state:any) =>{
         catchErrors(stateChange, next, state);
     });
 
-    StateChange.applyTapMiddleware((stateChange:StateChange)  => (next:Function) => (stateChange:StateChange) =>{
+    StateChange.applyTapMiddleware((next:Function) => (stateChange:StateChange) =>{
         catchErrors(stateChange, next, stateChange);
     });
 };
@@ -22,8 +22,8 @@ const catchErrors = (stateChange:StateChange, next:Function, stateOrStateChange:
         return next(stateOrStateChange);
     } catch (error) {
         const {el} = stateChange.meta;
-        Logger.log(el, "error", "PIPESTATE error!", error);
-        throw (error);
+        Logger.log(el, "error", "StateChange error!", error);
+        throw error;
     }
 };
   
