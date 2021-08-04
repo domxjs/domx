@@ -1,7 +1,7 @@
 {
   "name": "@harbor/utils",
   "type": "module",
-  "version": "0.4.0",
+  "version": "0.5.0",
   "license": "MIT",
   "author": "John Horback",
   "description": "A mono repo containing packages with common web application script utilities.",
