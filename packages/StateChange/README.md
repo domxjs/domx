@@ -1,11 +1,13 @@
-# StateChange
+# StateChange &middot; [![Build Status](https://travis-ci.com/jhorback/harbor-utils.svg?branch=packages/StateChange)](https://travis-ci.com/jhorback/harbor-utils)
 
-`StateChange` is an object that enables changing a property on an HTMLElement in a `functional` way.
+
+`StateChange` is a monad-like object that enables changing a property on an HTMLElement in a `functional` way.
 
 [Basic usage](#basic-usage) \
-[Jump to a full example](#full-example) \
-[Advanced usage](#advanced-usage) \
-[Logging and configuration](#logging-and-configuration)
+[Configuration](#configuration) \
+[Middleware (logging and error handling)](#middleware) \
+[Full example](#full-example) \
+[Advanced usage](#advanced-usage)
 
 
 ## Basic usage
@@ -20,20 +22,17 @@ const defaultState = {
 and this HTMLElement
 
 ```js
-import { EventMap, event } from '../../lib/EventMap/EventMap.js';
-
-class UserListElement extends EventMap(HTMLElement) {
+class UserListElement extends HTMLElement {
     state = defaultState
 }
-
 window.customElements.define("user-list", UserListElement);
 ```
 
 
 ### Changing state
 
-#### Creating a `StateChange` object `(lifting)`
-A StateChange object is created by passing it the HTMLElement containing the `state` property you want to manage. In functional programming, wrapping a value in a monad is called `lifting`. 
+#### Creating a `StateChange` object
+A StateChange object is created by passing it the HTMLElement containing the `state` property you want to manage. 
 
 ```js
 StateChange.of(el)
@@ -55,7 +54,7 @@ const setIsLoading = state => ({
 #### Setting the next state
 Changing the state can be done by calling  `next` on the `StateChange` instance.
 ```js
-class UserListElement {
+class UserListElement extends HTMLElement {
     //...
     setIsLoading() {
         StateChange.of(this)
@@ -67,7 +66,7 @@ class UserListElement {
 #### Notifying the change
 Then dispatch a `state-change` event by calling `dispatch` on the `StateChange` instance.
 ```js
-class UserListElement {
+class UserListElement extends HTMLElement {
     //...
     setIsLoading() {
         StateChange.of(this)
@@ -82,10 +81,12 @@ class UserListElement {
 ### Async or branching functions
 
 #### Using `tap`
-When needing to do more than just setting the next state object, a `tap ` function can be used to perform any logic, branching, or asynchronous operations.
+When needing to do more than just setting the next state object, a `tap` function can be used to perform any logic, branching, or asynchronous operations.
 
 ```js
-class UserListElement {
+import { EventMap, event } from "@harbor/EventMap";
+
+class UserListElement extends EventMap(HTMLElement){
     //...
     @event("request-users")
     requestUsers() {
@@ -145,11 +146,74 @@ const requestUsers = stateChange => {
 ```
 
 
-### Full example
+## Configuration
+The `StateChange` constructor takes an optional configuration object that allows you to control the name of the `state` property and the name of the `state-change` event.
+```js
+// The default configuration:
+StateChange.of(this, {
+    prop: "state",
+    changeEventName: "state-changed"
+});
+
+// Changing the property and change event name
+StateChange.of(this, {
+    prop: "currentUser",
+    changeEventName: "current-user-changed"
+});
+```
+
+
+## Middleware
+`StateChange` exposes middleware to hook into both the `next` and
+the `tap` functions.
+
+There are also three functions available to apply logging and error handling middleware.
+
+### Redux Dev Tool Logging
+Logs next and tap calls to the Redux dev tools extension.
+```js
+import {applyRdtLogging} from "@harbor/StateChange/applyRdtLogging";
+applyRdtLogging();
+```
+### Logging
+Logs next and tap calls with state snapshots.
+```js
+import {applyConsoleLogging} from "@harbor/StateChange/applyConsoleLogging";
+applyConsoleLogging();
+```
+### Error handling
+Logs and throws the error.
+```js
+import {applyErrorHandling} from "@harbor/StateChange/applyErrorHandling";
+applyErrorHandling();
+```
+
+### Adding custom middleware
+```js
+import {StateChange} from "@harbor/StateChange";
+
+StateChange.applyNextMiddleware(stateChange => next => state =>{
+    // add custom behaviors and return next
+    return next(state);
+});
+
+StateChange.applyTapMiddleware(next => stateChange => {
+    // add custom behaviors and call next
+    next(stateChange);
+});
+
+// removes all middelware methods
+StateChange.clearMiddleware();
+```
+
+
+
+
+## Full example
 This is a full example using the _basic_ methods for changing state.
 ```js
-import { EventMap, event } from '../../lib/EventMap/EventMap.js';
-import { showSystemToastEvent } from '../../ai-system-feedback/events';
+import { EventMap, event } from '@harbor/EventMap';
+import { showSystemToastEvent } from '../../system-toast/events';
 export { UserListElement };
 
 
@@ -356,6 +420,7 @@ const requestUsers = stateChange => pipeAsync(
     StateChange.dispatch // 9
     StateChange.dispatchEvent(AiSystemFeedback.systemToastEvent({text: "Users loaded."})) // 10
 )(stateChange); // 1
+
 // 1 - Pass the stateChange instance to the argument of the first function in the pipe
 // 2 - Get the next state from `setIsLoading`
 // 3 - Call dispatch
@@ -369,7 +434,7 @@ const requestUsers = stateChange => pipeAsync(
 ```
 
 ### Functions, Functors, and Monads (oh my)
-#### For future research
+#### Useful Monad-like Types
 Since `StateChange` is composable it opens the door for additional functional patterns. Here are a few other popular Monad like types that may be useful.
 * `Array` - used for lists
 * `Promise` - used to encapsulate possible async operations 
@@ -377,7 +442,7 @@ Since `StateChange` is composable it opens the door for additional functional pa
 * `Result` (Ok/Error) - another implementation of `Either`.
 * `Maybe` (Something/Nothing) - helps with null calls.
 
-The *stage 3* nullable operators can also help: \
+Optional chaining and mullish coalescing can also help: \
 https://github.com/tc39/proposal-optional-chaining \
 https://github.com/tc39/proposal-nullish-coalescing
 
@@ -389,22 +454,3 @@ https://github.com/tc39/proposal-nullish-coalescing
 * [Basic Monads in JavaScript](https://dev.to/rametta/basic-monads-in-javascript-3el3)
 
 
-## Logging and Configuration
-### Configuration
-The `StateChange` constructor takes an optional configuration object that allows you to control the name of the `state` property and the name of the `state-change` event.
-```js
-StateChange.of(this, {
-    prop: "state",
-    changeEventName: "state-changed"
-});
-//
-StateChange.of(this, {
-    prop: "currentUser",
-    changeEventName: "current-user-changed"
-});
-```
-
-### Logging (mixins)
-There are two mixins that are applied with every call to `next` or `tap`.
-* Logging - Logs next and tap calls with state snapshots.
-* Error handling - Currently just logs and throws the error.

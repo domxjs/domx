@@ -28,6 +28,7 @@
     { "path": "./packages/functional" },
     { "path": "./packages/Middleware" },
     { "path": "./packages/linkProp" },
-    { "path": "./packages/EventMap" }
+    { "path": "./packages/EventMap" },
+    { "path": "./packages/StateChange" }
   ]
 }
