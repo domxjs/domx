@@ -1,4 +1,5 @@
-# StateChange
+# StateChange &middot; [![Build Status](https://travis-ci.com/jhorback/harbor-utils.svg?branch=packages/StateChange)](https://travis-ci.com/jhorback/harbor-utils)
+
 
 `StateChange` is an object that enables changing a property on an HTMLElement in a `functional` way.
 

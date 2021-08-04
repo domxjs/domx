@@ -1,0 +1,15 @@
+{
+  "name": "@harbor/statechange",
+  "version": "0.2.0",
+  "license": "MIT",
+  "author": "John Horback",
+  "main": "StateChange.js",
+  "types": "StateChange.d.ts",
+  "dependencies": {
+    "@harbor/middleware": "0.2.2"
+  },
+  "scripts": {
+    "build": "tsc",
+    "clean": "tsc --build --clean"
+  }
+}

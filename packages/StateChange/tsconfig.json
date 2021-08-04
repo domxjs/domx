@@ -1,0 +1,16 @@
+{
+  // @harbor/eventmap
+  "composite": true,
+  "extends": "../../tsconfig.json",
+  "compilerOptions": {    
+    "tsBuildInfoFile": "./tsconfig.StateChange.tsbuildinfo",
+    "outDir": "./",
+    "rootDir": "src"    
+  },
+  "include": [
+    "src/**/*"
+  ],
+  "exclude": [
+    "src/**/*.spec.ts"
+  ]
+}

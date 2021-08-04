@@ -36,6 +36,9 @@ matrix:
   - name: linkProp
     env: PACKAGE_LOCATION=packages/linkProp
     if: branch = packages/linkProp
+  - name: StateChange
+    env: PACKAGE_LOCATION=packages/StateChange
+    if: branch = packages/StateChange
 
 script:
   - npm run clean
