@@ -1,7 +1,7 @@
 {
   "name": "@harbor/utils",
   "type": "module",
-  "version": "0.2.1-alpha.1",
+  "version": "0.6.0",
   "license": "MIT",
   "author": "John Horback",
   "description": "A mono repo containing packages with common web application script utilities.",
@@ -18,9 +18,9 @@
     "dev": "vite",
     "build": "tsc --build && vite build",
     "clean": "tsc --build --clean",
-    "test": "jest",
-    "test:coverage": "jest --coverage",
-    "test:watch": "jest --watch"
+    "test": "tsc --build && jest",
+    "test:coverage": "tsc --build && jest --coverage",
+    "test:watch": "tsc --build && jest --watch"
   },
   "dependencies": {
     "@vanillawc/wc-markdown": "^1.6.10",
@@ -28,12 +28,12 @@
     "lit-html": "^1.4.1"
   },
   "devDependencies": {
-    "@types/jest": "^26.0.24",
-    "jest": "^27.0.6",
-    "ts-jest": "^27.0.3",
-    "ts-node": "^10.1.0",
-    "typescript": "4.3.3",
-    "vite": "^2.4.0"
+    "@types/jest": "26.0.24",
+    "jest": "27.0.6",
+    "ts-jest": "27.0.4",
+    "ts-node": "10.1.0",
+    "typescript": "4.3.5",
+    "vite": "2.4.4"
   },
   "jest": {
     "preset": "ts-jest",
@@ -42,7 +42,7 @@
       "^.+\\.(js|ts)$": "ts-jest"
     },
     "transformIgnorePatterns": [
-      "node_modules/(?!(lit-html|lit-element|@harbor))"
+      "node_modules/(?!(lit-html|lit-element))"
     ]
   }
 }
