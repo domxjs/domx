@@ -1,4 +1,4 @@
-import { Middleware } from "@harbor/Middleware";
+import { Middleware } from "@harbor/middleware";
 export { StateChange };
 
 
