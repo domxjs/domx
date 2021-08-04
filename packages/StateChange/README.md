@@ -1,7 +1,7 @@
 # StateChange &middot; [![Build Status](https://travis-ci.com/jhorback/harbor-utils.svg?branch=packages/StateChange)](https://travis-ci.com/jhorback/harbor-utils)
 
 
-`StateChange` is an object that enables changing a property on an HTMLElement in a `functional` way.
+`StateChange` is a monad-like object that enables changing a property on an HTMLElement in a `functional` way.
 
 [Basic usage](#basic-usage) \
 [Configuration](#configuration) \
@@ -22,7 +22,7 @@ const defaultState = {
 and this HTMLElement
 
 ```js
-import { EventMap, event } from '../../lib/EventMap/EventMap.js';
+import { EventMap } from "@harbor/EventMap";
 
 class UserListElement extends EventMap(HTMLElement) {
     state = defaultState
@@ -57,7 +57,7 @@ const setIsLoading = state => ({
 #### Setting the next state
 Changing the state can be done by calling  `next` on the `StateChange` instance.
 ```js
-class UserListElement {
+class UserListElement extends HTMLElement {
     //...
     setIsLoading() {
         StateChange.of(this)
@@ -69,7 +69,7 @@ class UserListElement {
 #### Notifying the change
 Then dispatch a `state-change` event by calling `dispatch` on the `StateChange` instance.
 ```js
-class UserListElement {
+class UserListElement extends HTMLElement {
     //...
     setIsLoading() {
         StateChange.of(this)
@@ -87,7 +87,9 @@ class UserListElement {
 When needing to do more than just setting the next state object, a `tap ` function can be used to perform any logic, branching, or asynchronous operations.
 
 ```js
-class UserListElement {
+import { EventMap, event } from "@harbor/EventMap";
+
+class UserListElement extends EventMap(HTMLElement){
     //...
     @event("request-users")
     requestUsers() {
@@ -176,14 +178,14 @@ Logs next and tap calls with state snapshots.
 import {applyConsoleLogging} from "@harbor/StateChange/applyConsoleLogging";
 applyConsoleLogging();
 ```
-### Error Handling
+### Error handling
 Logs and throws the error.
 ```js
 import {applyErrorHandling} from "@harbor/StateChange/applyErrorHandling";
 applyErrorHandling();
 ```
 
-### Adding Custom Middleware
+### Adding custom middleware
 ```js
 import {StateChange} from "@harbor/StateChange";
 
@@ -197,6 +199,7 @@ StateChange.applyTapMiddleware(next => stateChange => {
     next(stateChange);
 });
 
+// removes all middelware methods
 StateChange.clearMiddleware();
 ```
 
@@ -206,8 +209,8 @@ StateChange.clearMiddleware();
 ## Full example
 This is a full example using the _basic_ methods for changing state.
 ```js
-import { EventMap, event } from '../../lib/EventMap/EventMap.js';
-import { showSystemToastEvent } from '../../ai-system-feedback/events';
+import { EventMap, event } from '@harbor/EventMap';
+import { showSystemToastEvent } from '../../system-toast/events';
 export { UserListElement };
 
 
