@@ -17,6 +17,13 @@ class Middleware {
     }
 
     /**
+     * Removes all middleware methods from the stack.
+     */
+    clear() {
+        this.stack = [];
+    }
+
+    /**
      * Executes middleware functions given the passed arguments.
      * @param next {Function} The main function to execute.
      * @param args {Array<any>} Arguments to pass to the next function.

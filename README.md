@@ -5,12 +5,12 @@ A mono repo containing packages with common web application script utilities.
 
 ## Packages
 
-| Package   | Status   | Notes
+| Package   | Status   | Latest
 |:---       |:---      |:---
-| [EventMap](https://github.com/jhorback/harbor-utils/tree/master/packages/EventMap) | [![Build Status](https://travis-ci.com/jhorback/harbor-utils.svg?branch=packages/EventMap)](https://travis-ci.com/jhorback/harbor-utils) | Converting to TypeScript 
-| [StateChange](https://github.com/jhorback/harbor-utils/tree/master/packages/StateChange) | | Needs conversion 
+| [EventMap](https://github.com/jhorback/harbor-utils/tree/master/packages/EventMap) | [![Build Status](https://travis-ci.com/jhorback/harbor-utils.svg?branch=packages/EventMap)](https://travis-ci.com/jhorback/harbor-utils) | 0.3.1 
+| [StateChange](https://github.com/jhorback/harbor-utils/tree/master/packages/StateChange) |[![Build Status](https://travis-ci.com/jhorback/harbor-utils.svg?branch=packages/StateChange)](https://travis-ci.com/jhorback/harbor-utils) | 0.3.0
 | [linkProp](https://github.com/jhorback/harbor-utils/tree/master/packages/linkProp) | [![Build Status](https://travis-ci.com/jhorback/harbor-utils.svg?branch=packages/linkProp)](https://travis-ci.com/jhorback/harbor-utils) | 0.2.0
-| [Middleware](https://github.com/jhorback/harbor-utils/tree/master/packages/Middleware) | [![Build Status](https://travis-ci.com/jhorback/harbor-utils.svg?branch=packages/Middleware)](https://travis-ci.com/jhorback/harbor-utils) | 0.2.1
+| [Middleware](https://github.com/jhorback/harbor-utils/tree/master/packages/Middleware) | [![Build Status](https://travis-ci.com/jhorback/harbor-utils.svg?branch=packages/Middleware)](https://travis-ci.com/jhorback/harbor-utils) | 0.2.2
 | [functional](https://github.com/jhorback/harbor-utils/tree/master/packages/functional) | [![Build Status](https://travis-ci.com/jhorback/harbor-utils.svg?branch=packages/functional)](https://travis-ci.com/jhorback/harbor-utils) | 0.2.0 
 
 

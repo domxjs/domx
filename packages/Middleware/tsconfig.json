@@ -1,5 +1,5 @@
 {
-  // @harbor/Middleware
+  // @harbor/middleware
   "composite": true,
   "extends": "../../tsconfig.json",  
   "compilerOptions": {
