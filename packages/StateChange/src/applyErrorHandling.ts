@@ -1,12 +1,12 @@
 import {StateChange} from "./StateChange";
 import {Logger} from "@harbor/middleware";
-export { applyErrorCatching };
+export { applyErrorHandling };
 
 
 /**
  * Adds error catching middleware to StateChange.
  */
-const applyErrorCatching = () => {
+const applyErrorHandling = () => {
     StateChange.applyNextMiddleware((stateChange:StateChange)  => (next:Function) => (state:any) =>{
         catchErrors(stateChange, next, state);
     });
