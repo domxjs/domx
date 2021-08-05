@@ -1,4 +1,4 @@
-import { Middleware } from "@harbor/middleware/Middleware";
+import { Middleware } from "@harbr/middleware/Middleware";
 export {
   EventMap,
   eventsListenAt,

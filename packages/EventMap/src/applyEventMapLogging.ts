@@ -1,5 +1,5 @@
 import {EventMap, EventMapHandlerInfo} from "./EventMap";
-import {Logger} from "@harbor/middleware";
+import {Logger} from "@harbr/middleware";
 export { applyEventMapLogging };
 
 

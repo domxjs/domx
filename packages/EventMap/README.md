@@ -69,13 +69,13 @@ event  information to the console.
 
 **Add Logging**
 ```js
-import {applyEventMapLogging} from "@harbor/EventMap/applyEventMapLogging";
+import {applyEventMapLogging} from "@harbr/EventMap/applyEventMapLogging";
 
 applyEventMapLogging();
 ```
 **Applying Custom Middleware**
 ```js
-import {EventMap} from "@harbor/EventMap";
+import {EventMap} from "@harbr/EventMap";
 
 EventMap.applyMiddleware(handlerInfo => next => () => {
   // add custom behaviors and call next

@@ -1,5 +1,5 @@
 import {StateChange} from "./StateChange";
-import {Logger} from "@harbor/middleware";
+import {Logger} from "@harbr/middleware";
 export { applyErrorHandling };
 
 

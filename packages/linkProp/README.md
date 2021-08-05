@@ -6,7 +6,7 @@ Examples are using LitElement.
 
 ## Installation
 ```sh
-npm install @harbor/linkProp
+npm install @harbr/linkProp
 ```
 ## Methods
 - `linkProp(element, prop, path?)`

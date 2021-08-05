@@ -1,5 +1,5 @@
 {
-  "name": "@harbor/utils",
+  "name": "@harbr/utils",
   "type": "module",
   "version": "0.6.0",
   "license": "MIT",
@@ -27,8 +27,9 @@
     "test:coverage": "tsc --build && jest --coverage",
     "test:watch": "tsc --build && jest --watch",
 
+    "publish:all": "npm publish --access public --workspaces",
     "prepare" : "npm run build",
-    "prepublishOnly" : "npm test",
+    "xxxprepublishOnly" : "npm test",
     "postversion" : "git push && git push --tags"
   },
   "dependencies": {

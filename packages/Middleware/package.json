@@ -1,5 +1,5 @@
 {
-  "name": "@harbor/middleware",
+  "name": "@harbr/middleware",
   "type": "module",
   "version": "0.2.2",
   "license": "MIT",
@@ -18,6 +18,6 @@
     "clean": "tsc --build --clean"
   },
   "dependencies": {
-    "@harbor/functional": "0.2.0"
+    "@harbr/functional": "0.2.0"
   }
 }
