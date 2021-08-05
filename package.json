@@ -29,7 +29,6 @@
 
     "publish:all": "npm publish --access public --workspaces",
     "prepare" : "npm run build",
-    "xxxprepublishOnly" : "npm test",
     "postversion" : "git push && git push --tags"
   },
   "dependencies": {
