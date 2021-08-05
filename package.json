@@ -29,8 +29,7 @@
     "test:coverage": "tsc --build && jest --coverage",
     "test:watch": "tsc --build && jest --watch",
     "publish:all": "npm publish --access public --workspaces",
-    "prepare": "npm run build",
-    "postversion": "git push && git push --tags"
+    "prepare": "npm run build"
   },
   "dependencies": {
     "@vanillawc/wc-markdown": "^1.6.10",

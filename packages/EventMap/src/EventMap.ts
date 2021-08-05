@@ -4,7 +4,8 @@ export {
   eventsListenAt,
   event,
   EventMapListenAt,
-  EventMapHandlerInfo
+  EventMapHandlerInfo,
+  ProcessedEventMapDefinition
 };
 
 

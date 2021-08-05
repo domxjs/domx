@@ -1,6 +1,6 @@
 {
   "name": "@harbr/eventmap",
-  "version": "0.3.2",
+  "version": "0.3.5",
   "license": "MIT",
   "author": "John Horback",
   "description": "A CustomElement class mixin for declarative DOM event handling.",
@@ -17,7 +17,7 @@
   "main": "EventMap.js",
   "types": "EventMap.d.ts",
   "dependencies": {
-    "@harbr/middleware": "0.2.3"
+    "@harbr/middleware": "0.2.6"
   },
   "scripts": {
     "build": "tsc",
