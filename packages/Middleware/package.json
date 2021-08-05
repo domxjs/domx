@@ -1,11 +1,15 @@
 {
   "name": "@harbr/middleware",
   "type": "module",
-  "version": "0.2.2",
+  "version": "0.2.3",
   "license": "MIT",
   "author": "John Horback",
   "description": "Contains low level patterns for middleware and HTMLElement mixin logging.",
-  "keywords": ["Custom Elements", "Logging", "Middleware"],
+  "keywords": [
+    "Custom Elements",
+    "Logging",
+    "Middleware"
+  ],
   "repository": {
     "type": "git",
     "url": "https://github.com/jhorback/harbor-utils.git",
@@ -19,6 +23,6 @@
     "clean": "tsc --build --clean"
   },
   "dependencies": {
-    "@harbr/functional": "0.2.0"
+    "@harbr/functional": "0.2.1"
   }
 }

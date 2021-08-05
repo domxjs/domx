@@ -1,11 +1,15 @@
 {
   "name": "@harbr/functional",
   "type": "module",
-  "version": "0.2.0",
+  "version": "0.2.1",
   "license": "MIT",
   "author": "John Horback",
   "description": "Contains methods for functional JavaScript patterns.",
-  "keywords": ["Functional", "compose", "pipe"],
+  "keywords": [
+    "Functional",
+    "compose",
+    "pipe"
+  ],
   "repository": {
     "type": "git",
     "url": "https://github.com/jhorback/harbor-utils.git",

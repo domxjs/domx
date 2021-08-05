@@ -1,11 +1,14 @@
 {
   "name": "@harbr/linkprop",
   "type": "module",
-  "version": "0.2.0",
+  "version": "0.2.1",
   "license": "MIT",
   "author": "John Horback",
   "description": "Contains methods for linking properties of dom elements.",
-  "keywords": ["Custom Elements", "binding"],
+  "keywords": [
+    "Custom Elements",
+    "binding"
+  ],
   "repository": {
     "type": "git",
     "url": "https://github.com/jhorback/harbor-utils.git",
@@ -22,4 +25,3 @@
     "lit-html": "1.4.1"
   }
 }
-
