@@ -11,6 +11,7 @@
     "url": "https://github.com/jhorback/harbor-utils.git",
     "directory": "packages/linkProp"
   },
+  "homepage": "https://github.com/jhorback/harbor-utils/blob/master/packages/linkProp/README.md",
   "main": "linkProp.js",
   "types": "linkProp.d.ts",
   "scripts": {

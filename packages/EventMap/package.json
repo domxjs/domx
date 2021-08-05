@@ -10,6 +10,7 @@
     "url": "https://github.com/jhorback/harbor-utils.git",
     "directory": "packages/EventMap"
   },
+  "homepage": "https://github.com/jhorback/harbor-utils/blob/master/packages/EventMap/README.md",
   "main": "EventMap.js",
   "types": "EventMap.d.ts",
   "dependencies": {

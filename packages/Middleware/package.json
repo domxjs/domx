@@ -11,6 +11,7 @@
     "url": "https://github.com/jhorback/harbor-utils.git",
     "directory": "packages/Middleware"
   },
+  "homepage": "https://github.com/jhorback/harbor-utils/blob/master/packages/Middleware/README.md",
   "main": "index.js",
   "types": "index.d.ts",
   "scripts": {

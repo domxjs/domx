@@ -11,6 +11,7 @@
     "url": "https://github.com/jhorback/harbor-utils.git",
     "directory": "packages/functional"
   },
+  "homepage": "https://github.com/jhorback/harbor-utils/blob/master/packages/functional/README.md",
   "main": "index.js",
   "types": "index.d.ts",
   "scripts": {

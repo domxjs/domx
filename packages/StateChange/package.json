@@ -10,6 +10,7 @@
     "url": "https://github.com/jhorback/harbor-utils.git",
     "directory": "packages/StateChange"
   },
+  "homepage": "https://github.com/jhorback/harbor-utils/blob/master/packages/StateChange/README.md",
   "main": "StateChange.js",
   "types": "StateChange.d.ts",
   "dependencies": {
