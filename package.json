@@ -5,6 +5,11 @@
   "license": "MIT",
   "author": "John Horback",
   "description": "A mono repo containing packages with common web application script utilities.",
+  "keywords": ["Custom Elements"],
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/jhorback/harbor-utils.git"
+  },
   "main": "index.js",
   "types": "index.d.ts",
   "workspaces": [
@@ -20,7 +25,11 @@
     "clean": "tsc --build --clean",
     "test": "tsc --build && jest",
     "test:coverage": "tsc --build && jest --coverage",
-    "test:watch": "tsc --build && jest --watch"
+    "test:watch": "tsc --build && jest --watch",
+
+    "prepare" : "npm run build",
+    "prepublishOnly" : "npm test",
+    "postversion" : "git push && git push --tags"
   },
   "dependencies": {
     "@vanillawc/wc-markdown": "^1.6.10",

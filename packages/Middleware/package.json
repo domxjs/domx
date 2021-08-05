@@ -4,6 +4,13 @@
   "version": "0.2.2",
   "license": "MIT",
   "author": "John Horback",
+  "description": "Contains low level patterns for middleware and HTMLElement mixin logging.",
+  "keywords": ["Custom Elements", "Logging", "Middleware"],
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/jhorback/harbor-utils.git",
+    "directory": "packages/Middleware"
+  },
   "main": "index.js",
   "types": "index.d.ts",
   "scripts": {
