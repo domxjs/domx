@@ -17,10 +17,6 @@
   "workspaces": [
     "packages/*"
   ],
-  "files": [
-    "dist",
-    "types"
-  ],
   "scripts": {
     "dev": "vite",
     "build": "tsc --build && vite build",
