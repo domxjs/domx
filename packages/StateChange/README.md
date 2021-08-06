@@ -84,7 +84,7 @@ class UserListElement extends HTMLElement {
 When needing to do more than just setting the next state object, a `tap` function can be used to perform any logic, branching, or asynchronous operations.
 
 ```js
-import { EventMap, event } from "@harbr/EventMap";
+import { EventMap, event } from "@harbr/eventmap";
 
 class UserListElement extends EventMap(HTMLElement){
     //...
@@ -212,7 +212,7 @@ StateChange.clearMiddleware();
 ## Full example
 This is a full example using the _basic_ methods for changing state.
 ```js
-import { EventMap, event } from '@harbr/EventMap';
+import { EventMap, event } from '@harbr/eventmap';
 import { showSystemToastEvent } from '../../system-toast/events';
 export { UserListElement };
 
