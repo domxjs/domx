@@ -1,12 +1,12 @@
 import { html, fixture } from "./testHelpers";
-import {applyRdtLogging} from "../applyRdtLogging";
+import {applyStateChangeRdtLogging} from "../applyStateChangeRdtLogging";
 import {StateChange} from "../StateChange";
 import {DevToolsExtension,DevToolsInstance} from "../rdtTypes";
 
 
-describe("applyRdtLogging", () => {
+describe("applyStateChangeRdtLogging", () => {
     it("does not error when there is no rdt", () => {
-        applyRdtLogging();
+        applyStateChangeRdtLogging();
         const el = fixture(html`<test-state-change></test-state-change>`);
         expect(() => el.testSimple()).not.toThrow();
         el.restore();
@@ -14,7 +14,7 @@ describe("applyRdtLogging", () => {
     });
 
     it("sends state to rdt on next", () => {
-        applyRdtLogging();
+        applyStateChangeRdtLogging();
         setDevTools();
         const el = fixture(html`<test-state-change></test-state-change>`);
         el.testSimple();
@@ -26,7 +26,7 @@ describe("applyRdtLogging", () => {
     });
 
     it("sends state to rdt on tap", () => {
-        applyRdtLogging();
+        applyStateChangeRdtLogging();
         setDevTools();
         const el = fixture(html`<test-state-change></test-state-change>`);
         el.testFunction();
@@ -38,7 +38,7 @@ describe("applyRdtLogging", () => {
     });
 
     it("can jump to a state", async () => {
-        applyRdtLogging();
+        applyStateChangeRdtLogging();
         setDevTools();
         const el = fixture(html`<test-state-change></test-state-change>`);
         el.testSimple();
@@ -51,7 +51,7 @@ describe("applyRdtLogging", () => {
     });
 
     it("errors when skipping a state", async () => {
-        applyRdtLogging();
+        applyStateChangeRdtLogging();
         setDevTools();
         const el = fixture(html`<test-state-change></test-state-change>`);
         el.testSimple();

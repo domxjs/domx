@@ -1,10 +1,10 @@
 import { html, fixture } from "./testHelpers";
-import {applyErrorHandling} from "../applyErrorHandling";
+import {applyStateChangeErrorHandling} from "../applyStateChangeErrorHandling";
 import {StateChange} from "../StateChange";
 
-describe("applyErrorHandling", () => {
+describe("applyStateChangeErrorHandling", () => {
     it("logs errors on next", () => {
-        applyErrorHandling();
+        applyStateChangeErrorHandling();
         const logSpy = jest.spyOn(console, "error").mockImplementation(() => {});
 
         const el = fixture(html`<test-state-change></test-state-change>`);
@@ -20,7 +20,7 @@ describe("applyErrorHandling", () => {
     });
 
     it("logs errors on tap", () => {
-        applyErrorHandling();
+        applyStateChangeErrorHandling();
         const logSpy = jest.spyOn(console, "error").mockImplementation(() => {});
 
         const el = fixture(html`<test-state-change></test-state-change>`);

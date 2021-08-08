@@ -1,10 +1,10 @@
 import { html, fixture } from "./testHelpers";
-import {applyConsoleLogging} from "../applyConsoleLogging";
+import {applyStateChangeConsoleLogging} from "../applyStateChangeConsoleLogging";
 import {StateChange} from "../StateChange";
 
-describe("applyConsoleLogging", () => {
+describe("applyStateChangeConsoleLogging", () => {
     it("provides next logging", () => {
-        applyConsoleLogging();
+        applyStateChangeConsoleLogging();
         const logSpy = jest.spyOn(console, "info").mockImplementation(() => {});
         const groupCollapsedSpy = jest.spyOn(console, "groupCollapsed").mockImplementation(() => {});
         const el = fixture(html`<test-state-change></test-state-change>`);
@@ -19,7 +19,7 @@ describe("applyConsoleLogging", () => {
     });
 
     it("provides tap logging", async () => {
-        applyConsoleLogging();
+        applyStateChangeConsoleLogging();
         const logSpy = jest.spyOn(console, "group").mockImplementation(() => {});
         const el = fixture(html`<test-state-change></test-state-change>`);
         el.testFunction();

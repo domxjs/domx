@@ -1,6 +1,6 @@
 import {StateChange} from "./StateChange";
 import {DevToolsEventData,DevToolsExtension,DevToolsInstance} from "./rdtTypes";
-export {applyRdtLogging};
+export {applyStateChangeRdtLogging};
 
 
 /**
@@ -9,7 +9,7 @@ export {applyRdtLogging};
  * Docs:
  * https://github.com/zalmoxisus/redux-devtools-extension/blob/master/docs/API/Methods.md
  */
- const applyRdtLogging = () => {
+ const applyStateChangeRdtLogging = () => {
     StateChange.applyNextMiddleware((stateChange:StateChange)  => (next:Function) => (state:any) =>{
         return tryLogToDevTools(stateChange, next, state);
     });

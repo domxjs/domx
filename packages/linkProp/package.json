@@ -1,7 +1,7 @@
 {
   "name": "@harbr/linkprop",
   "type": "module",
-  "version": "0.2.4",
+  "version": "0.2.5",
   "license": "MIT",
   "author": "John Horback",
   "description": "Contains methods for linking properties of dom elements.",

@@ -3,13 +3,14 @@ import {Logger} from "@harbr/middleware";
 export { applyEventMapLogging };
 
 
-const applyEventMapLogging = () => EventMap.applyMiddleware(
+const applyEventMapLogging = (
+    {collapsed}:{collapsed:boolean} = {collapsed:false}) => EventMap.applyMiddleware(
     (handlerInfo:EventMapHandlerInfo) =>
     (next:Function) => () => {        
     const el = handlerInfo.element;
     const detail:any = handlerInfo.eventDetail || "(none)";
 
-    Logger.log(el,"group",
+    Logger.log(el, collapsed? "groupCollapsed": "group",
         `> EVENTMAP: ${handlerInfo.listenAt}@${handlerInfo.eventName} => ` +
         `${handlerInfo.constructorName}.${handlerInfo.eventHandlerName}()`);
 

@@ -172,20 +172,20 @@ There are also three functions available to apply logging and error handling mid
 ### Redux Dev Tool Logging
 Logs next and tap calls to the Redux dev tools extension.
 ```js
-import {applyRdtLogging} from "@harbr/StateChange/applyRdtLogging";
-applyRdtLogging();
+import {applyStateChangeRdtLogging} from "@harbr/StateChange/applyStateChangeRdtLogging";
+applyStateChangeRdtLogging();
 ```
 ### Logging
 Logs next and tap calls with state snapshots.
 ```js
-import {applyConsoleLogging} from "@harbr/StateChange/applyConsoleLogging";
-applyConsoleLogging();
+import {applyStateChangeConsoleLogging} from "@harbr/StateChange/applyStateChangeConsoleLogging";
+applyStateChangeConsoleLogging();
 ```
 ### Error handling
 Logs and throws the error.
 ```js
-import {applyErrorHandling} from "@harbr/StateChange/applyErrorHandling";
-applyErrorHandling();
+import {applyStateChangeErrorHandling} from "@harbr/StateChange/applyStateChangeErrorHandling";
+applyStateChangeErrorHandling();
 ```
 
 ### Adding custom middleware

@@ -1,7 +1,7 @@
 {
   "name": "@harbr/middleware",
   "type": "module",
-  "version": "0.2.6",
+  "version": "0.2.7",
   "license": "MIT",
   "author": "John Horback",
   "description": "Contains low level patterns for middleware and HTMLElement mixin logging.",
@@ -23,6 +23,6 @@
     "clean": "tsc --build --clean"
   },
   "dependencies": {
-    "@harbr/functional": "0.2.4"
+    "@harbr/functional": "0.2.5"
   }
 }

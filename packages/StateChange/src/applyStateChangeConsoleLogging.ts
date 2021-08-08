@@ -1,12 +1,12 @@
 import {StateChange} from "./StateChange";
 import {Logger} from "@harbr/middleware";
-export { applyConsoleLogging };
+export { applyStateChangeConsoleLogging };
 
 
 /**
  * Adds logging logging middleware to StateChange.
  */
-const applyConsoleLogging = () => {
+const applyStateChangeConsoleLogging = () => {
     StateChange.applyNextMiddleware((stateChange:StateChange)  => (next:Function) => (state:any) =>{
         insertLogger(stateChange, next, state);
     });

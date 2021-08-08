@@ -29,6 +29,25 @@ describe("applyEventMapLogging", () => {
         groupEndSpy.mockRestore();
         EventMap.clearMiddleware();
     });
+
+    it("logs event data collapsed", () => {
+        applyEventMapLogging({collapsed: true});
+        render(testMiddlewareHtml, document.body);
+        const el = document.querySelector("test-middleware") as HTMLElement;        
+        const groupSpy = jest.spyOn(console, "groupCollapsed").mockImplementation(() => {});
+        const infoSpy = jest.spyOn(console, "info").mockImplementation(() => {});
+        const groupEndSpy = jest.spyOn(console, "groupEnd").mockImplementation(() => {});
+        el.dispatchEvent(new CustomEvent("test-event"));
+        expect(groupSpy).toHaveBeenCalledTimes(1);
+        expect(groupSpy).toHaveBeenCalledWith("> EVENTMAP: TestMiddleware@test-event => TestMiddleware.testEvent()");
+        expect(infoSpy).toHaveBeenCalledTimes(1);
+        expect(infoSpy).toHaveBeenCalledWith("=> event.detail", "(none)");
+        expect(groupEndSpy).toHaveBeenCalledTimes(1);
+        groupSpy.mockRestore();
+        infoSpy.mockRestore();
+        groupEndSpy.mockRestore();
+        EventMap.clearMiddleware();
+    });
 });
 
 
