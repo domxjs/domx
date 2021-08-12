@@ -36,4 +36,14 @@ describe("applyStateChangeErrorHandling", () => {
         StateChange.clearMiddleware();
         applyStateChangeErrorHandling.reset();
     });
+
+    it("warns if called twice", () => {
+        const warnSpy = jest.spyOn(console, "warn").mockImplementation(() => {});
+        applyStateChangeErrorHandling();
+        expect(warnSpy).toHaveBeenCalledTimes(0);
+        applyStateChangeErrorHandling();
+        expect(warnSpy).toHaveBeenCalledTimes(1);
+        StateChange.clearMiddleware();
+        applyStateChangeErrorHandling.reset();
+    });
 });

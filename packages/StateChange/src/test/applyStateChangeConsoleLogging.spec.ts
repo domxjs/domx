@@ -51,4 +51,11 @@ describe("applyStateChangeConsoleLogging", () => {
         groupCollapsedSpy.mockRestore();
         el.restore();
     });
+
+    it("warns if called twice", () => {
+        const warnSpy = jest.spyOn(console, "warn").mockImplementation(() => {});
+        expect(warnSpy).toHaveBeenCalledTimes(0);
+        applyStateChangeConsoleLogging();
+        expect(warnSpy).toHaveBeenCalledTimes(1);
+    });
 });

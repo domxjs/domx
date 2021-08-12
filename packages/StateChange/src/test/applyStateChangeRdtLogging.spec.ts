@@ -59,7 +59,14 @@ describe("applyStateChangeRdtLogging", () => {
         MockDevToolsInstance.testSkip();
         expect(MockDevToolsInstance.lastError).toBe("StateChange RDT logging does not support payload type: DISPATCH:TOGGLE_ACTION");
         el.restore();
-    });   
+    });
+
+    it("warns if called twice", () => {
+        const warnSpy = jest.spyOn(console, "warn").mockImplementation(() => {});
+        expect(warnSpy).toHaveBeenCalledTimes(0);
+        applyStateChangeRdtLogging();
+        expect(warnSpy).toHaveBeenCalledTimes(1);
+    });
 });
 
 

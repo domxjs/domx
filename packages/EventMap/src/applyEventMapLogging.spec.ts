@@ -59,7 +59,7 @@ describe("applyEventMapLogging", () => {
         applyEventMapLogging();
         expect(warnSpy).toHaveBeenCalledTimes(1);
         applyEventMapLogging.reset();
-    })
+    });
 });
 
 
