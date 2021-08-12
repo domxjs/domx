@@ -9,6 +9,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ### Added
 - Check for calling middleware twice
 - Collapsed option for logging middleware
+- Added immer middleware
 
 ### Fixed
 - Interface with RDT extension to match live browser tests

@@ -5,7 +5,7 @@
 
 [Basic usage](#basic-usage) \
 [Configuration](#configuration) \
-[Middleware (logging and error handling)](#middleware) \
+[Middleware (logging, error handling, immutable state handling)](#middleware) \
 [Full example](#full-example) \
 [Advanced usage](#advanced-usage)
 
@@ -167,7 +167,7 @@ StateChange.of(this, {
 `StateChange` exposes middleware to hook into both the `next` and
 the `tap` functions.
 
-There are also three functions available to apply logging and error handling middleware.
+There are also four functions available to apply logging, error handling, and immutable state changes via Immer.
 
 ### Redux Dev Tool Logging
 Logs next and tap calls to the Redux dev tools extension.
@@ -175,11 +175,22 @@ Logs next and tap calls to the Redux dev tools extension.
 import {applyStateChangeRdtLogging} from "@harbr/StateChange/applyStateChangeRdtLogging";
 applyStateChangeRdtLogging();
 ```
+
+### Immer - to simplify handling immutable data structures
+See https://immerjs.github.io/immer/produce
+```js
+import {applyImmerToStateChange} from "@harbr/StateChange/applyImmerToStateChange";
+applyImmerToStateChange();
+```
+
 ### Logging
 Logs next and tap calls with state snapshots.
 ```js
 import {applyStateChangeConsoleLogging} from "@harbr/StateChange/applyStateChangeConsoleLogging";
 applyStateChangeConsoleLogging();
+
+// or call with collapsed:true to collapse console logging groups
+applyStateChangeConsoleLogging({collapsed:true});
 ```
 ### Error handling
 Logs and throws the error.

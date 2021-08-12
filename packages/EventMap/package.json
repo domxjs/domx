@@ -1,6 +1,6 @@
 {
   "name": "@harbr/eventmap",
-  "version": "0.3.7",
+  "version": "0.4.0",
   "license": "MIT",
   "author": "John Horback",
   "description": "A CustomElement class mixin for declarative DOM event handling.",

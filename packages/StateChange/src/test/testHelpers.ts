@@ -11,7 +11,8 @@ interface FixtureElement extends HTMLElement {
     testSimple: Function,
     testError: Function,
     testTapError: Function,
-    testDispatchEvent: Function
+    testDispatchEvent: Function,
+    testImmer: Function
 };
   
   function fixture(html:TemplateResult): FixtureElement {
@@ -81,28 +82,33 @@ class TestStateChange extends HTMLElement {
           composed: true
         }));
     }
+
+    testImmer() {
+      StateChange.of(this)
+        .next(changeStateWithMutations)
+    }
 }
 customElements.define("test-state-change", TestStateChange);
   
   
   
 const setFooTrue = (state:any) => {
-    return {
-      ...state,
-      foo: true
-    };
+  return {
+    ...state,
+    foo: true
   };
+};
   
-  const setBarTrue = (state:any) => {
-    return {
-      ...state,
-      bar: true
-    };
+const setBarTrue = (state:any) => {
+  return {
+    ...state,
+    bar: true
   };
+};
 
 
-  // for testing inner function name
-  const setBar = (bar:boolean) =>
+// for testing inner function name
+const setBar = (bar:boolean) =>
     function setBar(state:any) {
       return {
         ...state,
@@ -110,7 +116,7 @@ const setFooTrue = (state:any) => {
       };
     };
   
-  const asyncTest = async (stateChange:StateChange) => {
+const asyncTest = async (stateChange:StateChange) => {
     await setTimeout(()=> {}, 10);
     stateChange
       .next(setFooTrue)
@@ -118,18 +124,23 @@ const setFooTrue = (state:any) => {
       .dispatch();
   };
   
-  const setFooTrueWithTap = (stateChange:StateChange) => 
+const setFooTrueWithTap = (stateChange:StateChange) => 
     stateChange.next(setFooTrue);
   
-  const setBarTrueWithTap = (stateChange:StateChange) => 
+const setBarTrueWithTap = (stateChange:StateChange) => 
     stateChange.next(setBarTrue);
   
-  const causeError = (state:any) => {
+const causeError = (state:any) => {
     throw new Error("test error")
   };
 
 
-  const tapError = (stateChange:StateChange) =>
+const tapError = (stateChange:StateChange) =>
     stateChange.next(causeError);
   
+
+const changeStateWithMutations = (state:any) => {
+  state.bar = true;
+  state.newArray = [1];
+};
 

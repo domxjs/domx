@@ -72,7 +72,11 @@ event  information to the console.
 import {applyEventMapLogging} from "@harbr/eventmap/applyEventMapLogging";
 
 applyEventMapLogging();
+
+// or call with collapsed:true to collapse console logging groups
+applyEventMapLogging({collapsed:true});
 ```
+
 **Applying Custom Middleware**
 ```js
 import {EventMap} from "@harbr/eventmap";

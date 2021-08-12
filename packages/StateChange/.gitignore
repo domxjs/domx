@@ -2,3 +2,4 @@
 /applyStateChangeErrorHandling.*
 /applyStateChangeConsoleLogging.*
 /applyStateChangeRdtLogging.*
+/applyImmerToStateChange.*
