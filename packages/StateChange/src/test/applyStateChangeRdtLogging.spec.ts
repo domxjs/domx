@@ -5,40 +5,42 @@ import {DevToolsExtension,DevToolsInstance} from "../rdtTypes";
 
 
 describe("applyStateChangeRdtLogging", () => {
-    it("does not error when there is no rdt", () => {
+    beforeEach(() => {
         applyStateChangeRdtLogging();
+    });
+
+    afterEach(() => {
+        clearDevTools();
+        StateChange.clearMiddleware();
+        applyStateChangeRdtLogging.reset();
+    });
+
+
+    it("does not error when there is no rdt", () => {
         const el = fixture(html`<test-state-change></test-state-change>`);
         expect(() => el.testSimple()).not.toThrow();
         el.restore();
-        StateChange.clearMiddleware();
     });
 
     it("sends state to rdt on next", () => {
-        applyStateChangeRdtLogging();
         setDevTools();
         const el = fixture(html`<test-state-change></test-state-change>`);
         el.testSimple();
-        expect(MockDevToolsInstance.lastAction).toBe("TestStateChange.setBarTrue");
+        expect(MockDevToolsInstance.lastAction).toBe("TestStateChange.setBarTrue()");
         expect(MockDevToolsInstance.lastState).toStrictEqual({foo:true, bar:true});
         el.restore();
-        clearDevTools();
-        StateChange.clearMiddleware();
     });
 
     it("sends state to rdt on tap", () => {
-        applyStateChangeRdtLogging();
         setDevTools();
         const el = fixture(html`<test-state-change></test-state-change>`);
         el.testFunction();
-        expect(MockDevToolsInstance.lastAction).toBe("TestStateChange.asyncTest");
+        expect(MockDevToolsInstance.lastAction).toBe("TestStateChange.asyncTest()");
         expect(MockDevToolsInstance.lastState).toStrictEqual({foo:false, bar:false});
         el.restore();
-        clearDevTools();
-        StateChange.clearMiddleware();
     });
 
     it("can jump to a state", async () => {
-        applyStateChangeRdtLogging();
         setDevTools();
         const el = fixture(html`<test-state-change></test-state-change>`);
         el.testSimple();
@@ -46,22 +48,17 @@ describe("applyStateChangeRdtLogging", () => {
         MockDevToolsInstance.testJump({testJump: true});
         expect(el.state).toStrictEqual({testJump: true});
         el.restore();
-        clearDevTools();
-        StateChange.clearMiddleware();
     });
 
     it("errors when skipping a state", async () => {
-        applyStateChangeRdtLogging();
         setDevTools();
         const el = fixture(html`<test-state-change></test-state-change>`);
         el.testSimple();
         expect(el.state).toStrictEqual({foo:true, bar:true});
         expect(MockDevToolsInstance.lastError).toBe("");
         MockDevToolsInstance.testSkip();
-        expect(MockDevToolsInstance.lastError).toBe("StateChange rdt logging does not support payload type: TOGGLE_ACTION");
+        expect(MockDevToolsInstance.lastError).toBe("StateChange RDT logging does not support payload type: DISPATCH:TOGGLE_ACTION");
         el.restore();
-        clearDevTools();
-        StateChange.clearMiddleware();
     });   
 });
 
@@ -120,11 +117,11 @@ class MockDevToolsInstance implements DevToolsInstance {
 
     static testJump(toState:any) {
         const payload = {type: "JUMP_TO_ACTION"};
-        MockDevToolsInstance.listener({payload, state: toState});
+        MockDevToolsInstance.listener({type: "DISPATCH", payload, state: JSON.stringify(toState)});
     }
 
     static testSkip() {
         const payload = {type:"TOGGLE_ACTION"};
-        MockDevToolsInstance.listener({payload});
+        MockDevToolsInstance.listener({type:"DISPATCH", payload});
     }
 }
