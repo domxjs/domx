@@ -17,6 +17,7 @@ describe("applyStateChangeErrorHandling", () => {
         }
         el.restore();
         StateChange.clearMiddleware();
+        applyStateChangeErrorHandling.reset();
     });
 
     it("logs errors on tap", () => {
@@ -33,5 +34,6 @@ describe("applyStateChangeErrorHandling", () => {
         }
         el.restore();
         StateChange.clearMiddleware();
+        applyStateChangeErrorHandling.reset();
     });
 });
