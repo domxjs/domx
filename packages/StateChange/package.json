@@ -1,6 +1,6 @@
 {
   "name": "@harbr/statechange",
-  "version": "0.3.5",
+  "version": "0.4.0",
   "license": "MIT",
   "author": "John Horback",
   "description": "A monad-like object that enables changing a property on an HTMLElement in a functional way",
