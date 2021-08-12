@@ -37,7 +37,7 @@ class TestStateChange extends HTMLElement {
     testSimple() {
       StateChange.of(this)
         .next(setFooTrue)
-        .next(setBarTrue)
+        .next(setBar(true))
         .dispatch();
     }
   
@@ -91,14 +91,24 @@ const setFooTrue = (state:any) => {
       ...state,
       foo: true
     };
-  }
+  };
   
   const setBarTrue = (state:any) => {
     return {
       ...state,
       bar: true
     };
-  }
+  };
+
+
+  // for testing inner function name
+  const setBar = (bar:boolean) =>
+    function setBar(state:any) {
+      return {
+        ...state,
+        bar
+      };
+    };
   
   const asyncTest = async (stateChange:StateChange) => {
     await setTimeout(()=> {}, 10);

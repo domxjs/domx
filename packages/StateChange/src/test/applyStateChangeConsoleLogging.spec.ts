@@ -20,7 +20,7 @@ describe("applyStateChangeConsoleLogging", () => {
         el.testSimple();
         expect(logSpy).toBeCalled();
         expect(logSpy).toHaveBeenCalledWith("> STATECHANGE next state:", {foo: true, bar: false})
-        expect(groupCollapsedSpy).toHaveBeenCalledWith("> STATECHANGE.next: TestStateChange.setBarTrue()");
+        expect(groupCollapsedSpy).toHaveBeenCalledWith("> STATECHANGE.next: TestStateChange.setBar()");
         logSpy.mockRestore();
         groupCollapsedSpy.mockRestore();
         el.restore();
@@ -46,7 +46,7 @@ describe("applyStateChangeConsoleLogging", () => {
         el.testSimple();
         expect(logSpy).toBeCalled();
         expect(logSpy).toHaveBeenCalledWith("> STATECHANGE next state:", {foo: true, bar: false})
-        expect(groupCollapsedSpy).toHaveBeenCalledWith("> STATECHANGE.next: TestStateChange.setBarTrue()");
+        expect(groupCollapsedSpy).toHaveBeenCalledWith("> STATECHANGE.next: TestStateChange.setBar()");
         logSpy.mockRestore();
         groupCollapsedSpy.mockRestore();
         el.restore();

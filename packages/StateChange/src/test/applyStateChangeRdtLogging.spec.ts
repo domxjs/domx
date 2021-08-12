@@ -26,7 +26,7 @@ describe("applyStateChangeRdtLogging", () => {
         setDevTools();
         const el = fixture(html`<test-state-change></test-state-change>`);
         el.testSimple();
-        expect(MockDevToolsInstance.lastAction).toBe("TestStateChange.setBarTrue()");
+        expect(MockDevToolsInstance.lastAction).toBe("TestStateChange.setBar()");
         expect(MockDevToolsInstance.lastState).toStrictEqual({foo:true, bar:true});
         el.restore();
     });
@@ -66,6 +66,17 @@ describe("applyStateChangeRdtLogging", () => {
         expect(warnSpy).toHaveBeenCalledTimes(0);
         applyStateChangeRdtLogging();
         expect(warnSpy).toHaveBeenCalledTimes(1);
+    });
+
+    it("skips logging on init", () => {
+        setDevTools();
+        MockDevToolsInstance.lastError = "";
+        const el = fixture(html`<test-state-change></test-state-change>`);
+        el.testSimple();
+        expect(el.state).toStrictEqual({foo:true, bar:true});
+        MockDevToolsInstance.testInit();
+        expect(MockDevToolsInstance.lastError).toBe("");
+        el.restore();
     });
 });
 
@@ -130,5 +141,10 @@ class MockDevToolsInstance implements DevToolsInstance {
     static testSkip() {
         const payload = {type:"TOGGLE_ACTION"};
         MockDevToolsInstance.listener({type:"DISPATCH", payload});
+    }
+
+    static testInit() {
+        const payload = {type:"ANY"};
+        MockDevToolsInstance.listener({type:"START", payload});
     }
 }
