@@ -4,7 +4,7 @@ Contains low level patterns for middleware and HTMLElement mixin logging.
 
 ## Installation
 ```sh
-npm install @harbor/middleware
+npm install @harbr/middleware
 ```
 
 
@@ -29,7 +29,7 @@ arguments and return the `next` functions return value.
 #### Full Example
 `TestMiddleware.ts`
 ```js
-import {Middleware} from "@harbor/middleware";
+import {Middleware} from "@harbr/middleware";
 export {TestMiddleware, useMiddleware};
 
 interface MwContext {

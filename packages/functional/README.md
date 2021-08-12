@@ -4,7 +4,7 @@ Contains methods for functional JavaScript patterns.
 
 ## Installation
 ```sh
-npm install @harbor/functional
+npm install @harbr/functional
 ```
 
 ## Usage

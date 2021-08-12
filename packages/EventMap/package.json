@@ -1,12 +1,23 @@
 {
-  "name": "@harbor/eventmap",
-  "version": "0.3.1",
+  "name": "@harbr/eventmap",
+  "version": "0.3.7",
   "license": "MIT",
   "author": "John Horback",
+  "description": "A CustomElement class mixin for declarative DOM event handling.",
+  "keywords": [
+    "Custom Elements",
+    "Dom events"
+  ],
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/jhorback/harbor-utils.git",
+    "directory": "packages/EventMap"
+  },
+  "homepage": "https://github.com/jhorback/harbor-utils/blob/master/packages/EventMap/README.md",
   "main": "EventMap.js",
   "types": "EventMap.d.ts",
   "dependencies": {
-    "@harbor/middleware": "0.2.2"
+    "@harbr/middleware": "0.2.7"
   },
   "scripts": {
     "build": "tsc",

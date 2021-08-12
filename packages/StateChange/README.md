@@ -84,7 +84,7 @@ class UserListElement extends HTMLElement {
 When needing to do more than just setting the next state object, a `tap` function can be used to perform any logic, branching, or asynchronous operations.
 
 ```js
-import { EventMap, event } from "@harbor/EventMap";
+import { EventMap, event } from "@harbr/eventmap";
 
 class UserListElement extends EventMap(HTMLElement){
     //...
@@ -172,25 +172,25 @@ There are also three functions available to apply logging and error handling mid
 ### Redux Dev Tool Logging
 Logs next and tap calls to the Redux dev tools extension.
 ```js
-import {applyRdtLogging} from "@harbor/StateChange/applyRdtLogging";
-applyRdtLogging();
+import {applyStateChangeRdtLogging} from "@harbr/StateChange/applyStateChangeRdtLogging";
+applyStateChangeRdtLogging();
 ```
 ### Logging
 Logs next and tap calls with state snapshots.
 ```js
-import {applyConsoleLogging} from "@harbor/StateChange/applyConsoleLogging";
-applyConsoleLogging();
+import {applyStateChangeConsoleLogging} from "@harbr/StateChange/applyStateChangeConsoleLogging";
+applyStateChangeConsoleLogging();
 ```
 ### Error handling
 Logs and throws the error.
 ```js
-import {applyErrorHandling} from "@harbor/StateChange/applyErrorHandling";
-applyErrorHandling();
+import {applyStateChangeErrorHandling} from "@harbr/StateChange/applyStateChangeErrorHandling";
+applyStateChangeErrorHandling();
 ```
 
 ### Adding custom middleware
 ```js
-import {StateChange} from "@harbor/StateChange";
+import {StateChange} from "@harbr/StateChange";
 
 StateChange.applyNextMiddleware(stateChange => next => state =>{
     // add custom behaviors and return next
@@ -212,7 +212,7 @@ StateChange.clearMiddleware();
 ## Full example
 This is a full example using the _basic_ methods for changing state.
 ```js
-import { EventMap, event } from '@harbor/EventMap';
+import { EventMap, event } from '@harbr/eventmap';
 import { showSystemToastEvent } from '../../system-toast/events';
 export { UserListElement };
 

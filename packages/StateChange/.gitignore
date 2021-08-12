@@ -1,4 +1,4 @@
 /StateChange.*
-/applyRdtLogging.*
-/applyConsoleLogging.*
-/applyErrorHandling.*
+/applyStateChangeErrorHandling.*
+/applyStateChangeConsoleLogging.*
+/applyStateChangeRdtLogging.*

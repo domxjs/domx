@@ -1,12 +1,25 @@
 {
-  "name": "@harbor/statechange",
-  "version": "0.3.0",
+  "name": "@harbr/statechange",
+  "version": "0.3.5",
   "license": "MIT",
   "author": "John Horback",
+  "description": "A monad-like object that enables changing a property on an HTMLElement in a functional way",
+  "keywords": [
+    "Custom Elements",
+    "FLUX",
+    "Functional",
+    "Monad"
+  ],
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/jhorback/harbor-utils.git",
+    "directory": "packages/StateChange"
+  },
+  "homepage": "https://github.com/jhorback/harbor-utils/blob/master/packages/StateChange/README.md",
   "main": "StateChange.js",
   "types": "StateChange.d.ts",
   "dependencies": {
-    "@harbor/middleware": "0.2.2"
+    "@harbr/middleware": "0.2.7"
   },
   "scripts": {
     "build": "tsc",
