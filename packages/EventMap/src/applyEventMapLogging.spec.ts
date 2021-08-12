@@ -9,6 +9,7 @@ describe("applyEventMapLogging", () => {
     it("can be applied", () => {
         expect(() => applyEventMapLogging()).not.toThrow();
         EventMap.clearMiddleware();
+        applyEventMapLogging.reset();
     });
 
     it("logs event data", () => {
@@ -28,6 +29,7 @@ describe("applyEventMapLogging", () => {
         infoSpy.mockRestore();
         groupEndSpy.mockRestore();
         EventMap.clearMiddleware();
+        applyEventMapLogging.reset();
     });
 
     it("logs event data collapsed", () => {
@@ -47,7 +49,17 @@ describe("applyEventMapLogging", () => {
         infoSpy.mockRestore();
         groupEndSpy.mockRestore();
         EventMap.clearMiddleware();
+        applyEventMapLogging.reset();
     });
+
+    it("warns if called twice", () => {
+        const warnSpy = jest.spyOn(console, "warn").mockImplementation(() => {});
+        applyEventMapLogging();
+        expect(warnSpy).toHaveBeenCalledTimes(0);
+        applyEventMapLogging();
+        expect(warnSpy).toHaveBeenCalledTimes(1);
+        applyEventMapLogging.reset();
+    })
 });
 
 
