@@ -30,6 +30,18 @@ const returnValue = compose(
 // returnValue = 5
 ```
 
+### TypeScript
+Both `pipe` and `compose` will infer the type of each functions argument and return value.
+If needing to use different types you can use `<any>`.
+```js
+ const returnValue = pipe<any>(
+    text => parseInt(text),
+    num => num + 1,
+    num => String(num) + " - it worked"
+)("1");
+// returnValue = "2 - it worked"
+```
+
 
 ## Async Versions
 `pipeAsync` and `composeAsync` can be used if any one of the methods in the chain is async or returns a promise.
