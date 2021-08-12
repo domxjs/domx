@@ -19,7 +19,8 @@
   "main": "StateChange.js",
   "types": "StateChange.d.ts",
   "dependencies": {
-    "@harbr/middleware": "0.2.7"
+    "@harbr/middleware": "0.2.7",
+    "immer": "^9.0.5"
   },
   "scripts": {
     "build": "tsc",
