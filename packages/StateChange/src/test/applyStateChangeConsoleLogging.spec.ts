@@ -30,8 +30,10 @@ describe("applyStateChangeConsoleLogging", () => {
         const logSpy = jest.spyOn(console, "group").mockImplementation(() => {});
         const el = fixture(html`<test-state-change></test-state-change>`);
         el.testFunction();
+        await setTimeout(() => {});
         expect(logSpy).toBeCalled();
-        expect(logSpy).toHaveBeenCalledWith("> STATECHANGE.tap: TestStateChange.asyncTest()");
+        expect(logSpy).toHaveBeenCalledWith("> STATECHANGE.next: TestStateChange.asyncTest(setFooTrue)");
+        expect(logSpy).toHaveBeenCalledWith("> STATECHANGE.next: TestStateChange.asyncTest(setBarTrue)");
         logSpy.mockRestore();
         el.restore();
     });
