@@ -1,10 +1,10 @@
-# Functional &middot; [![Build Status](https://travis-ci.com/jhorback/harbor-utils.svg?branch=packages/functional)](https://travis-ci.com/jhorback/harbor-utils)
+# Functional &middot; [![Build Status](https://travis-ci.com/plotmap-org/plotmap-web.svg?branch=packages/functional)](https://travis-ci.com/plotmap-org/plotmap-web)
 
 Contains methods for functional JavaScript patterns.
 
 ## Installation
 ```sh
-npm install @harbr/functional
+npm install @plotmap/functional
 ```
 
 ## Usage

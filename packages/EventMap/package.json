@@ -1,5 +1,5 @@
 {
-  "name": "@harbr/eventmap",
+  "name": "@plotmap/eventmap",
   "version": "0.4.0",
   "license": "MIT",
   "author": "John Horback",
@@ -10,14 +10,14 @@
   ],
   "repository": {
     "type": "git",
-    "url": "https://github.com/jhorback/harbor-utils.git",
+    "url": "https://github.com/plotmap-org/plotmap-web.git",
     "directory": "packages/EventMap"
   },
-  "homepage": "https://github.com/jhorback/harbor-utils/blob/master/packages/EventMap/README.md",
+  "homepage": "https://github.com/plotmap-org/plotmap-web/blob/master/packages/EventMap/README.md",
   "main": "EventMap.js",
   "types": "EventMap.d.ts",
   "dependencies": {
-    "@harbr/middleware": "0.2.7"
+    "@plotmap/middleware": "0.2.7"
   },
   "scripts": {
     "build": "tsc",

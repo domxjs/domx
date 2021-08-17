@@ -22,7 +22,7 @@ install:
 
 matrix:
   include:
-  - name: harbor/utils
+  - name: plotmap-web
     env: PACKAGE_LOCATION=.
     if: branch = master
   - name: functional

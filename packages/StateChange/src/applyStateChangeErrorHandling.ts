@@ -1,5 +1,5 @@
 import {StateChange} from "./StateChange";
-import {Logger} from "@harbr/middleware";
+import {Logger} from "@plotmap/middleware";
 export { applyStateChangeErrorHandling };
 
 let isApplied = false;

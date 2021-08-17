@@ -1,4 +1,4 @@
-import { Middleware } from "@harbr/middleware/Middleware";
+import { Middleware } from "@plotmap/middleware/Middleware";
 export {
   EventMap,
   eventsListenAt,

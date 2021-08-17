@@ -1,5 +1,5 @@
 {
-  "name": "@harbr/statechange",
+  "name": "@plotmap/statechange",
   "version": "0.5.0",
   "license": "MIT",
   "author": "John Horback",
@@ -12,14 +12,14 @@
   ],
   "repository": {
     "type": "git",
-    "url": "https://github.com/jhorback/harbor-utils.git",
+    "url": "https://github.com/plotmap-org/plotmap-web.git",
     "directory": "packages/StateChange"
   },
-  "homepage": "https://github.com/jhorback/harbor-utils/blob/master/packages/StateChange/README.md",
+  "homepage": "https://github.com/plotmap-org/plotmap-web/blob/master/packages/StateChange/README.md",
   "main": "StateChange.js",
   "types": "StateChange.d.ts",
   "dependencies": {
-    "@harbr/middleware": "0.2.7",
+    "@plotmap/middleware": "0.2.7",
     "immer": "^9.0.5"
   },
   "scripts": {

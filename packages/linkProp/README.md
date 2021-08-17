@@ -1,4 +1,4 @@
-# linkProp &middot; [![Build Status](https://travis-ci.com/jhorback/harbor-utils.svg?branch=packages/linkProp)](https://travis-ci.com/jhorback/harbor-utils)
+# linkProp &middot; [![Build Status](https://travis-ci.com/plotmap-org/plotmap-web.svg?branch=packages/linkProp)](https://travis-ci.com/plotmap-org/plotmap-web)
 
 Contains methods for linking properties of dom elements with other dom elements.
 
@@ -6,7 +6,7 @@ Examples are using LitElement.
 
 ## Installation
 ```sh
-npm install @harbr/linkProp
+npm install @plotmap/linkProp
 ```
 ## Methods
 - `linkProp(element, prop, path?)`

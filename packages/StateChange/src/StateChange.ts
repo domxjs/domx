@@ -1,4 +1,4 @@
-import { Middleware } from "@harbr/middleware";
+import { Middleware } from "@plotmap/middleware";
 export { StateChange, StateChangeMetaData };
 
 

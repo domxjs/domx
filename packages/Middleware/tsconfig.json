@@ -1,5 +1,5 @@
 {
-  // @harbr/middleware
+  // @plotmap/middleware
   "composite": true,
   "extends": "../../tsconfig.json",  
   "compilerOptions": {

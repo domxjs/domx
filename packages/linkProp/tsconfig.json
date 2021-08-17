@@ -1,5 +1,5 @@
 {
-  // @harbr/linkProp
+  // @plotmap/linkProp
   "composite": true,
   "extends": "../../tsconfig.json",  
   "compilerOptions": {

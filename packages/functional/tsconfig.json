@@ -1,5 +1,5 @@
 {
-  // @harbr/functional
+  // @plotmap/functional
   "composite": true,
   "extends": "../../tsconfig.json",
   "compilerOptions": {    
