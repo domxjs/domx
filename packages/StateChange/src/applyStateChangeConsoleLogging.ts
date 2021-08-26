@@ -1,5 +1,5 @@
 import {StateChange} from "./StateChange";
-import {Logger} from "@plotmap/middleware";
+import {Logger} from "@domx/middleware";
 export { applyStateChangeConsoleLogging };
 
 

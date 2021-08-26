@@ -43,7 +43,7 @@ export class MyElement extends LitElement {
     return html`
       <img class="logo" src="${logoUrl}"/>
       <wc-markdown
-        src="https://raw.githubusercontent.com/plotmap-org/plotmap-web/master/README.md"
+        src="https://raw.githubusercontent.com/domxjs/domx/master/README.md"
       ></wc-markdown>   
     `
   }

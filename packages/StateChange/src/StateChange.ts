@@ -1,4 +1,4 @@
-import { Middleware } from "@plotmap/middleware";
+import { Middleware } from "@domx/middleware";
 export { StateChange, StateChangeMetaData };
 
 

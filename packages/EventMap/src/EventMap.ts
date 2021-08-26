@@ -1,4 +1,4 @@
-import { Middleware } from "@plotmap/middleware/Middleware";
+import { Middleware } from "@domx/middleware/Middleware";
 export {
   EventMap,
   eventsListenAt,

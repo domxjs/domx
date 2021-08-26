@@ -1,10 +1,10 @@
-# Functional &middot; [![Build Status](https://travis-ci.com/plotmap-org/plotmap-web.svg?branch=packages/functional)](https://travis-ci.com/plotmap-org/plotmap-web)
+# Functional &middot; [![Build Status](https://travis-ci.com/domxjs/domx.svg?branch=packages/functional)](https://travis-ci.com/domxjs/domx)
 
 Contains methods for functional JavaScript patterns.
 
 ## Installation
 ```sh
-npm install @plotmap/functional
+npm install @domx/functional
 ```
 
 ## Usage

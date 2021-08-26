@@ -22,7 +22,7 @@ install:
 
 matrix:
   include:
-  - name: plotmap-web
+  - name: domx
     env: PACKAGE_LOCATION=.
     if: branch = master
   - name: functional

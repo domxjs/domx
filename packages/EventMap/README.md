@@ -1,4 +1,4 @@
-# EventMap &middot; [![Build Status](https://travis-ci.com/plotmap-org/plotmap-web.svg?branch=packages/EventMap)](https://travis-ci.com/plotmap-org/plotmap-web)
+# EventMap &middot; [![Build Status](https://travis-ci.com/domxjs/domx.svg?branch=packages/EventMap)](https://travis-ci.com/domxjs/domx)
 
 A CustomElement class mixin which supports attaching and detaching DOM events declaratively.
 
@@ -69,7 +69,7 @@ event  information to the console.
 
 **Add Logging**
 ```js
-import {applyEventMapLogging} from "@plotmap/eventmap/applyEventMapLogging";
+import {applyEventMapLogging} from "@domx/eventmap/applyEventMapLogging";
 
 applyEventMapLogging();
 
@@ -79,7 +79,7 @@ applyEventMapLogging({collapsed:true});
 
 **Applying Custom Middleware**
 ```js
-import {EventMap} from "@plotmap/eventmap";
+import {EventMap} from "@domx/eventmap";
 
 EventMap.applyMiddleware(handlerInfo => next => () => {
   // add custom behaviors and call next

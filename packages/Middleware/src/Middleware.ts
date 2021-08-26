@@ -1,4 +1,4 @@
-import { compose } from "@plotmap/functional/lib/compose";
+import { compose } from "@domx/functional/lib/compose";
 export { Middleware }
 
 

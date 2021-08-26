@@ -1,10 +1,10 @@
-# Middleware &middot; [![Build Status](https://travis-ci.com/plotmap-org/plotmap-web.svg?branch=packages/Middleware)](https://travis-ci.com/plotmap-org/plotmap-web)
+# Middleware &middot; [![Build Status](https://travis-ci.com/domxjs/domx.svg?branch=packages/Middleware)](https://travis-ci.com/domxjs/domx)
 
 Contains low level patterns for middleware and HTMLElement mixin logging.
 
 ## Installation
 ```sh
-npm install @plotmap/middleware
+npm install @domx/middleware
 ```
 
 
@@ -29,7 +29,7 @@ arguments and return the `next` functions return value.
 #### Full Example
 `TestMiddleware.ts`
 ```js
-import {Middleware} from "@plotmap/middleware";
+import {Middleware} from "@domx/middleware";
 export {TestMiddleware, useMiddleware};
 
 interface MwContext {

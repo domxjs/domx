@@ -1,5 +1,5 @@
 {
-  "name": "@plotmap/eventmap",
+  "name": "@domx/eventmap",
   "version": "0.4.0",
   "license": "MIT",
   "author": "John Horback",
@@ -10,14 +10,14 @@
   ],
   "repository": {
     "type": "git",
-    "url": "https://github.com/plotmap-org/plotmap-web.git",
+    "url": "https://github.com/domxjs/domx.git",
     "directory": "packages/EventMap"
   },
-  "homepage": "https://github.com/plotmap-org/plotmap-web/blob/master/packages/EventMap/README.md",
+  "homepage": "https://github.com/domxjs/domx/blob/master/packages/EventMap/README.md",
   "main": "EventMap.js",
   "types": "EventMap.d.ts",
   "dependencies": {
-    "@plotmap/middleware": "0.2.7"
+    "@domx/middleware": "0.2.7"
   },
   "scripts": {
     "build": "tsc",

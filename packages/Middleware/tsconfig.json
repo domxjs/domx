@@ -1,5 +1,5 @@
 {
-  // @plotmap/middleware
+  // @domx/middleware
   "composite": true,
   "extends": "../../tsconfig.json",  
   "compilerOptions": {

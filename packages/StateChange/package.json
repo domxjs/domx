@@ -1,5 +1,5 @@
 {
-  "name": "@plotmap/statechange",
+  "name": "@domx/statechange",
   "version": "0.5.0",
   "license": "MIT",
   "author": "John Horback",
@@ -12,14 +12,14 @@
   ],
   "repository": {
     "type": "git",
-    "url": "https://github.com/plotmap-org/plotmap-web.git",
+    "url": "https://github.com/domxjs/domx.git",
     "directory": "packages/StateChange"
   },
-  "homepage": "https://github.com/plotmap-org/plotmap-web/blob/master/packages/StateChange/README.md",
+  "homepage": "https://github.com/domxjs/domx/blob/master/packages/StateChange/README.md",
   "main": "StateChange.js",
   "types": "StateChange.d.ts",
   "dependencies": {
-    "@plotmap/middleware": "0.2.7",
+    "@domx/middleware": "0.2.7",
     "immer": "^9.0.5"
   },
   "scripts": {

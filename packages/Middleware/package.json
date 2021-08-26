@@ -1,5 +1,5 @@
 {
-  "name": "@plotmap/middleware",
+  "name": "@domx/middleware",
   "type": "module",
   "version": "0.2.7",
   "license": "MIT",
@@ -12,10 +12,10 @@
   ],
   "repository": {
     "type": "git",
-    "url": "https://github.com/plotmap-org/plotmap-web.git",
+    "url": "https://github.com/domxjs/domx.git",
     "directory": "packages/Middleware"
   },
-  "homepage": "https://github.com/plotmap-org/plotmap-web/blob/master/packages/Middleware/README.md",
+  "homepage": "https://github.com/domxjs/domx/blob/master/packages/Middleware/README.md",
   "main": "index.js",
   "types": "index.d.ts",
   "scripts": {
@@ -23,6 +23,6 @@
     "clean": "tsc --build --clean"
   },
   "dependencies": {
-    "@plotmap/functional": "0.2.5"
+    "@domx/functional": "0.2.5"
   }
 }

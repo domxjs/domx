@@ -1,5 +1,5 @@
 {
-  // @plotmap/linkProp
+  // @domx/linkProp
   "composite": true,
   "extends": "../../tsconfig.json",  
   "compilerOptions": {

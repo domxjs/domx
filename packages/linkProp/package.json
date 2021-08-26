@@ -1,5 +1,5 @@
 {
-  "name": "@plotmap/linkprop",
+  "name": "@domx/linkprop",
   "type": "module",
   "version": "0.2.5",
   "license": "MIT",
@@ -11,10 +11,10 @@
   ],
   "repository": {
     "type": "git",
-    "url": "https://github.com/plotmap-org/plotmap-web.git",
+    "url": "https://github.com/domxjs/domx.git",
     "directory": "packages/linkProp"
   },
-  "homepage": "https://github.com/plotmap-org/plotmap-web/blob/master/packages/linkProp/README.md",
+  "homepage": "https://github.com/domxjs/domx/blob/master/packages/linkProp/README.md",
   "main": "linkProp.js",
   "types": "linkProp.d.ts",
   "scripts": {

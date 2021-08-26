@@ -1,5 +1,5 @@
 import {EventMap, EventMapHandlerInfo} from "./EventMap";
-import {Logger} from "@plotmap/middleware";
+import {Logger} from "@domx/middleware";
 export { applyEventMapLogging };
 
 let isApplied = false;

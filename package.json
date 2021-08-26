@@ -1,5 +1,5 @@
 {
-  "name": "plotmap-web",
+  "name": "domx",
   "type": "module",
   "version": "0.10.0",
   "license": "MIT",
@@ -10,7 +10,7 @@
   ],
   "repository": {
     "type": "git",
-    "url": "https://github.com/plotmap-org/plotmap-web.git"
+    "url": "https://github.com/domxjs/domx.git"
   },
   "main": "index.js",
   "types": "index.d.ts",

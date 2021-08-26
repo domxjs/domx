@@ -1,5 +1,5 @@
 {
-  // plotmap-web
+  // domx
   "compilerOptions": {
     "strict": true,
     "target": "ESNext",
