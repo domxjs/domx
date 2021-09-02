@@ -2,15 +2,17 @@
 
 A mono repo containing packages with common web application script utilities.
 
+Patterns over frameworks, [domxjs](https://www.domxjs.com/)
+
 ## Packages
 
-| Package   | Status   | Latest
-|:---       |:---      |:---
-| [EventMap](https://github.com/domxjs/domx/tree/master/packages/EventMap) | [![Build Status](https://travis-ci.com/domxjs/domx.svg?branch=packages/EventMap)](https://travis-ci.com/github/domxjs/domx) | [![npm](https://img.shields.io/npm/v/@domx/eventmap)](https://www.npmjs.com/package/@domx/eventmap)
-| [StateChange](https://github.com/domxjs/domx/tree/master/packages/StateChange) |[![Build Status](https://travis-ci.com/domxjs/domx.svg?branch=packages/StateChange)](https://travis-ci.com/github/domxjs/domx) | [![npm](https://img.shields.io/npm/v/@domx/statechange)](https://www.npmjs.com/package/@domx/statechange)
-| [linkProp](https://github.com/domxjs/domx/tree/master/packages/linkProp) | [![Build Status](https://travis-ci.com/domxjs/domx.svg?branch=packages/linkProp)](https://travis-ci.com/github/domxjs/domx) | [![npm](https://img.shields.io/npm/v/@domx/linkprop)](https://www.npmjs.com/package/@domx/linkprop)
-| [Middleware](https://github.com/domxjs/domx/tree/master/packages/Middleware) | [![Build Status](https://travis-ci.com/domxjs/domx.svg?branch=packages/Middleware)](https://travis-ci.com/github/domxjs/domx) | [![npm](https://img.shields.io/npm/v/@domx/middleware)](https://www.npmjs.com/package/@domx/middleware)
-| [functional](https://github.com/domxjs/domx/tree/master/packages/functional) | [![Build Status](https://travis-ci.com/domxjs/domx.svg?branch=packages/functional)](https://travis-ci.com/github/domxjs/domx) | [![npm](https://img.shields.io/npm/v/@domx/functional)](https://www.npmjs.com/package/@domx/functional)
+| Package   | Status   | Latest | Description
+|:---       |:---      |:---    |:---
+| [EventMap](https://github.com/domxjs/domx/tree/master/packages/EventMap) | [![Build Status](https://travis-ci.com/domxjs/domx.svg?branch=packages/EventMap)](https://travis-ci.com/github/domxjs/domx) | [![npm](https://img.shields.io/npm/v/@domx/eventmap)](https://www.npmjs.com/package/@domx/eventmap) | A CustomElement class mixin for declarative DOM event handling.
+| [StateChange](https://github.com/domxjs/domx/tree/master/packages/StateChange) |[![Build Status](https://travis-ci.com/domxjs/domx.svg?branch=packages/StateChange)](https://travis-ci.com/github/domxjs/domx) | [![npm](https://img.shields.io/npm/v/@domx/statechange)](https://www.npmjs.com/package/@domx/statechange) | A monad-like object that enables changing a property on an HTMLElement in a functional way.
+| [linkProp](https://github.com/domxjs/domx/tree/master/packages/linkProp) | [![Build Status](https://travis-ci.com/domxjs/domx.svg?branch=packages/linkProp)](https://travis-ci.com/github/domxjs/domx) | [![npm](https://img.shields.io/npm/v/@domx/linkprop)](https://www.npmjs.com/package/@domx/linkprop) | Contains methods for linking properties of DOM elements
+| [Middleware](https://github.com/domxjs/domx/tree/master/packages/Middleware) | [![Build Status](https://travis-ci.com/domxjs/domx.svg?branch=packages/Middleware)](https://travis-ci.com/github/domxjs/domx) | [![npm](https://img.shields.io/npm/v/@domx/middleware)](https://www.npmjs.com/package/@domx/middleware) | Contains low level patterns for middleware and HTMLElement mixin logging.
+| [functional](https://github.com/domxjs/domx/tree/master/packages/functional) | [![Build Status](https://travis-ci.com/domxjs/domx.svg?branch=packages/functional)](https://travis-ci.com/github/domxjs/domx) | [![npm](https://img.shields.io/npm/v/@domx/functional)](https://www.npmjs.com/package/@domx/functional) | Contains methods for functional JavaScript patterns.
 
 
 <!-- | [debounce](./packages/debounce/README.md) | | Needs conversion -->
