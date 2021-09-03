@@ -1,4 +1,4 @@
-import {StateChange} from "./StateChange";
+import {StateChange, StateChangeMetaData} from "./StateChange";
 import {DevToolsEventData,DevToolsExtension,DevToolsInstance} from "./rdtTypes";
 export {applyStateChangeRdtLogging};
 
@@ -18,26 +18,11 @@ let isApplied = false;
     }
     isApplied = true;
 
-    StateChange.applyNextMiddleware((stateChange:StateChange)  => (next:Function) => (state:any) =>
-        tryLogToDevTools(stateChange, next, state));
-
-    StateChange.applyTapMiddleware((next:Function) => (stateChange:StateChange) =>
-        tryLogToDevTools(stateChange, next, stateChange));
-};
-
-
-/**
- * Logs to dev tools if the browser extension is installed.
- * @param stateChange {StateChange}
- * @param next {Function}
- * @param stateOrStateChange {any}
- * @returns {any} the result of the next function.
- */
-const tryLogToDevTools = (stateChange:StateChange, next:Function, stateOrStateChange:any) => {
-    const result = next(stateOrStateChange);
-    const isTap = stateOrStateChange instanceof StateChange;
-    hasDevTools() && logToDevTools(stateChange, next, isTap ? stateChange.getState() : result);
-    return result;
+    StateChange.applyNextMiddleware((stateChange:StateChange)  => (next:Function) => (state:any) => {
+        const result = next(state);
+        hasDevTools() && logToDevTools(stateChange, next, result);
+        return result;
+    });
 };
 
 
@@ -50,9 +35,13 @@ const tryLogToDevTools = (stateChange:StateChange, next:Function, stateOrStateCh
  */
 const logToDevTools = (stateChange:StateChange, next:Function, result:any) => 
     !(stateChange.meta.el as any).__UPDATING_FROM_RDT &&
-        getDevToolsInstance(stateChange).send(getFnName(stateChange, next), result);
+        getDevToolsInstance(stateChange).send(getFnName(stateChange.meta), result);
 
 
+const getFnName = ({className, tapName, nextName}:StateChangeMetaData) => 
+    `${className}.${tapName ? `${tapName}(${nextName})` : `${nextName}()`}`;
+
+    
 /**
  * True if the redux dev tools extension is installed
  * @returns {boolean}
@@ -109,20 +98,6 @@ const setupDevToolsInstance = (stateChange: StateChange):DevToolsInstance => {
     return dt;
 };
 
-
-/**
- * Returns the name to log in the dev tools inspector.
- * @param stateChange {StateChange}
- * @param next {Function}
- * @returns {String}
- */
-const getFnName = (stateChange:StateChange, next:Function):string => {
-    let fnName = next.name || "anonymous";
-    if(fnName.indexOf("2") === fnName.length -1) {
-        fnName = fnName.substring(0, fnName.length - 1);
-    }
-    return `${stateChange.meta.el.constructor.name}.${fnName}()`;
-};
 
 /**
  * Returns true if the listener data is for initializing dev tools state.

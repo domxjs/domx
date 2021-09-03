@@ -1,16 +1,19 @@
-# Harbor Utilities &middot; [![GitHub license](https://img.shields.io/badge/license-MIT-blue.svg)](https://www.mit.edu/~amini/LICENSE.md) [![Build Status](https://travis-ci.com/jhorback/harbor-utils.svg?branch=master)](https://travis-ci.com/jhorback/harbor-utils) [![GitHub package.json version](https://img.shields.io/github/package-json/v/jhorback/harbor-utils)](https://github.com/jhorback/harbor-utils/releases)
+# DOMX &middot; [![GitHub license](https://img.shields.io/badge/license-MIT-blue.svg)](https://www.mit.edu/~amini/LICENSE.md) [![Build Status](https://travis-ci.com/domxjs/domx.svg?branch=master)](https://travis-ci.com/github/domxjs/domx) ![Lines](https://img.shields.io/badge/Coverage-98.06%25-brightgreen.svg) [![GitHub package.json version](https://img.shields.io/github/package-json/v/jhorback/harbor-utils)](https://github.com/jhorback/harbor-utils/releases)
 
 A mono repo containing packages with common web application script utilities.
 
+DOMX is an approach to building modern web applications using the DOM, browser, and patterns morso than relying on frameworks or libraries.
+See: **[domxjs.com](https://www.domxjs.com/), [domx wiki](https://github.com/domxjs/domx/wiki)**
+
 ## Packages
 
-| Package   | Status   | Latest
-|:---       |:---      |:---
-| [EventMap](https://github.com/jhorback/harbor-utils/tree/master/packages/EventMap) | [![Build Status](https://travis-ci.com/jhorback/harbor-utils.svg?branch=packages/EventMap)](https://travis-ci.com/jhorback/harbor-utils) | [![npm](https://img.shields.io/npm/v/@harbr/eventmap)](https://www.npmjs.com/package/@harbr/eventmap)
-| [StateChange](https://github.com/jhorback/harbor-utils/tree/master/packages/StateChange) |[![Build Status](https://travis-ci.com/jhorback/harbor-utils.svg?branch=packages/StateChange)](https://travis-ci.com/jhorback/harbor-utils) | [![npm](https://img.shields.io/npm/v/@harbr/statechange)](https://www.npmjs.com/package/@harbr/statechange)
-| [linkProp](https://github.com/jhorback/harbor-utils/tree/master/packages/linkProp) | [![Build Status](https://travis-ci.com/jhorback/harbor-utils.svg?branch=packages/linkProp)](https://travis-ci.com/jhorback/harbor-utils) | [![npm](https://img.shields.io/npm/v/@harbr/linkprop)](https://www.npmjs.com/package/@harbr/linkprop)
-| [Middleware](https://github.com/jhorback/harbor-utils/tree/master/packages/Middleware) | [![Build Status](https://travis-ci.com/jhorback/harbor-utils.svg?branch=packages/Middleware)](https://travis-ci.com/jhorback/harbor-utils) | [![npm](https://img.shields.io/npm/v/@harbr/middleware)](https://www.npmjs.com/package/@harbr/middleware)
-| [functional](https://github.com/jhorback/harbor-utils/tree/master/packages/functional) | [![Build Status](https://travis-ci.com/jhorback/harbor-utils.svg?branch=packages/functional)](https://travis-ci.com/jhorback/harbor-utils) | [![npm](https://img.shields.io/npm/v/@harbr/functional)](https://www.npmjs.com/package/@harbr/functional)
+| Package   | Status   | Latest | Description
+|:---       |:---      |:---    |:---
+| [EventMap](https://github.com/domxjs/domx/tree/master/packages/EventMap) | [![Build Status](https://travis-ci.com/domxjs/domx.svg?branch=packages/EventMap)](https://travis-ci.com/github/domxjs/domx) | [![npm](https://img.shields.io/npm/v/@domx/eventmap)](https://www.npmjs.com/package/@domx/eventmap) | A CustomElement class mixin for declarative DOM event handling.
+| [StateChange](https://github.com/domxjs/domx/tree/master/packages/StateChange) |[![Build Status](https://travis-ci.com/domxjs/domx.svg?branch=packages/StateChange)](https://travis-ci.com/github/domxjs/domx) | [![npm](https://img.shields.io/npm/v/@domx/statechange)](https://www.npmjs.com/package/@domx/statechange) | A monad-like object that enables changing a property on an HTMLElement in a functional way.
+| [linkProp](https://github.com/domxjs/domx/tree/master/packages/linkProp) | [![Build Status](https://travis-ci.com/domxjs/domx.svg?branch=packages/linkProp)](https://travis-ci.com/github/domxjs/domx) | [![npm](https://img.shields.io/npm/v/@domx/linkprop)](https://www.npmjs.com/package/@domx/linkprop) | Contains methods for linking properties of DOM elements
+| [Middleware](https://github.com/domxjs/domx/tree/master/packages/Middleware) | [![Build Status](https://travis-ci.com/domxjs/domx.svg?branch=packages/Middleware)](https://travis-ci.com/github/domxjs/domx) | [![npm](https://img.shields.io/npm/v/@domx/middleware)](https://www.npmjs.com/package/@domx/middleware) | Contains low level patterns for middleware and HTMLElement mixin logging.
+| [functional](https://github.com/domxjs/domx/tree/master/packages/functional) | [![Build Status](https://travis-ci.com/domxjs/domx.svg?branch=packages/functional)](https://travis-ci.com/github/domxjs/domx) | [![npm](https://img.shields.io/npm/v/@domx/functional)](https://www.npmjs.com/package/@domx/functional) | Contains methods for functional JavaScript patterns.
 
 
 <!-- | [debounce](./packages/debounce/README.md) | | Needs conversion -->

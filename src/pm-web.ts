@@ -5,7 +5,7 @@ import logoUrl from "./favicon.svg";
 /**
  * 
  */
-@customElement('hbr-utils')
+@customElement('pm-web')
 export class MyElement extends LitElement {
   static styles = css`
     :host {
@@ -43,7 +43,7 @@ export class MyElement extends LitElement {
     return html`
       <img class="logo" src="${logoUrl}"/>
       <wc-markdown
-        src="https://raw.githubusercontent.com/jhorback/harbor-utils/master/README.md"
+        src="https://raw.githubusercontent.com/domxjs/domx/master/README.md"
       ></wc-markdown>   
     `
   }
@@ -51,6 +51,6 @@ export class MyElement extends LitElement {
 
 declare global {
   interface HTMLElementTagNameMap {
-    'hbr-utils': MyElement
+    'pm-web': MyElement
   }
 }

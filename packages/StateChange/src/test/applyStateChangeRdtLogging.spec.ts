@@ -31,12 +31,13 @@ describe("applyStateChangeRdtLogging", () => {
         el.restore();
     });
 
-    it("sends state to rdt on tap", () => {
+    it("sends state to rdt on tap", async () => {
         setDevTools();
         const el = fixture(html`<test-state-change></test-state-change>`);
         el.testFunction();
-        expect(MockDevToolsInstance.lastAction).toBe("TestStateChange.asyncTest()");
-        expect(MockDevToolsInstance.lastState).toStrictEqual({foo:false, bar:false});
+        await setTimeout(() => {});
+        expect(MockDevToolsInstance.lastAction).toBe("TestStateChange.asyncTest(setBarTrue)");
+        expect(MockDevToolsInstance.lastState).toStrictEqual({foo:true, bar:true});
         el.restore();
     });
 

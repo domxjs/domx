@@ -117,7 +117,7 @@ const setBar = (bar:boolean) =>
     };
   
 const asyncTest = async (stateChange:StateChange) => {
-    await setTimeout(()=> {}, 10);
+    await setTimeout(()=> {});
     stateChange
       .next(setFooTrue)
       .next(setBarTrue)
