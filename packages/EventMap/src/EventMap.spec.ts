@@ -118,6 +118,19 @@ describe("EventMap", function () {
       expect(() => child.dispatchEvent(event)).not.toThrow();
       window.removeEventListener("event-to-trigger", listener);
     });
+
+    it("does not stop event propagation set to false", function () {
+      let listenerTriggered = false;
+      let listener = () => {
+        listenerTriggered = true
+      };
+
+      const event = new CustomEvent('event-to-test-stop-propagation', { bubbles: true, composed: true });
+      window.addEventListener("event-to-test-stop-propagation", listener);
+      child.dispatchEvent(event)
+      expect(listenerTriggered).toBe(true);
+      window.removeEventListener("event-to-test-stop-propagation", listener);
+    });
   });
 
   describe("Events at parent", function () {
@@ -237,12 +250,23 @@ describe("EventMap", function () {
         expect(__firedEvents._triggerOnDefault).toBe(true);
         el.restore();
       });
+
+      it("can stop immediate propagation", () => {
+        const el = fixture(html`<events-listen-at-descriptor></events-listen-at-descriptor>`);
+        const event = new CustomEvent("trigger-on-default", { bubbles: true, composed: true });
+        const spy = jest.spyOn(event, "stopImmediatePropagation");
+        window.dispatchEvent(event);
+        expect(spy).toBeCalled();
+        spy.mockRestore();
+        el.restore();
+      });
     });
 
     describe("event", () => {
       it("can be used on a method to define an event handler", () => {
         const el = fixture(html`<event-descriptor></event-descriptor>`);
-        window.dispatchEvent(new CustomEvent("trigger-on-default", { bubbles: true, composed: true }));
+        const event = new CustomEvent("trigger-on-default", { bubbles: true, composed: true });
+        window.dispatchEvent(event);
         expect(__firedEvents._triggerOnDefault).toBe(true);
         el.restore();
       });
@@ -251,6 +275,16 @@ describe("EventMap", function () {
         const el = fixture(html`<event-descriptor></event-descriptor>`);
         el.dispatchEvent(new CustomEvent("trigger-on-listen-at", { bubbles: true, composed: true }));
         expect(__firedEvents._triggerOnListenAt).toBe(true);
+        el.restore();
+      });
+
+      it("can stop immediate propagation", () => {
+        const el = fixture(html`<event-descriptor></event-descriptor>`);
+        const event = new CustomEvent("trigger-on-listen-at", { bubbles: true, composed: true });
+        const spy = jest.spyOn(event, "stopImmediatePropagation");
+        el.dispatchEvent(event);
+        expect(spy).toBeCalled();
+        spy.mockRestore();
         el.restore();
       });
     });
@@ -311,6 +345,7 @@ describe("EventMap", function () {
   });
 
 
+
   // add test for event and eventsListenAt decorators
 });
 
@@ -328,16 +363,24 @@ class EventMapTest1 extends EventMap(HTMLElement) {
     "event-to-test-window": {
       listenAt: "window",
       handler: "_toTestWindow"
+    },
+    "event-to-test-stop-propagation": {
+      listenAt: "parent",
+      handler: "_testStopPropagation",
+      stopPropagation: false
     }
   };
   _toTrigger() {
       __firedEvents._toTrigger = "triggered";
   }
   _toTestParent() {
-      __firedEvents._toTrigger = "triggeredOnParent";
+    __firedEvents._toTrigger = "triggeredOnParent";
   }
   _toTestWindow() {
-      __firedEvents._toTrigger = "triggeredOnWindow";
+    __firedEvents._toTrigger = "triggeredOnWindow";
+  }
+  _testStopPropagation() {
+    __firedEvents._toTrigger = "testStopPropagation";
   }
 }
 customElements.define("event-map-test-1", EventMapTest1);
@@ -436,7 +479,9 @@ class DefaultListenAt extends EventMap(HTMLElement) {
 customElements.define("default-listen-at", DefaultListenAt);
 
 
-@eventsListenAt("window")
+@eventsListenAt("window", {
+  stopImmediatePropagation: true
+})
 class EventsListenAtDescriptor extends EventMap(HTMLElement) {
   static events = {
       "trigger-on-default": "_triggerOnDefault",
@@ -456,7 +501,7 @@ class EventDescriptor extends EventMap(HTMLElement) {
       __firedEvents._triggerOnDefault = true;
   }
 
-  @event("trigger-on-listen-at", {listenAt: "parent"})
+  @event("trigger-on-listen-at", {listenAt: "parent", stopImmediatePropagation: true})
   _triggerOnListenAt() {
     __firedEvents._triggerOnListenAt = true;
   }
@@ -473,3 +518,4 @@ class MultipleHandlers extends EventMap(HTMLElement) {
   }
 }
 customElements.define("event-map-multiple-handlers", MultipleHandlers);
+
