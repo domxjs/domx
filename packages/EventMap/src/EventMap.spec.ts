@@ -309,6 +309,9 @@ describe("EventMap", function () {
       expect(__firedEvents.handler1Count).toBe(2);
     });
   });
+
+
+  // add test for event and eventsListenAt decorators
 });
 
 
