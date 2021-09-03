@@ -1,10 +1,10 @@
-# Functional &middot; [![Build Status](https://travis-ci.com/jhorback/harbor-utils.svg?branch=packages/functional)](https://travis-ci.com/jhorback/harbor-utils)
+# Functional &middot; [![Build Status](https://travis-ci.com/domxjs/domx.svg?branch=packages/functional)](https://travis-ci.com/domxjs/domx)
 
 Contains methods for functional JavaScript patterns.
 
 ## Installation
 ```sh
-npm install @harbor/functional
+npm install @domx/functional
 ```
 
 ## Usage
@@ -28,6 +28,18 @@ const returnValue = compose(
     (x) => x * 3
 )(1);
 // returnValue = 5
+```
+
+### TypeScript
+Both `pipe` and `compose` will infer the type of each functions argument and return value.
+If needing to use different types you can use `<any>`.
+```js
+ const returnValue = pipe<any>(
+    text => parseInt(text),
+    num => num + 1,
+    num => String(num) + " - it worked"
+)("1");
+// returnValue = "2 - it worked"
 ```
 
 

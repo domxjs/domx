@@ -24,6 +24,11 @@ interface DevToolsInstance {
 
 interface DevToolsEventData {
     id:string,
+    /**
+     * "START" - on RDT init
+     * "DISPATCH" - when dispatching
+     */
+    type: string,
     payload: {
         /**
          * JUMP_TO_ACTION - can change state here

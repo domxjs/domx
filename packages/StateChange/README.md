@@ -1,11 +1,11 @@
-# StateChange &middot; [![Build Status](https://travis-ci.com/jhorback/harbor-utils.svg?branch=packages/StateChange)](https://travis-ci.com/jhorback/harbor-utils)
+# StateChange &middot; [![Build Status](https://travis-ci.com/domxjs/domx.svg?branch=packages/StateChange)](https://travis-ci.com/domxjs/domx)
 
 
 `StateChange` is a monad-like object that enables changing a property on an HTMLElement in a `functional` way.
 
 [Basic usage](#basic-usage) \
 [Configuration](#configuration) \
-[Middleware (logging and error handling)](#middleware) \
+[Middleware (logging, error handling, immutable state handling)](#middleware) \
 [Full example](#full-example) \
 [Advanced usage](#advanced-usage)
 
@@ -84,7 +84,7 @@ class UserListElement extends HTMLElement {
 When needing to do more than just setting the next state object, a `tap` function can be used to perform any logic, branching, or asynchronous operations.
 
 ```js
-import { EventMap, event } from "@harbor/EventMap";
+import { EventMap, event } from "@domx/eventmap";
 
 class UserListElement extends EventMap(HTMLElement){
     //...
@@ -167,30 +167,41 @@ StateChange.of(this, {
 `StateChange` exposes middleware to hook into both the `next` and
 the `tap` functions.
 
-There are also three functions available to apply logging and error handling middleware.
+There are also four functions available to apply logging, error handling, and immutable state changes via Immer.
 
 ### Redux Dev Tool Logging
 Logs next and tap calls to the Redux dev tools extension.
 ```js
-import {applyRdtLogging} from "@harbor/StateChange/applyRdtLogging";
-applyRdtLogging();
+import {applyStateChangeRdtLogging} from "@domx/StateChange/applyStateChangeRdtLogging";
+applyStateChangeRdtLogging();
 ```
+
+### Immer - to simplify handling immutable data structures
+See https://immerjs.github.io/immer/produce
+```js
+import {applyImmerToStateChange} from "@domx/StateChange/applyImmerToStateChange";
+applyImmerToStateChange();
+```
+
 ### Logging
 Logs next and tap calls with state snapshots.
 ```js
-import {applyConsoleLogging} from "@harbor/StateChange/applyConsoleLogging";
-applyConsoleLogging();
+import {applyStateChangeConsoleLogging} from "@domx/StateChange/applyStateChangeConsoleLogging";
+applyStateChangeConsoleLogging();
+
+// or call with collapsed:true to collapse console logging groups
+applyStateChangeConsoleLogging({collapsed:true});
 ```
 ### Error handling
 Logs and throws the error.
 ```js
-import {applyErrorHandling} from "@harbor/StateChange/applyErrorHandling";
-applyErrorHandling();
+import {applyStateChangeErrorHandling} from "@domx/StateChange/applyStateChangeErrorHandling";
+applyStateChangeErrorHandling();
 ```
 
 ### Adding custom middleware
 ```js
-import {StateChange} from "@harbor/StateChange";
+import {StateChange} from "@domx/StateChange";
 
 StateChange.applyNextMiddleware(stateChange => next => state =>{
     // add custom behaviors and return next
@@ -212,7 +223,7 @@ StateChange.clearMiddleware();
 ## Full example
 This is a full example using the _basic_ methods for changing state.
 ```js
-import { EventMap, event } from '@harbor/EventMap';
+import { EventMap, event } from '@domx/eventmap';
 import { showSystemToastEvent } from '../../system-toast/events';
 export { UserListElement };
 

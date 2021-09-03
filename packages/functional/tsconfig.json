@@ -1,5 +1,5 @@
 {
-  // @harbor/functional
+  // @domx/functional
   "composite": true,
   "extends": "../../tsconfig.json",
   "compilerOptions": {    

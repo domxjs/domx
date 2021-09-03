@@ -1,4 +1,4 @@
-import { Middleware } from "@harbor/middleware";
+import { Middleware } from "@domx/middleware";
 export { StateChange, StateChangeMetaData };
 
 
@@ -6,11 +6,15 @@ interface StateChangeOptions {
   /** The state property name (default "state") */
   prop: string,
   /** The name of the state change event to dispatch (default "state-changed") */
-  changeEventName: string
+  changeEventName: string,
+  /** Set internally to carry of the name of the tap function */
+  tapName?:string
 }
 
 interface StateChangeMetaData extends StateChangeOptions {
-  el: HTMLElement
+  el: HTMLElement,
+  className: string,
+  nextName?: string
 }
 
 const nextMiddleware = new Middleware();
@@ -32,9 +36,9 @@ class StateChange {
   }
 
   /** A lifting function that calls next */
-  static nextWith = (stateChange: StateChange) => (fn:Function) => stateChange.continue().next(fn);
+  static nextWith = (stateChange: StateChange) => (fn:Function) => stateChange.continue(stateChange).next(fn);
   /** A lifting function that calls tap */
-  static tapWith = (stateChange: StateChange) => (fn:Function) => stateChange.continue().tap(fn);
+  static tapWith = (stateChange: StateChange) => (fn:Function) => stateChange.continue(stateChange).tap(fn);
   /** A chainable call to dispatch */
   static dispatch = (stateChange: StateChange) => stateChange.dispatch();
   /** A chainable call to dispatchEvent */
@@ -65,18 +69,22 @@ class StateChange {
    * @param {HTMLElement} el the data HTML element
    * @param {StateChangeOptions} options additional options
    */
-  constructor(el: HTMLElement, options = {
+  constructor(el: HTMLElement, options:StateChangeOptions = {
       prop: "state",
       changeEventName: "state-changed"
     }) {
-    const { prop, changeEventName} = options;
+    const { prop, changeEventName, tapName} = options;
+    const className = el.constructor.name;
     this.metaData = {
       el,
+      className,
       prop,
-      changeEventName
+      changeEventName,
+      tapName
     };
   }
 
+  // try using Symbol here again
   private metaData: StateChangeMetaData;
 
   /**
@@ -97,9 +105,10 @@ class StateChange {
    */
   next(fn: Function) {
     const {el, prop} = this.meta;
-    //@ts-ignore TS7503 - setting a dynamic property    
+    this.metaData.nextName = getFnName(fn);
+    //@ts-ignore TS7503 - setting a dynamic property
     el[prop] = nextMiddleware.mapThenExecute(this, fn, [this.getState()]);
-    return this.continue();
+    return this.continue(this);
   }
 
   /**
@@ -108,8 +117,9 @@ class StateChange {
    * @returns {StateChange}
    */
   tap(fn: Function) {
+    this.metaData.tapName = getFnName(fn);
     tapMiddleware.execute(fn, [this]);
-    return this.continue();
+    return this.continue(this);
   }
 
   /**
@@ -137,7 +147,7 @@ class StateChange {
   dispatch() {
     const {el, changeEventName} = this.meta;
     el.dispatchEvent(new CustomEvent(changeEventName));
-    return this.continue();
+    return this.continue(this);
   }
 
   /**
@@ -148,7 +158,7 @@ class StateChange {
   dispatchEvent(event: CustomEvent) {
     const {el} = this.meta;
     el.dispatchEvent(event);
-    return this.continue();
+    return this.continue(this);
   }
 
   /**
@@ -156,9 +166,9 @@ class StateChange {
    * Convenient for mapping methods.
    * @returns {StateChange}
    */
-  continue() {
-    const {el, prop, changeEventName} = this.meta;
-    return StateChange.of(el, {prop, changeEventName});
+  continue(stateChange:StateChange) {
+    const {el, prop, changeEventName, tapName} = this.meta;
+    return StateChange.of(el, {prop, changeEventName, tapName});
   }
 
   /**
@@ -170,3 +180,15 @@ class StateChange {
   }
 }
 
+/**
+ * Returns the name to log in the dev tools inspector.
+ * @param next {Function}
+ * @returns {String}
+ */
+const getFnName = (next:Function) => {
+  let fnName = next.name || "anonymous";
+  if (fnName.indexOf("2") === fnName.length-1) {
+      fnName = fnName.substring(0, fnName.length - 1);
+  }
+  return fnName;
+};

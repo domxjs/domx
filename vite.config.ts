@@ -4,7 +4,7 @@ import { defineConfig } from 'vite'
 export default defineConfig({
   build: {
     lib: {
-      entry: 'src/hbr-utils.ts',
+      entry: 'src/pm-web.ts',
       formats: ['es']
     }
   }

@@ -1,4 +1,4 @@
-# EventMap &middot; [![Build Status](https://travis-ci.com/jhorback/harbor-utils.svg?branch=packages/EventMap)](https://travis-ci.com/jhorback/harbor-utils)
+# EventMap &middot; [![Build Status](https://travis-ci.com/domxjs/domx.svg?branch=packages/EventMap)](https://travis-ci.com/domxjs/domx)
 
 A CustomElement class mixin which supports attaching and detaching DOM events declaratively.
 
@@ -69,13 +69,17 @@ event  information to the console.
 
 **Add Logging**
 ```js
-import {applyEventMapLogging} from "@harbor/EventMap/applyEventMapLogging";
+import {applyEventMapLogging} from "@domx/eventmap/applyEventMapLogging";
 
 applyEventMapLogging();
+
+// or call with collapsed:true to collapse console logging groups
+applyEventMapLogging({collapsed:true});
 ```
+
 **Applying Custom Middleware**
 ```js
-import {EventMap} from "@harbor/EventMap";
+import {EventMap} from "@domx/eventmap";
 
 EventMap.applyMiddleware(handlerInfo => next => () => {
   // add custom behaviors and call next

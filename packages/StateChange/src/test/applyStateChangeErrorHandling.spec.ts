@@ -1,10 +1,10 @@
 import { html, fixture } from "./testHelpers";
-import {applyErrorHandling} from "../applyErrorHandling";
+import {applyStateChangeErrorHandling} from "../applyStateChangeErrorHandling";
 import {StateChange} from "../StateChange";
 
-describe("applyErrorHandling", () => {
+describe("applyStateChangeErrorHandling", () => {
     it("logs errors on next", () => {
-        applyErrorHandling();
+        applyStateChangeErrorHandling();
         const logSpy = jest.spyOn(console, "error").mockImplementation(() => {});
 
         const el = fixture(html`<test-state-change></test-state-change>`);
@@ -17,10 +17,11 @@ describe("applyErrorHandling", () => {
         }
         el.restore();
         StateChange.clearMiddleware();
+        applyStateChangeErrorHandling.reset();
     });
 
     it("logs errors on tap", () => {
-        applyErrorHandling();
+        applyStateChangeErrorHandling();
         const logSpy = jest.spyOn(console, "error").mockImplementation(() => {});
 
         const el = fixture(html`<test-state-change></test-state-change>`);
@@ -33,5 +34,16 @@ describe("applyErrorHandling", () => {
         }
         el.restore();
         StateChange.clearMiddleware();
+        applyStateChangeErrorHandling.reset();
+    });
+
+    it("warns if called twice", () => {
+        const warnSpy = jest.spyOn(console, "warn").mockImplementation(() => {});
+        applyStateChangeErrorHandling();
+        expect(warnSpy).toHaveBeenCalledTimes(0);
+        applyStateChangeErrorHandling();
+        expect(warnSpy).toHaveBeenCalledTimes(1);
+        StateChange.clearMiddleware();
+        applyStateChangeErrorHandling.reset();
     });
 });

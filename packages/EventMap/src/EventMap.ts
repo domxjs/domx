@@ -1,10 +1,11 @@
-import { Middleware } from "@harbor/middleware/Middleware";
+import { Middleware } from "@domx/middleware/Middleware";
 export {
   EventMap,
   eventsListenAt,
   event,
   EventMapListenAt,
-  EventMapHandlerInfo
+  EventMapHandlerInfo,
+  ProcessedEventMapDefinition
 };
 
 
@@ -265,7 +266,7 @@ const getHandler = ({listenAt, element, eventName, eventHandler}:HandlerInfo):Ev
 
     middleware.mapThenExecute(handlerInfo, () => {
       event.stopPropagation();
-      eventHandler.call(this, event);
+      eventHandler.call(element, event);
     }, [event, eventHandler]);
   };
 
