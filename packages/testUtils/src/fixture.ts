@@ -1,5 +1,5 @@
 import {html, render, TemplateResult} from "lit-html";
-export { fixture, html};
+export { fixture, html, FixtureElement};
 
 interface FixtureElement extends HTMLElement {
     restore: Function

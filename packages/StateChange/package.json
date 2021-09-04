@@ -22,6 +22,9 @@
     "@domx/middleware": "0.2.7",
     "immer": "^9.0.5"
   },
+  "devDependencies": {
+    "@domx/testutils": "0.1.0"
+  },
   "scripts": {
     "build": "tsc",
     "clean": "tsc --build --clean"
