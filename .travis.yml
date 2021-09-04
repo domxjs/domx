@@ -12,6 +12,7 @@ branches:
   - packages/Middleware
   - packages/linkProp
   - packages/StateChange
+  - packages/testUtils
 cache:
   directories:
   - node_modules
@@ -40,6 +41,9 @@ matrix:
   - name: StateChange
     env: PACKAGE_LOCATION=packages/StateChange
     if: branch = packages/StateChange
+  - name: testUtils
+    env: PACKAGE_LOCATION=packages/testUtils
+    if: branch = packages/testUtils
 
 script:
   - npm run clean

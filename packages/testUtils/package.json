@@ -1,0 +1,28 @@
+{
+  "name": "@domx/testutils",
+  "type": "module",
+  "version": "0.2.5",
+  "license": "MIT",
+  "author": "John Horback",
+  "description": "Common testing utility scripts",
+  "keywords": [
+    "Custom Elements",
+    "test",
+    "fixture"
+  ],
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/domxjs/domx.git",
+    "directory": "packages/testUtils"
+  },
+  "homepage": "https://github.com/domxjs/domx/blob/master/packages/linkProp/README.md",
+  "main": "index.js",
+  "types": "index.d.ts",
+  "scripts": {
+    "build": "tsc --build",
+    "clean": "tsc --build --clean"
+  },
+  "dependencies": {
+    "lit-html": "1.4.1"
+  }
+}
