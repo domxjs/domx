@@ -1,4 +1,5 @@
 export {
     html,
-    fixture
+    fixture,
+    FixtureElement
 } from "./fixture";
