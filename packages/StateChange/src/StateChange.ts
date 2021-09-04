@@ -31,7 +31,7 @@ class StateChange {
    * @param options {StateChangeOptions} Additional options
    * @returns {StateChange}
    */
-  static of(el: HTMLElement, options?: StateChangeOptions) {
+  static of(el: HTMLElement, options?: StateChangeOptions|string) {
     return new StateChange(el, options);
   }
 
@@ -69,10 +69,20 @@ class StateChange {
    * @param {HTMLElement} el the data HTML element
    * @param {StateChangeOptions} options additional options
    */
-  constructor(el: HTMLElement, options:StateChangeOptions = {
+  constructor(el: HTMLElement, options:StateChangeOptions|string = {
       prop: "state",
       changeEventName: "state-changed"
     }) {
+    
+    if (typeof options === "string") {
+      const prop = options;
+      options = {
+        prop,
+        //@ts-ignore TS2339 looking for dataProperties on ctor
+        changeEventName: el.constructor.dataProperties?.[prop]?.changeEvent || `${prop}-changed`
+      };
+    }
+    
     const { prop, changeEventName, tapName} = options;
     const className = el.constructor.name;
     this.metaData = {
