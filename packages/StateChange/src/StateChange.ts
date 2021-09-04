@@ -4,9 +4,9 @@ export { StateChange, StateChangeMetaData };
 
 interface StateChangeOptions {
   /** The state property name (default "state") */
-  prop: string,
+  property: string,
   /** The name of the state change event to dispatch (default "state-changed") */
-  changeEventName: string,
+  changeEvent: string,
   /** Set internally to carry of the name of the tap function */
   tapName?:string
 }
@@ -70,26 +70,26 @@ class StateChange {
    * @param {StateChangeOptions} options additional options
    */
   constructor(el: HTMLElement, options:StateChangeOptions|string = {
-      prop: "state",
-      changeEventName: "state-changed"
+      property: "state",
+      changeEvent: "state-changed"
     }) {
     
     if (typeof options === "string") {
-      const prop = options;
+      const property = options;
       options = {
-        prop,
+        property,
         //@ts-ignore TS2339 looking for dataProperties on ctor
-        changeEventName: el.constructor.dataProperties?.[prop]?.changeEvent || `${prop}-changed`
+        changeEvent: el.constructor.dataProperties?.[property]?.changeEvent || `${property}-changed`
       };
     }
     
-    const { prop, changeEventName, tapName} = options;
+    const { property, changeEvent, tapName} = options;
     const className = el.constructor.name;
     this.metaData = {
       el,
       className,
-      prop,
-      changeEventName,
+      property,
+      changeEvent,
       tapName
     };
   }
@@ -103,9 +103,9 @@ class StateChange {
    * @returns {Object}
    */
   getState() {
-    const {el, prop} = this.meta;
+    const {el, property} = this.meta;
     //@ts-ignore TS7503 - returing a dynamic property
-    return el[prop];
+    return el[property];
   }
 
   /**
@@ -114,10 +114,10 @@ class StateChange {
    * @returns {StateChange}
    */
   next(fn: Function) {
-    const {el, prop} = this.meta;
+    const {el, property} = this.meta;
     this.metaData.nextName = getFnName(fn);
     //@ts-ignore TS7503 - setting a dynamic property
-    el[prop] = nextMiddleware.mapThenExecute(this, fn, [this.getState()]);
+    el[property] = nextMiddleware.mapThenExecute(this, fn, [this.getState()]);
     return this.continue(this);
   }
 
@@ -155,8 +155,8 @@ class StateChange {
    * @returns {StateChange}
    */
   dispatch() {
-    const {el, changeEventName} = this.meta;
-    el.dispatchEvent(new CustomEvent(changeEventName));
+    const {el, changeEvent} = this.meta;
+    el.dispatchEvent(new CustomEvent(changeEvent));
     return this.continue(this);
   }
 
@@ -177,8 +177,8 @@ class StateChange {
    * @returns {StateChange}
    */
   continue(stateChange:StateChange) {
-    const {el, prop, changeEventName, tapName} = this.meta;
-    return StateChange.of(el, {prop, changeEventName, tapName});
+    const {el, property, changeEvent, tapName} = this.meta;
+    return StateChange.of(el, {property, changeEvent, tapName});
   }
 
   /**
