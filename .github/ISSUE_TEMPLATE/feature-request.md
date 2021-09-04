@@ -64,7 +64,9 @@ Why should we *not* do this?
 [unresolved-questions]: #unresolved-questions
 
 - What questions need to be answered before implementation?
+  - [ ] Add questions
 - What dependencies need to be resolved before implementation?
+  - [ ] Link issues
 
 
 ## Future possibilities
