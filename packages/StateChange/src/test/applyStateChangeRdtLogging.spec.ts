@@ -1,4 +1,4 @@
-import { html, fixture } from "./testHelpers";
+import { html, fixture, TestStateChange } from "./testHelpers";
 import {applyStateChangeRdtLogging} from "../applyStateChangeRdtLogging";
 import {StateChange} from "../StateChange";
 import {DevToolsExtension,DevToolsInstance} from "../rdtTypes";
@@ -17,43 +17,43 @@ describe("applyStateChangeRdtLogging", () => {
 
 
     it("does not error when there is no rdt", () => {
-        const el = fixture(html`<test-state-change></test-state-change>`);
+        const el = fixture<TestStateChange>(html`<test-state-change></test-state-change>`);
         expect(() => el.testSimple()).not.toThrow();
         el.restore();
     });
 
     it("sends state to rdt on next", () => {
         setDevTools();
-        const el = fixture(html`<test-state-change></test-state-change>`);
+        const el = fixture<TestStateChange>(html`<test-state-change></test-state-change>`);
         el.testSimple();
         expect(MockDevToolsInstance.lastAction).toBe("TestStateChange.setBar()");
-        expect(MockDevToolsInstance.lastState).toStrictEqual({foo:true, bar:true});
+        expect(MockDevToolsInstance.lastState).toStrictEqual({state:{foo:true, bar:true}});
         el.restore();
     });
 
     it("sends state to rdt on tap", async () => {
         setDevTools();
-        const el = fixture(html`<test-state-change></test-state-change>`);
+        const el = fixture<TestStateChange>(html`<test-state-change></test-state-change>`);
         el.testFunction();
         await setTimeout(() => {});
         expect(MockDevToolsInstance.lastAction).toBe("TestStateChange.asyncTest(setBarTrue)");
-        expect(MockDevToolsInstance.lastState).toStrictEqual({foo:true, bar:true});
+        expect(MockDevToolsInstance.lastState).toStrictEqual({state: {foo:true, bar:true}});
         el.restore();
     });
 
     it("can jump to a state", async () => {
         setDevTools();
-        const el = fixture(html`<test-state-change></test-state-change>`);
+        const el = fixture<TestStateChange>(html`<test-state-change></test-state-change>`);
         el.testSimple();
         expect(el.state).toStrictEqual({foo:true, bar:true});
-        MockDevToolsInstance.testJump({testJump: true});
+        MockDevToolsInstance.testJump({state:{testJump: true}});
         expect(el.state).toStrictEqual({testJump: true});
         el.restore();
     });
 
     it("errors when skipping a state", async () => {
         setDevTools();
-        const el = fixture(html`<test-state-change></test-state-change>`);
+        const el = fixture<TestStateChange>(html`<test-state-change></test-state-change>`);
         el.testSimple();
         expect(el.state).toStrictEqual({foo:true, bar:true});
         expect(MockDevToolsInstance.lastError).toBe("");
@@ -72,7 +72,7 @@ describe("applyStateChangeRdtLogging", () => {
     it("skips logging on init", () => {
         setDevTools();
         MockDevToolsInstance.lastError = "";
-        const el = fixture(html`<test-state-change></test-state-change>`);
+        const el = fixture<TestStateChange>(html`<test-state-change></test-state-change>`);
         el.testSimple();
         expect(el.state).toStrictEqual({foo:true, bar:true});
         MockDevToolsInstance.testInit();

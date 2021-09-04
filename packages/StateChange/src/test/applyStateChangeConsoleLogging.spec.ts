@@ -1,4 +1,4 @@
-import { html, fixture } from "./testHelpers";
+import { html, fixture, TestStateChange } from "./testHelpers";
 import {applyStateChangeConsoleLogging} from "../applyStateChangeConsoleLogging";
 import {StateChange} from "../StateChange";
 
@@ -16,7 +16,7 @@ describe("applyStateChangeConsoleLogging", () => {
     it("provides next logging", () => {
         const logSpy = jest.spyOn(console, "info").mockImplementation(() => {});
         const groupCollapsedSpy = jest.spyOn(console, "group").mockImplementation(() => {});
-        const el = fixture(html`<test-state-change></test-state-change>`);
+        const el = fixture<TestStateChange>(html`<test-state-change></test-state-change>`);
         el.testSimple();
         expect(logSpy).toBeCalled();
         expect(logSpy).toHaveBeenCalledWith("> STATECHANGE next state:", {foo: true, bar: false})
@@ -28,7 +28,7 @@ describe("applyStateChangeConsoleLogging", () => {
 
     it("provides tap logging", async () => {
         const logSpy = jest.spyOn(console, "group").mockImplementation(() => {});
-        const el = fixture(html`<test-state-change></test-state-change>`);
+        const el = fixture<TestStateChange>(html`<test-state-change></test-state-change>`);
         el.testFunction();
         await setTimeout(() => {});
         expect(logSpy).toBeCalled();
@@ -44,7 +44,7 @@ describe("applyStateChangeConsoleLogging", () => {
         applyStateChangeConsoleLogging({collapsed:true});
         const logSpy = jest.spyOn(console, "info").mockImplementation(() => {});
         const groupCollapsedSpy = jest.spyOn(console, "groupCollapsed").mockImplementation(() => {});
-        const el = fixture(html`<test-state-change></test-state-change>`);
+        const el = fixture<TestStateChange>(html`<test-state-change></test-state-change>`);
         el.testSimple();
         expect(logSpy).toBeCalled();
         expect(logSpy).toHaveBeenCalledWith("> STATECHANGE next state:", {foo: true, bar: false})

@@ -19,7 +19,6 @@ const applyEventMapLogging = (
 
             const el = handlerInfo.element;
             const detail:any = handlerInfo.eventDetail || "(none)";
-            debugger;
             Logger.log(el, collapsed ? "groupCollapsed": "group",
                 `> EVENTMAP: ${handlerInfo.listenAt}@${handlerInfo.eventName} => ` +
                 `${handlerInfo.constructorName}.${handlerInfo.eventHandlerName}()`);
