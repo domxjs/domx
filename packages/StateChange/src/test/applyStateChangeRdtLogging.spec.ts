@@ -27,7 +27,7 @@ describe("applyStateChangeRdtLogging", () => {
         const el = fixture<TestStateChange>(html`<test-state-change></test-state-change>`);
         el.testSimple();
         expect(MockDevToolsInstance.lastAction).toBe("TestStateChange.setBar()");
-        expect(MockDevToolsInstance.lastState).toStrictEqual({foo:true, bar:true});
+        expect(MockDevToolsInstance.lastState).toStrictEqual({state:{foo:true, bar:true}});
         el.restore();
     });
 
@@ -37,7 +37,7 @@ describe("applyStateChangeRdtLogging", () => {
         el.testFunction();
         await setTimeout(() => {});
         expect(MockDevToolsInstance.lastAction).toBe("TestStateChange.asyncTest(setBarTrue)");
-        expect(MockDevToolsInstance.lastState).toStrictEqual({foo:true, bar:true});
+        expect(MockDevToolsInstance.lastState).toStrictEqual({state: {foo:true, bar:true}});
         el.restore();
     });
 
@@ -46,7 +46,7 @@ describe("applyStateChangeRdtLogging", () => {
         const el = fixture<TestStateChange>(html`<test-state-change></test-state-change>`);
         el.testSimple();
         expect(el.state).toStrictEqual({foo:true, bar:true});
-        MockDevToolsInstance.testJump({testJump: true});
+        MockDevToolsInstance.testJump({state:{testJump: true}});
         expect(el.state).toStrictEqual({testJump: true});
         el.restore();
     });
