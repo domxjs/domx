@@ -2,7 +2,7 @@
 name: Feature request
 about: Detailed feature request with acceptance criteria
 title: FR - [Feature name]
-labels: enhancement
+labels: enhancement, question
 assignees: jhorback
 
 ---
