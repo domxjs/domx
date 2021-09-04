@@ -1,4 +1,4 @@
-import { html, fixture } from "./testHelpers";
+import { html, fixture, TestStateChange } from "./testHelpers";
 import {applyStateChangeErrorHandling} from "../applyStateChangeErrorHandling";
 import {StateChange} from "../StateChange";
 
@@ -7,7 +7,7 @@ describe("applyStateChangeErrorHandling", () => {
         applyStateChangeErrorHandling();
         const logSpy = jest.spyOn(console, "error").mockImplementation(() => {});
 
-        const el = fixture(html`<test-state-change></test-state-change>`);
+        const el = fixture<TestStateChange>(html`<test-state-change></test-state-change>`);
         //@ts-ignore
         const testErrorSpy = jest.spyOn(el, "testError");
         try {
@@ -24,7 +24,7 @@ describe("applyStateChangeErrorHandling", () => {
         applyStateChangeErrorHandling();
         const logSpy = jest.spyOn(console, "error").mockImplementation(() => {});
 
-        const el = fixture(html`<test-state-change></test-state-change>`);
+        const el = fixture<TestStateChange>(html`<test-state-change></test-state-change>`);
         //@ts-ignore
         const testErrorSpy = jest.spyOn(el, "testError");
         try {

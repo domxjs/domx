@@ -1,4 +1,4 @@
-import { html, fixture } from "./testHelpers";
+import { html, fixture, TestStateChange } from "./testHelpers";
 import {applyImmerToStateChange} from "../applyImmerToStateChange";
 import {StateChange} from "../StateChange";
 
@@ -14,7 +14,7 @@ describe("applyImmerToStateChange", () => {
     });
 
     it("handles state mutations", () => {       
-        const el = fixture(html`<test-state-change></test-state-change>`);
+        const el = fixture<TestStateChange>(html`<test-state-change></test-state-change>`);
         el.testImmer();
         expect(el.state).toStrictEqual({foo:false, bar:true, newArray:[1]})
         el.restore();

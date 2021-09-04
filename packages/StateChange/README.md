@@ -151,15 +151,43 @@ The `StateChange` constructor takes an optional configuration object that allows
 ```js
 // The default configuration:
 StateChange.of(this, {
-    prop: "state",
-    changeEventName: "state-changed"
+    property: "state",
+    changeEvent: "state-changed"
 });
 
 // Changing the property and change event name
 StateChange.of(this, {
-    prop: "currentUser",
-    changeEventName: "current-user-changed"
+    property: "currentUser",
+    changeEvent: "current-user-changed"
 });
+```
+A string can also be used to set the property and change event.
+```js
+StateChange.of(this, "user");
+// sets the property to "user"
+// and sets the changeEvent to "user-changed"
+```
+For use with DataElements, the change event name will first be looked for on 
+a static `dataProperties` property.
+```js
+export class TestStateProp3 extends HTMLElement {
+  static dataProperties = {
+    user: {
+      changeEvent: "user-change-event"
+    }
+  }
+
+  user = {
+    userName: "joeuser"
+  };
+
+  changeName(userName: string) {
+    // dispatch here will trigger the "user-change-event"
+    // as described in the static dataProperties property
+    StateChange.of(this, "user")
+      .dispatch();
+  }
+}
 ```
 
 
