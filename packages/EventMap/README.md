@@ -22,33 +22,47 @@ class MyCass extends EventMap(HTMLElement) {
   }
 }
 ```
-### `@eventsListenAt` decorator
+### `@eventsListenAt(target, options?)` decorator
 The `eventsListenAt` decorator can be used on a class to define where to add event listeners by default.
 
-**Possible values** 
+**Possible target values** 
 - self (the default behavior)
 - parent
 - window
 
-### `@event` decorator
+**options**
+ - stopPropagation - default is true; set to false to allow event propagation.
+ - stopImmediatePropagation - set to true to call `stopImmidiatePropagation` on all events.
+
+### `@event(name, options?)` decorator
 Add the `event` decorator on methods to handle the event.
 
-The decorator takes a second argument to override the default `listenAt` property.
-
-
+**options**
+- listenAt - overrides the defulat `listenAt` property for this event.
+- stopPropagation - overrides the defulat `stopPropagation` property for this event.
+- stopImmediatePropagation - overrides the defulat `stopImmediatePropagation` property for this event.
 
 ## Using Static Properties
-The following example is identical in behavior to the above example using decorators.
+There are four static properties that can be set on a class to
+define how events should be handled.
+- eventsListenAt - sets the defaults for all events
+- eventsStopPropagation - sets the default for all events
+- eventsStopImmediatePropagation - sets the default for all events
+- events - defines the event mapping from event name to handler and options
 ```js
 class MyCass extends EventMap(HTMLElement) {
 
   static eventsListenAt = "window";
+  static eventsStopPropagation = true;
+  static eventsStopImmediatePropagation = false;
 
   static events = {
     "event-to-handle-at-parent": "_someHandler",
     "event-to-handle-at-window": {
       listenAt: "window",
-      handler: "_anotherHandler"
+      handler: "_anotherHandler",
+      stopPropagation: true,
+      stopImmediatePropagation: false
     }
   };
 
@@ -89,13 +103,7 @@ EventMap.applyMiddleware(handlerInfo => next => () => {
 
 
 ## Notes on Behavior
-
 ### Multiple event maps
 If any mixin or class uses the EventMap, all subclass and mixin event maps will be merged.
 
 The event maps higher in the chain will take precident.
-
-
-### Event Propagation
-When an event handler is matched, __stopPropagation()__
-is called on the event before passing it to the handler.
