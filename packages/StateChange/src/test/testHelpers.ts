@@ -1,24 +1,6 @@
 import { html, TemplateResult, render } from "lit-html";
 import { StateChange } from "../StateChange";
-export { html, fixture };
-
-interface FixtureElement extends HTMLElement {
-    /** Removes the fixture; which also removes the element and any listeners. */
-    restore: Function
-};
-  
-function fixture<T>(html:TemplateResult): FixtureElement & T {
-  let fixture = document.createElement("div");
-  fixture.setAttribute("fixture", "");
-  document.body.appendChild(fixture);
-
-  render(html, fixture);
-  const el = fixture.firstElementChild as FixtureElement & T;
-
-  // set the remove method to remove the fixture
-  el.restore = () => fixture.remove()
-  return el;
-}
+export { html, fixture } from "@domx/testutils";
 
 
 export class TestStateProp1 extends HTMLElement {
