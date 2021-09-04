@@ -4,7 +4,7 @@ Common testing utility scripts.
 
 ## Installation
 ```sh
-npm install @domx/testUtils
+npm install @domx/testutils
 ```
 ## `fragment`
 The test fragment can be used to test HTML elements that need to be appended to the DOM.
