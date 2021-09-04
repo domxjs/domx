@@ -20,5 +20,6 @@ assignees: jhorback
 
 ## Update master version
 - [ ] Update package version.
+- [ ] Push git tags `git push origin --tags`.
 - [ ] Add release to git; add changelog notes for the specific release.
 - [ ] Publish new packages.
