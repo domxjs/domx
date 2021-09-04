@@ -29,6 +29,7 @@
     { "path": "./packages/Middleware" },
     { "path": "./packages/linkProp" },
     { "path": "./packages/EventMap" },
-    { "path": "./packages/StateChange" }
+    { "path": "./packages/StateChange" },
+    { "path": "./packages/testUtils" }
   ]
 }
