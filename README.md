@@ -3,7 +3,7 @@
 A mono repo containing packages with common web application script utilities.
 
 DOMX is an approach to building modern web applications using the DOM, browser, and patterns morso than relying on frameworks or libraries.
-See: **[domxjs.com](https://www.domxjs.com/), [domx wiki](https://github.com/domxjs/domx/wiki)**
+See: **[domxjs.com](https://www.domxjs.com/)**
 
 ## Packages
 
