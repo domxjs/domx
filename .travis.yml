@@ -13,6 +13,7 @@ branches:
   - packages/linkProp
   - packages/StateChange
   - packages/testUtils
+  - packages/DataElement
 cache:
   directories:
   - node_modules
@@ -44,6 +45,9 @@ matrix:
   - name: testUtils
     env: PACKAGE_LOCATION=packages/testUtils
     if: branch = packages/testUtils
+  - name: DataElement
+    env: PACKAGE_LOCATION=packages/DataElement
+    if: branch = packages/DataElement
 
 script:
   - npm run clean

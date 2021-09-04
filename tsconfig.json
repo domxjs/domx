@@ -30,6 +30,7 @@
     { "path": "./packages/linkProp" },
     { "path": "./packages/EventMap" },
     { "path": "./packages/StateChange" },
-    { "path": "./packages/testUtils" }
+    { "path": "./packages/testUtils" },
+    { "path": "./packages/DataElement" }
   ]
 }

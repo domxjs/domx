@@ -15,7 +15,5 @@ See: **[domxjs.com](https://www.domxjs.com/), [domx wiki](https://github.com/dom
 | [Middleware](https://github.com/domxjs/domx/tree/master/packages/Middleware) | [![Build Status](https://travis-ci.com/domxjs/domx.svg?branch=packages/Middleware)](https://travis-ci.com/github/domxjs/domx) | [![npm](https://img.shields.io/npm/v/@domx/middleware)](https://www.npmjs.com/package/@domx/middleware) | Contains low level patterns for middleware and HTMLElement mixin logging.
 | [functional](https://github.com/domxjs/domx/tree/master/packages/functional) | [![Build Status](https://travis-ci.com/domxjs/domx.svg?branch=packages/functional)](https://travis-ci.com/github/domxjs/domx) | [![npm](https://img.shields.io/npm/v/@domx/functional)](https://www.npmjs.com/package/@domx/functional) | Contains methods for functional JavaScript patterns.
 | [testUtils](https://github.com/domxjs/domx/tree/master/packages/testUtils) | [![Build Status](https://travis-ci.com/domxjs/domx.svg?branch=packages/testUtils)](https://travis-ci.com/github/domxjs/domx) | [![npm](https://img.shields.io/npm/v/@domx/testutils)](https://www.npmjs.com/package/@domx/testutils) | Common testing utility scripts.
-
-
-<!-- | [debounce](./packages/debounce/README.md) | | Needs conversion -->
+| [DataElement](https://github.com/domxjs/domx/tree/master/packages/DataElement) | [![Build Status](https://travis-ci.com/domxjs/domx.svg?branch=packages/DataElement)](https://travis-ci.com/github/domxjs/domx) | [![npm](https://img.shields.io/npm/v/@domx/dataelement)](https://www.npmjs.com/package/@domx/dataelement) | DataElement base class with root state support.
 
