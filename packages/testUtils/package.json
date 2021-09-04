@@ -15,7 +15,7 @@
     "url": "https://github.com/domxjs/domx.git",
     "directory": "packages/testUtils"
   },
-  "homepage": "https://github.com/domxjs/domx/blob/master/packages/linkProp/README.md",
+  "homepage": "https://github.com/domxjs/domx/blob/master/packages/testUtils/README.md",
   "main": "index.js",
   "types": "index.d.ts",
   "scripts": {
