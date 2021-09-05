@@ -1,1 +1,3 @@
-// DataElement Index
+export {
+    DataElement
+} from "./DataElement";
