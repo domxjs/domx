@@ -94,7 +94,8 @@ const customDataElement = (elementName:string) =>
 // @stateId - support default stateIdProperty = "stateId"?
 // and/or support customDataElement options?: {stateIdProperty: "userId"}
 // add - eventsStopImmediatePropagation also bring in EventMap and attach it
-// and expose @event and @eventsListenAt decorators
+// and expose @event decorator
+// also set eventsListenAt in customDataElement decorator
 
 
 // todo add tests

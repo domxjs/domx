@@ -8,7 +8,17 @@
   "keywords": [
     "Custom Elements",
     "state management",
-    "redux toolkit"
+    "redux toolkit",
+    "react",
+    "context api",
+    "recoil",
+    "uddf",
+    "LitElement",
+    "lit-html",
+    "lit",
+    "reducers",
+    "functional",
+    "Immer"
   ],
   "repository": {
     "type": "git",
