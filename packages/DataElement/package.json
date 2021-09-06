@@ -32,6 +32,9 @@
     "build": "tsc --build",
     "clean": "tsc --build --clean"
   },
+  "dependencies": {
+    "@domx/eventmap": "0.6.0"
+  },
   "devDependencies": {
     "@domx/testutils": "0.1.0"
   }

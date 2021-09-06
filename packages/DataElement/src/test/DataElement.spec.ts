@@ -30,7 +30,7 @@ describe("DataElement", () => {
         expect(ctor.dataProperties["user"].statePath).toBe("test-instance-data-element.user.1234");
     });
 
-    
+    // todo add tests
     // add test for state being removed after 1+ insertions/removals
 });
 

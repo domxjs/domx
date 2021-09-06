@@ -1,12 +1,16 @@
-import { state } from "lit-element";
-import { RootState } from "./RootState";
-
+import { EventMap, event, EventMapListenAt } from "@domx/eventmap";
 export {
     customDataElements,
     customDataElement,
     DataElement,
-    DataElementCtor
+    DataElementCtor,
+    dataProperty,
+    stateId,
+    event
 };
+import { RootState } from "./RootState";
+
+
 
 /** Add custom element methods to HTMLElement */
 declare global {
@@ -20,7 +24,7 @@ declare global {
 interface DataElementCtor extends Function {
     __elementName: string,
     dataProperties: DataProperties;
-    stateIdProperty: string|null
+    stateIdProperty: string
 }
 
 /** Generic object key index accessor */
@@ -45,9 +49,10 @@ const stateRefs:StringKeyIndex<number> = {};
 /**
  * Base class for data elements.
  */
-class DataElement extends HTMLElement {
-    static __elementNaem = "data-element";
-    static stateIdProperty:string|null = null;
+class DataElement extends EventMap(HTMLElement) {
+    static eventsStopImmediatePropagation = true;
+    static __elementName = "data-element";
+    static stateIdProperty:string = "stateId";
     static dataProperties:DataProperties = {
         state: {changeEvent:"state-changed"}
     };
@@ -79,30 +84,60 @@ const customDataElements = {
     }
 };
 
+
+interface CustomDataElementOptions {
+    /** Sets which property is to be used as the stateId; default: stateId */
+    stateIdProperty?: string,
+    /** Sets the default event listener element for events; default: "self" */
+    eventsListenAt?: EventMapListenAt|string
+}
 /**
- * Defines the custom element with window.customElements.define
- * and tags the element name for use in RootState.
+ * A class decorator that defines the custom element with
+ * `window.customElements.define` and tags the element name
+ * for use in RootState.
+ * 
+ * Options allow for setting `stateIdProperty` and `eventsListenAt`.
  * @param elementName {string}
+ * @param options {CustomDataElementOptions}
  */
-const customDataElement = (elementName:string) =>
-    (element: CustomElementConstructor) =>
-        customDataElements.define(elementName, element);
+const customDataElement = (elementName:string, options:CustomDataElementOptions={}) =>
+    (ctor: CustomElementConstructor) => {    
+    options.stateIdProperty && setProp(ctor, "stateIdProperty", options.stateIdProperty);
+    options.eventsListenAt && setProp(ctor, "eventsListenAt", options.eventsListenAt);
+    customDataElements.define(elementName, ctor);
+};
 
 
-// todo what other decorators are needed?
-// @dataProperty - options? {changeEvent: "user-changed"}
-// @stateId - support default stateIdProperty = "stateId"?
-// and/or support customDataElement options?: {stateIdProperty: "userId"}
-// add - eventsStopImmediatePropagation also bring in EventMap and attach it
-// and expose @event decorator
-// also set eventsListenAt in customDataElement decorator
+
+interface DataPropertyOptions {
+    changeEvent:string
+}
+/**
+ * A property decorator that tags a class property
+ * as a state property.
+ * 
+ * Options allow for setting the change event name.
+ * @param options 
+ */
+const dataProperty = (options?:DataPropertyOptions) =>
+    (prototype: any, propertyName: string) =>
+        (prototype.constructor as DataElementCtor).dataProperties[propertyName] = {
+            changeEvent: options ? options.changeEvent : `${propertyName}-changed`
+        };
 
 
-// todo add tests
+/**
+ * A property decorator that tags a class property
+ * as the stateId.
+ */
+const stateId = () => (prototype: any, propertyName: string) => 
+    (prototype.constructor as DataElementCtor).stateIdProperty = propertyName;
+
+
 const elementConnected = (el:DataElement) => {
     const ctor = el.constructor as DataElementCtor;
         
-    const stateId = ctor.stateIdProperty && getProp(el, ctor.stateIdProperty);
+    const stateId = getProp(el, ctor.stateIdProperty);
     const stateIdPath = stateId ? `.${stateId}` : "";
 
     Object.keys(ctor.dataProperties).forEach((propertyName) => {

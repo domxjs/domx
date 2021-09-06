@@ -100,3 +100,4 @@ class LoggedInUser extends LitElement {
   eliminates object creation fatigue when working with immutable state.
 - Uses [EventMap](https://github.com/domxjs/domx/tree/master/packages/EventMap)
 for declarative DOM event handling on custom elements.
+- Top question: "can it really be that simple?"
