@@ -14,7 +14,6 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - A clean method
 
 ## [0.2.0]
-### TODO 
 ### Added
 - Middleware implementation
 - Middleware tests and documentation

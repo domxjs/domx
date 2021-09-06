@@ -8,7 +8,17 @@
   "keywords": [
     "Custom Elements",
     "state management",
-    "redux toolkit"
+    "redux toolkit",
+    "react",
+    "context api",
+    "recoil",
+    "uddf",
+    "LitElement",
+    "lit-html",
+    "lit",
+    "reducers",
+    "functional",
+    "Immer"
   ],
   "repository": {
     "type": "git",
@@ -21,5 +31,11 @@
   "scripts": {
     "build": "tsc --build",
     "clean": "tsc --build --clean"
+  },
+  "dependencies": {
+    "@domx/eventmap": "0.6.0"
+  },
+  "devDependencies": {
+    "@domx/testutils": "0.1.0"
   }
 }

@@ -1,4 +1,3 @@
-import { html, TemplateResult, render } from "lit-html";
 import { StateChange } from "../StateChange";
 export { html, fixture } from "@domx/testutils";
 
