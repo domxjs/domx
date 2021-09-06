@@ -3,7 +3,7 @@
 A `DataElement` base class with root state support.
 
 ## Description
-The `DataElement` base class provides a Flux/Redux style unidirectional data flow state management
+The `DataElement` base class provides for a Flux/Redux style unidirectional data flow state management
 pattern using DOM events and custom elements.
 
 By utilizing the DOM and custom elements the footprint is small and 
@@ -47,10 +47,10 @@ export class SessionData extends DataElement {
     // event creator
     static userLoggedInEvent = (userName, fullName) => 
         new CustomEvent("user-logged-in", {
-        bubbles: true,
-        composed: true,
-        detail: {userName, fullName}
-    });
+            bubbles: true,
+            composed: true,
+            detail: {userName, fullName}
+        });
 
     @event("user-logged-in")
     userLoggedIn({detail:{userName, fullName}}) {
