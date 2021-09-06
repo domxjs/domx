@@ -19,7 +19,7 @@ using the [React context api](https://reactjs.org/docs/context.html).
 It also provides for the dynamic state creation abilities of 
 [recoil](https://recoiljs.org/).
 
-See: [domxjs.com](https://domxjs.com/data-element), for more in depth examples and documentation.
+See: [domxjs.com](https://domxjs.com/data-elements), for more in depth examples and documentation.
 
 
 ## Installation
