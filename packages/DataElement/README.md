@@ -2,6 +2,11 @@
 
 A `DataElement` base class with root state support.
 
+> This is a pre-release.
+> Features are complete except for [#33](https://github.com/domxjs/domx/issues/33) and [#34](https://github.com/domxjs/domx/issues/34).
+> More documentation examples to come on domxjs.com
+
+
 ## Description
 The `DataElement` base class provides for a Flux/Redux style unidirectional data flow state management
 pattern using DOM events and custom elements.
