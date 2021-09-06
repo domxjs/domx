@@ -5,7 +5,6 @@ export {
     DataElement,
     DataElementCtor,
     dataProperty,
-    stateId,
     event
 };
 import { RootState } from "./RootState";
@@ -119,19 +118,11 @@ interface DataPropertyOptions {
  * Options allow for setting the change event name.
  * @param options 
  */
-const dataProperty = (options?:DataPropertyOptions) =>
+const dataProperty = (options?:DataPropertyOptions):any =>
     (prototype: any, propertyName: string) =>
         (prototype.constructor as DataElementCtor).dataProperties[propertyName] = {
             changeEvent: options ? options.changeEvent : `${propertyName}-changed`
         };
-
-
-/**
- * A property decorator that tags a class property
- * as the stateId.
- */
-const stateId = () => (prototype: any, propertyName: string) => 
-    (prototype.constructor as DataElementCtor).stateIdProperty = propertyName;
 
 
 const elementConnected = (el:DataElement) => {
@@ -192,7 +183,7 @@ const triggerSyncEvent = (el:DataElement, changeEvent:string) =>
     el.dispatchEvent(new CustomEvent(changeEvent, {detail:{isSyncUpdate:true}}));
 
 const triggerGlobalEvent = (el: DataElement, changeEvent:string) =>
-    window.dispatchEvent(new CustomEvent(`global-${changeEvent}`, {detail: {sourceElement:el}}))
+    window.dispatchEvent(new CustomEvent(changeEvent, {detail: {sourceElement:el}}))
 
 
 /**

@@ -54,6 +54,10 @@
       "json-summary",
       "text",
       "lcov"
+    ],
+    "modulePathIgnorePatterns": [
+      "npm-cache",
+      ".npm"
     ]
   }
 }

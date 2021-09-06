@@ -3,6 +3,5 @@ export {
     customDataElement,
     DataElement,
     dataProperty,
-    stateId,
     event
 } from "./DataElement";
