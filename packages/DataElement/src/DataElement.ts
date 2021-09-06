@@ -1,3 +1,6 @@
+import { state } from "lit-element";
+import { RootState } from "./RootState";
+
 export {
     customDataElements,
     customDataElement,
@@ -5,6 +8,7 @@ export {
     DataElementCtor
 };
 
+/** Add custom element methods to HTMLElement */
 declare global {
     interface HTMLElement {
         connectedCallback(): void;
@@ -12,28 +16,37 @@ declare global {
     }
 }
 
-/**
- * Defines the static fields of 
- * a DataElement
- */
+/** Defines the static fields of a DataElement */
 interface DataElementCtor extends Function {
     __elementName: string,
     dataProperties: DataProperties;
-    statIdProperty: string|null
+    stateIdProperty: string|null
 }
 
-interface DataProperties {
-    [key:string]: DataProperty
-}
+/** Generic object key index accessor */
+interface StringKeyIndex<T> { [key:string]:T }
+
+interface DataProperties extends StringKeyIndex<DataProperty> {}
 
 interface DataProperty {
     changeEvent?: string
-    statePath?: string
+    statePath?: string,
+    windowEventName?: string,
+    windowEventHandler?: EventListener
 }
 
+/**
+ * Used to keep track of how many data elements
+ * are using the same state key.
+ */
+const stateRefs:StringKeyIndex<number> = {};
 
+
+/**
+ * Base class for data elements.
+ */
 class DataElement extends HTMLElement {
-    static __elementNaem = "";
+    static __elementNaem = "data-element";
     static stateIdProperty:string|null = null;
     static dataProperties:DataProperties = {
         state: {changeEvent:"state-changed"}
@@ -41,20 +54,12 @@ class DataElement extends HTMLElement {
 
     connectedCallback() {
         super.connectedCallback && super.connectedCallback();
+        elementConnected(this); 
+    }
 
-        setUpDataProperties(this);
-
-        // keep track of who is using state for each state path
-        //->stateRefs[statePath] = stateRefs[statePath] ? stateRefs[statePath]+1 : 0;
-        // decrease the ref count on disconnect and if 0 then delete the item from RootState
-
-         // for each dataProperty set the initial state
-         //->RootState.get(this)
-         // if this is null then use the state property
-         // on this element and set it in RootState
-         // would need to do this for every data property.
-
-         // Hook up global and local events (see below)
+    disconnectedCallback() {
+        super.disconnectedCallback && super.disconnectedCallback();
+        elementDisconnected(this);
     }
 }
 
@@ -69,8 +74,7 @@ const customDataElements = {
      * @param element {CustomElementConstructor}
      */
     define: (elementName:string, element:CustomElementConstructor) => {
-        //@ts-ignore TS2339 adding dynamic property.
-        element.__elementName = elementName;
+        setProp(element, "__elementName", elementName);
         window.customElements.define(elementName, element);
     }
 };
@@ -85,22 +89,106 @@ const customDataElement = (elementName:string) =>
         customDataElements.define(elementName, element);
 
 
-const setUpDataProperties = (el:DataElement) => {
+// todo what other decorators are needed?
+// @dataProperty - options? {changeEvent: "user-changed"}
+// @stateId - support default stateIdProperty = "stateId"?
+// and/or support customDataElement options?: {stateIdProperty: "userId"}
+// add - eventsStopImmediatePropagation also bring in EventMap and attach it
+// and expose @event and @eventsListenAt decorators
+
+
+// todo add tests
+const elementConnected = (el:DataElement) => {
     const ctor = el.constructor as DataElementCtor;
         
-    //@ts-ignore TS7053 property index
-    const stateId = ctor.stateIdProperty && el[ctor.stateIdProperty];
-
+    const stateId = ctor.stateIdProperty && getProp(el, ctor.stateIdProperty);
     const stateIdPath = stateId ? `.${stateId}` : "";
-    Object.keys(ctor.dataProperties).map((propertyName) => {
+
+    Object.keys(ctor.dataProperties).forEach((propertyName) => {
+
+        // set up each data property
         const dp = ctor.dataProperties[propertyName];
+        const statePath = `${ctor.__elementName}.${propertyName}${stateIdPath}`;
+        const changeEvent = dp.changeEvent || `${propertyName}-changed`;
+        const windowEventName = `${statePath}-changed`;
         ctor.dataProperties[propertyName] = {
             ...dp,
-            changeEvent: dp.changeEvent || `${propertyName}-changed`,
-            statePath: `${ctor.__elementName}.${propertyName}${stateIdPath}`
-        }
-    });
+            changeEvent,
+            statePath,
+            windowEventName
+        };
 
-    // pass to middleware here
-    // Middleware will have the dataProperties, elementName, and element
+        // add to the stateRefs
+        stateRefs[statePath] = stateRefs[statePath] ? stateRefs[statePath] + 1 : 1;
+
+        // set initial state
+        const initialState = RootState.get(statePath);
+        if (initialState === null) {
+            RootState.set(statePath, getProp<object>(el, propertyName));
+        } else {
+            setProp(el, propertyName, initialState);
+            triggerSyncEvent(el, changeEvent);
+        }
+
+        // add local event handler to push changes to RootState 
+        // and other elements with the same statePath
+        el.addEventListener(changeEvent, ((event:CustomEvent) => {
+            if (event.detail?.isSyncUpdate !== true) {
+                RootState.set(statePath, getProp(el, propertyName));
+                triggerGlobalEvent(el, windowEventName);
+            }
+        }) as EventListener);
+
+        // add global event handler
+        const windowEventHandler = (event: Event) => {
+            if (getProp<any>(event, "detail")?.sourceElement !== el) {
+                setProp(el, propertyName,RootState.get(statePath));
+                triggerSyncEvent(el, changeEvent);
+            }
+        };
+        ctor.dataProperties[propertyName].windowEventHandler = windowEventHandler;
+        window.addEventListener(windowEventName, windowEventHandler);
+    });
+};
+
+
+const triggerSyncEvent = (el:DataElement, changeEvent:string) =>
+    el.dispatchEvent(new CustomEvent(changeEvent, {detail:{isSyncUpdate:true}}));
+
+const triggerGlobalEvent = (el: DataElement, changeEvent:string) =>
+    window.dispatchEvent(new CustomEvent(`global-${changeEvent}`, {detail: {sourceElement:el}}))
+
+
+/**
+ * Decrements each data properties state path reference.
+ * If 0, then removes the state from RootState.
+ * Also removes the window event handler
+ * @param el {DataElement}
+ */
+const elementDisconnected = (el:DataElement) => {
+    const ctor = el.constructor as DataElementCtor;
+    Object.keys(ctor.dataProperties).forEach((propertyName) => {
+        const dp = ctor.dataProperties[propertyName];
+        const statePath = dp.statePath as string;
+        stateRefs[statePath] = stateRefs[statePath] - 1;
+        stateRefs[statePath] === 0 && RootState.delete(statePath);
+        window.removeEventListener(dp.windowEventName as string,
+            dp.windowEventHandler as EventListener);
+        delete dp.windowEventName;
+        delete dp.windowEventHandler;
+    });
+};
+
+
+/** Helper for getting dynamic properties */
+const getProp = <T>(obj:object, name:string):T => {
+    //@ts-ignore TS7053 access dynamic property
+    return obj[name] as T;
+};
+
+
+/** Helper for setting dyanmic properties */
+const setProp = <T>(obj:object, name:string, value:T) => {
+    //@ts-ignore TS7053 access dynamic property
+    obj[name] = value;
 };

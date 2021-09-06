@@ -29,11 +29,17 @@ describe("DataElement", () => {
         const ctor = el.constructor as DataElementCtor;
         expect(ctor.dataProperties["user"].statePath).toBe("test-instance-data-element.user.1234");
     });
+
+    
+    // add test for state being removed after 1+ insertions/removals
 });
 
 
 @customDataElement("test-data-element")
 class TestDataElement extends DataElement {
+    state = {
+        status: "default"
+    };
 }
 
 @customDataElement("test-instance-data-element")
@@ -44,6 +50,10 @@ class TestInstanceDataElement extends DataElement {
     }
 
     userId:string|null = null;
+
+    user = {
+        userName: "unknown"
+    };
 
     constructor() {
         super();
