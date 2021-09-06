@@ -33,7 +33,6 @@ class RootState {
 
     static delete(path:string):void {
         RootState.set(path, undefined);
-        console.log("DELETE", rootState);
     }
 
     static get current() {

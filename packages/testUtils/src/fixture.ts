@@ -13,6 +13,6 @@ function fixture<T>(html:TemplateResult): FixtureElement & T {
   render(html, fixture);
   const el = fixture.firstElementChild as FixtureElement & T;
 
-  el.restore = () => fixture.remove()
+  el.restore = () => {el.remove(); fixture.remove();}
   return el;
 };
