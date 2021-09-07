@@ -3,12 +3,18 @@
 
 `StateChange` is a monad-like object that enables changing a property on an HTMLElement in a `functional` way.
 
+[Installation](#installation) \
 [Basic usage](#basic-usage) \
 [Configuration](#configuration) \
 [Middleware (logging, error handling, immutable state handling)](#middleware) \
 [Full example](#full-example) \
 [Advanced usage](#advanced-usage)
 
+## Installation
+## Installation
+```sh
+npm install @domx/statechange
+```
 
 ## Basic usage
 The basic examples will be using this default state...
@@ -251,6 +257,7 @@ StateChange.clearMiddleware();
 ## Full example
 This is a full example using the _basic_ methods for changing state.
 ```js
+import { StateChange } from '@domx/statechange';
 import { EventMap, event } from '@domx/eventmap';
 import { showSystemToastEvent } from '../../system-toast/events';
 export { UserListElement };
