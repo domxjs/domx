@@ -31,8 +31,8 @@ export class MyElement extends LitElement {
       border-collapse: collapse;    
     }
     th, td {
-      padding: 0.5rem 1rem;
-      border: 1px solid #555555;
+      padding: 1rem 1rem;
+      border-bottom: 1px solid #333;
     }
     a {
       color: #4283db;
