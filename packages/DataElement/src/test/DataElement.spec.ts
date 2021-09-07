@@ -130,7 +130,43 @@ describe("DataElement", () => {
             expect(ctor.dataProperties.user.statePath).toBe("test-decorators.user.1234");
             el.restore();
         });
+    });
 
+    describe("stateId change, refreshState", () => {
+        it("changes the state tree appropriately", () => {
+            const el = fixture<TestDataElement>(html`
+                <test-instance-data-element user-id="1234"></test-instance-data-element>
+            `);
+            expect(RootState.get("test-instance-data-element.user.1234"))
+                .toStrictEqual({userName: "unknown"});
+            el.setAttribute("user-id", "9876");
+            expect(RootState.get("test-instance-data-element.user.1234"))
+                .toBe(null)
+            expect(RootState.get("test-instance-data-element.user.9876"))
+                .toStrictEqual({userName: "unknown"});
+        });
+    });
+
+    describe("dispatchChange", () => {
+        it("dispatches state-change by default", () => {
+            const el = fixture<TestDataElement>(html`<test-data-element></test-data-element>`)
+            let message = "";
+            el.addEventListener("state-changed", (event: Event) => {
+                message = "event dispatched";
+            });
+            el.testDispatch();
+            expect(message).toBe("event dispatched");
+        });
+
+        it("dispatches the correct change event if configured", () => {
+            const el = fixture<TestInstanceDataElement>(html`<test-instance-data-element></test-instance-data-element>`)
+            let message = "";
+            el.addEventListener("user-changed", (event: Event) => {
+                message = "event dispatched";
+            });
+            el.testDispatch();
+            expect(message).toBe("event dispatched");
+        });
     });
 });
 
@@ -140,10 +176,15 @@ class TestDataElement extends DataElement {
     state = {
         status: "default"
     };
+
+    testDispatch() {
+        this.dispatchChange();
+    }
 }
 
 @customDataElement("test-instance-data-element")
 class TestInstanceDataElement extends DataElement {
+    static get observedAttributes() { return ["user-id"]; }
     static stateIdProperty = "userId";
     static dataProperties = {
         "user": {changeEvent:"user-changed"}
@@ -158,6 +199,17 @@ class TestInstanceDataElement extends DataElement {
     constructor() {
         super();
         this.userId = this.getAttribute("user-id");    
+    }
+
+    attributeChangedCallback(name:string, oldValue:string, newValue:string) {
+        if (name === "user-id" && newValue !== this.userId) {
+            this.userId = newValue;
+            this.refreshState();
+        }
+    }
+
+    testDispatch() {
+        this.dispatchChange("user");
     }
 }
 

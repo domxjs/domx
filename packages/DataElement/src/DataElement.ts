@@ -57,13 +57,29 @@ class DataElement extends EventMap(HTMLElement) {
     };
 
     connectedCallback() {
-        super.connectedCallback && super.connectedCallback();
         elementConnected(this); 
     }
 
     disconnectedCallback() {
-        super.disconnectedCallback && super.disconnectedCallback();
         elementDisconnected(this);
+    }
+
+    /**
+     * Refreshes the state with RootState; useful
+     * for when changing the stateId property.
+     */
+    refreshState() {
+        elementDisconnected(this);
+        elementConnected(this); 
+    }
+
+    /**
+     * Dispatches a change event on this DataElement.
+     * @param prop {string} the name of the property to dispatch the change event on; default is "state"
+     */
+    dispatchChange(prop:string = "state") {
+        const ctor = this.constructor as DataElementCtor;
+        this.dispatchEvent(new CustomEvent(ctor.dataProperties[prop].changeEvent as string));
     }
 }
 
