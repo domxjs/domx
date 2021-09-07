@@ -57,13 +57,20 @@ class DataElement extends EventMap(HTMLElement) {
     };
 
     connectedCallback() {
-        super.connectedCallback && super.connectedCallback();
         elementConnected(this); 
     }
 
     disconnectedCallback() {
-        super.disconnectedCallback && super.disconnectedCallback();
         elementDisconnected(this);
+    }
+
+    /**
+     * Refreshes the state with RootState; useful
+     * for when changing the stateId property.
+     */
+    refreshState() {
+        elementDisconnected(this);
+        elementConnected(this); 
     }
 }
 

@@ -130,7 +130,21 @@ describe("DataElement", () => {
             expect(ctor.dataProperties.user.statePath).toBe("test-decorators.user.1234");
             el.restore();
         });
+    });
 
+    describe("stateId change, refreshState", () => {
+        it("changes the state tree appropriately", () => {
+            const el = fixture<TestDataElement>(html`
+                <test-instance-data-element user-id="1234"></test-instance-data-element>
+            `);
+            expect(RootState.get("test-instance-data-element.user.1234"))
+                .toStrictEqual({userName: "unknown"});
+            el.setAttribute("user-id", "9876");
+            expect(RootState.get("test-instance-data-element.user.1234"))
+                .toBe(null)
+            expect(RootState.get("test-instance-data-element.user.9876"))
+                .toStrictEqual({userName: "unknown"});
+        });
     });
 });
 
@@ -144,6 +158,7 @@ class TestDataElement extends DataElement {
 
 @customDataElement("test-instance-data-element")
 class TestInstanceDataElement extends DataElement {
+    static get observedAttributes() { return ["user-id"]; }
     static stateIdProperty = "userId";
     static dataProperties = {
         "user": {changeEvent:"user-changed"}
@@ -158,6 +173,13 @@ class TestInstanceDataElement extends DataElement {
     constructor() {
         super();
         this.userId = this.getAttribute("user-id");    
+    }
+
+    attributeChangedCallback(name:string, oldValue:string, newValue:string) {
+        if (name === "user-id" && newValue !== this.userId) {
+            this.userId = newValue;
+            this.refreshState();
+        }
     }
 }
 
