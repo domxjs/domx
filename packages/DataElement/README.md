@@ -3,13 +3,13 @@
 A `DataElement` base class with root state support.
 
 > This is a pre-release.
-> Features are complete except for [#33](https://github.com/domxjs/domx/issues/33) and [#34](https://github.com/domxjs/domx/issues/34).
-> More documentation examples to come on domxjs.com
+> Features are complete except for Middleware and RDT Logging support [#34](https://github.com/domxjs/domx/issues/34).
+
 
 [Description](#description) \
+[Highlights](#highlights) \
 [Installation](#installation) \
 [Basic Usage](#basic-usage) \
-[Highlights](#highlights) \
 [Registering a DataElement](#registering-a-dataelement) \
 [Describing Data Properties](#describing-data-properties) \
 [Handling Events and Dispatching Changes](#handling-events-and-dispatching-changes) \
@@ -34,7 +34,18 @@ using the [React context api](https://reactjs.org/docs/context.html).
 It also provides for the dynamic state creation abilities of 
 [recoil](https://recoiljs.org/).
 
-See: [domxjs.com](https://domxjs.com/data-elements), for more in depth examples and documentation.
+See: [domxjs.com](https://domxjs.com/data-elements) for more information.
+
+## Highlights
+- Works with Redux Dev Tools.
+- Can configure any (and multiple) properties to be the `state` property.
+- Can use/configure a `stateId` property to track state for instance data.
+- Works with (but does not require) the [StateChange](https://github.com/domxjs/domx/tree/master/packages/StateChange) monad for `functional` JavaScript patterns (e.g. `reducers`)
+  - `StateChange` also works with [Immer](https://github.com/immerjs/immer) which
+  eliminates object creation fatigue when working with immutable state.
+- Uses [EventMap](https://github.com/domxjs/domx/tree/master/packages/EventMap)
+for declarative DOM event handling on custom elements.
+- Top question: "can it really be that simple?"
 
 
 ## Installation
@@ -43,7 +54,7 @@ npm install @domx/dataelement
 ```
 
 ## Basic Usage
-This is a contrived example showing default usage of a `DataElement`;
+This is a contrived example showing default usage of a DataElement.
 
 ```js
 import { customDataElement, DataElement, event } from "@domx/dataelement";
@@ -120,18 +131,6 @@ class LoggedInUser extends LitElement {
 }
 ```
 
-## Highlights
-- Works with Redux Dev Tools.
-- Can configure any (and multiple) properties to be the `state` property.
-- Can use/configure a `stateId` property to track state for instance data.
-- Works with (but does not require) the [StateChange](https://github.com/domxjs/domx/tree/master/packages/StateChange) monad for `functional` JavaScript patterns (e.g. `reducers`)
-  - `StateChange` also works with [Immer](https://github.com/immerjs/immer) which
-  eliminates object creation fatigue when working with immutable state.
-- Uses [EventMap](https://github.com/domxjs/domx/tree/master/packages/EventMap)
-for declarative DOM event handling on custom elements.
-- Top question: "can it really be that simple?"
-
-
 ## Registering a DataElement
 There are two ways to register a DataElement.
 
@@ -147,21 +146,23 @@ and will use the specified name in the root state tree.
 
 #### **@customDataElement(name, options)**
 The name is the name of the custom element.
+
 **options**
 - **stateIdProperty** - sets a stateId property name for instance data;
-see [Setting a stateId Property](#setting-a-stateid-property)
+see [Setting a stateId Property](#setting-a-stateid-property).
 - **eventsListenAt** - sets the default event listener; can be "window", "parent", "self"
-(self is the default)
+(self is the default); see [EventMap](https://github.com/domxjs/domx/tree/master/packages/EventMap).
 
 ### Without a Decorator
 ```js
 class UserData extends DataElement {
    static eventsListenAt = "window";
+   static stateIdProperty = "state"; // this is the default;
    // ...
 }
 customDataElements.define("user-data", UserData);
 ```
-The `eventsListenAt` static property is optional.
+The `eventsListenAt` and `stateIdProperty` static properties are optional.
 
 
 ## Describing Data Properties
@@ -190,7 +191,7 @@ A static property can also be used to define the data properties.
 ```js
 class UserData extends DataElement {
     static dataProperties = {
-        user: {}, // user-changed is the implied event
+        user: {}, // user-changed is the implied change event
         sessionData: {changeEvent: "session-data-changed"}
     };
 
@@ -203,12 +204,12 @@ class UserData extends DataElement {
 The DataElement uses [EventMap](https://github.com/domxjs/domx/tree/master/packages/EventMap)
 for declarative event changes.
 
-To sync state, a change event will need to be triggered on the data element.
+After making changes to a data property, a change event will need to be triggered on the data element.
 
 This can be done by calling `this.dispatchEvent(new CustomEvent("state-change"))` where `state-change`
 is the name of the change event. Or for convenience, you can call the `dispatchChange()` method.
 
-**dispatchChange(prop?)** - The default for prop is "state". 
+**dispatchChange(prop = "state")**
 ```js
 @customDataElement("user-data")
 class UserData extends DataElement {
@@ -262,7 +263,7 @@ customDataElements.define("user-data", UserData);
 
 ### Handling stateId Change
 In some cases, the stateId may be fed by a DOM attribute.
-If that attribute changes, or internally, the `stateId` property changes,
+If that attribute changes, or internally the `stateId` property changes,
 then the internal state will need to be refreshed.
 
 This can be done by calling `refreshState()` on the DataElement.
@@ -374,6 +375,6 @@ class UserData extends DataElement {
 
 const updateFullName = fullName => state => {
     state.fullName = fullName
-}
+};
 ```
 
