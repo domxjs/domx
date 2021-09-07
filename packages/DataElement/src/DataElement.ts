@@ -72,6 +72,15 @@ class DataElement extends EventMap(HTMLElement) {
         elementDisconnected(this);
         elementConnected(this); 
     }
+
+    /**
+     * Dispatches a change event on this DataElement.
+     * @param prop {string} the name of the property to dispatch the change event on; default is "state"
+     */
+    dispatchChange(prop:string = "state") {
+        const ctor = this.constructor as DataElementCtor;
+        this.dispatchEvent(new CustomEvent(ctor.dataProperties[prop].changeEvent as string));
+    }
 }
 
 /**

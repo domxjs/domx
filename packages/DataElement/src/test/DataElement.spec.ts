@@ -146,6 +146,28 @@ describe("DataElement", () => {
                 .toStrictEqual({userName: "unknown"});
         });
     });
+
+    describe("dispatchChange", () => {
+        it("dispatches state-change by default", () => {
+            const el = fixture<TestDataElement>(html`<test-data-element></test-data-element>`)
+            let message = "";
+            el.addEventListener("state-changed", (event: Event) => {
+                message = "event dispatched";
+            });
+            el.testDispatch();
+            expect(message).toBe("event dispatched");
+        });
+
+        it("dispatches the correct change event if configured", () => {
+            const el = fixture<TestInstanceDataElement>(html`<test-instance-data-element></test-instance-data-element>`)
+            let message = "";
+            el.addEventListener("user-changed", (event: Event) => {
+                message = "event dispatched";
+            });
+            el.testDispatch();
+            expect(message).toBe("event dispatched");
+        });
+    });
 });
 
 
@@ -154,6 +176,10 @@ class TestDataElement extends DataElement {
     state = {
         status: "default"
     };
+
+    testDispatch() {
+        this.dispatchChange();
+    }
 }
 
 @customDataElement("test-instance-data-element")
@@ -180,6 +206,10 @@ class TestInstanceDataElement extends DataElement {
             this.userId = newValue;
             this.refreshState();
         }
+    }
+
+    testDispatch() {
+        this.dispatchChange("user");
     }
 }
 
