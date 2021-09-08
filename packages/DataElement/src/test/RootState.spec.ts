@@ -4,7 +4,7 @@ import {RootState} from "../RootState";
 describe("RootState", () => {
 
     afterEach(() => {
-        RootState.clear();
+        RootState.init({});
     });
 
     describe("set", () => {
