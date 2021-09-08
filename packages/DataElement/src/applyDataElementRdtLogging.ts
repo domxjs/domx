@@ -66,14 +66,19 @@ const connectedCallback = (metaData:DataElementMetaData) => (next:Function) => (
             property: propertyName
         });
 
+        sendStateToDevTools(el, propertyName, statePath);
         logChangeEvents && el.addEventListener(changeEvent, (event:Event) => {
-            // @ts-ignore TS7053 getting indexed property
-            const nextState = el[propertyName] as object;
-            getDevToolsInstance().send(statePath, RootState.draft(statePath, nextState));
+            sendStateToDevTools(el, propertyName, statePath);
         });        
     });
 
     next();
+};
+
+const sendStateToDevTools = (el:DataElement, propertyName:string, statePath:string) => {
+    // @ts-ignore TS7053 getting indexed property
+    const nextState = el[propertyName] as object;
+    getDevToolsInstance().send(statePath, RootState.draft(statePath, nextState));
 };
 
 const disconnectedCallback = (metaData:DataElementMetaData) => (next:Function) => () => {
