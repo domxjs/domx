@@ -34,7 +34,8 @@
   },
   "dependencies": {
     "@domx/eventmap": "0.6.0",
-    "@domx/statechange": "0.6.0"
+    "@domx/statechange": "0.6.0",
+    "@domx/middleware": "0.2.7"
   },
   "devDependencies": {
     "@domx/testutils": "0.1.0"

@@ -1,9 +1,11 @@
 import { EventMap, event, EventMapListenAt } from "@domx/eventmap";
+import { Middleware } from "@domx/middleware";
 export {
     customDataElements,
     customDataElement,
     DataElement,
     DataElementCtor,
+    DataElementMetaData,
     dataProperty,
     event
 };
@@ -38,12 +40,20 @@ interface DataProperty {
     windowEventHandler?: EventListener
 }
 
+interface DataElementMetaData {
+    elementName: string,
+    element: DataElement,
+    dataProperties: DataProperties
+};
+
 /**
  * Used to keep track of how many data elements
  * are using the same state key.
  */
 const stateRefs:StringKeyIndex<number> = {};
 
+const connectedMiddleware = new Middleware();
+const disconnectedMiddleware = new Middleware();
 
 /**
  * Base class for data elements.
@@ -55,6 +65,16 @@ class DataElement extends EventMap(HTMLElement) {
     static dataProperties:DataProperties = {
         state: {changeEvent:"state-changed"}
     };
+
+    static applyMiddlware(connectedFn:Function, disconnectedFn: Function) {
+        connectedMiddleware.use(connectedFn);
+        disconnectedMiddleware.use(disconnectedFn);
+    }
+
+    static clearMiddleware() {
+        connectedMiddleware.clear();
+        disconnectedMiddleware.clear();
+    }
 
     connectedCallback() {
         elementConnected(this); 
@@ -191,7 +211,18 @@ const elementConnected = (el:DataElement) => {
         };
         ctor.dataProperties[propertyName].windowEventHandler = windowEventHandler;
         window.addEventListener(windowEventName, windowEventHandler);
-    });
+    });    
+    connectedMiddleware.mapThenExecute(getMiddlewareMetaData(el), () => {}, []);
+};
+
+const getMiddlewareMetaData = (el:DataElement):DataElementMetaData => {
+    const ctor = el.constructor as DataElementCtor;
+    const metaData:DataElementMetaData = {
+        elementName: ctor.__elementName,
+        element: el,
+        dataProperties: ctor.dataProperties
+    };
+    return metaData;
 };
 
 
@@ -220,6 +251,7 @@ const elementDisconnected = (el:DataElement) => {
         delete dp.windowEventName;
         delete dp.windowEventHandler;
     });
+    disconnectedMiddleware.mapThenExecute(getMiddlewareMetaData(el), () => {}, []);
 };
 
 

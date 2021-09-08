@@ -15,7 +15,8 @@ A `DataElement` base class with root state support.
 [Handling Events and Dispatching Changes](#handling-events-and-dispatching-changes) \
 [Setting a stateId Property](#setting-a-stateid-property) \
 [Using Immer](#using-immer) \
-[Using StateChange](#using-statechange)
+[Using StateChange](#using-statechange) \
+[Middleware and RDT Logging](#middleware-and-rdt-logging)
 
 ## Description
 The `DataElement` base class provides for a Flux/Redux style unidirectional data flow state management
@@ -376,5 +377,43 @@ class UserData extends DataElement {
 const updateFullName = fullName => state => {
     state.fullName = fullName
 };
+```
+
+## Middleware and RDT Logging
+`DataElement` exposes middleware to hook into both the `connectedCallback` and
+`disconnectedCallback` methods.
+
+There is also a function available to apply Redux dev tool logging.
+
+### Redux Dev Tool Logging
+Logs change events and if usining `StateChange` logs state snapshots
+with each `next` call.
+```js
+import {applyDataElementRdtLogging} from "@domx/DataElement/applyDataElementRdtLogging";
+applyDataElementRdtLogging();
+```
+#### **applyDataElementRdtLogging(options)**
+**options**
+- logChangeEvents - set to false if using `StateChange` and do not want the additional
+change event logged.
+
+### Adding custom middleware
+```js
+import {DataElement} from "@domx/DataElement";
+
+const connectedCallback = (metaData:DataElementMetaData) => (next:Function) => () => {
+    // add custom behaviors and call next
+    next();
+};
+
+const disconnectedCallback = (metaData:DataElementMetaData) => (next:Function) => () => {
+    // add custom behaviors and call next
+    next();
+};
+
+DataElement.applyMiddlware(connectedCallback, disconnectedCallback);
+
+// removes all middelware methods
+DataElement.clearMiddleware();
 ```
 
