@@ -3,7 +3,7 @@
 A `DataElement` base class with root state support.
 
 > This is a pre-release.
-> Features are complete except for Middleware and RDT Logging support [#34](https://github.com/domxjs/domx/issues/34).
+> Features are complete and testing is being performed in different proejcts.
 
 
 [Description](#description) \
