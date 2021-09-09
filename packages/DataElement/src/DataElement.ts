@@ -37,6 +37,7 @@ interface DataProperty {
     changeEvent?: string
     statePath?: string,
     windowEventName?: string,
+    localEventHandler?: EventListener,
     windowEventHandler?: EventListener
 }
 
@@ -76,11 +77,15 @@ class DataElement extends EventMap(HTMLElement) {
         disconnectedMiddleware.clear();
     }
 
+    __isConnected = false;
+    
     connectedCallback() {
+        super.connectedCallback && super.connectedCallback();
         elementConnected(this); 
     }
 
     disconnectedCallback() {
+        super.disconnectedCallback && super.disconnectedCallback();
         elementDisconnected(this);
     }
 
@@ -89,8 +94,10 @@ class DataElement extends EventMap(HTMLElement) {
      * for when changing the stateId property.
      */
     refreshState() {
-        elementDisconnected(this);
-        elementConnected(this); 
+        if (this.__isConnected === true) {
+            elementDisconnected(this);
+            elementConnected(this); 
+        }
     }
 
     /**
@@ -195,12 +202,15 @@ const elementConnected = (el:DataElement) => {
 
         // add local event handler to push changes to RootState 
         // and other elements with the same statePath
-        el.addEventListener(changeEvent, ((event:CustomEvent) => {
+        const localEventHandler = ((event: CustomEvent) => {
             if (event.detail?.isSyncUpdate !== true) {
                 RootState.set(statePath, getProp(el, propertyName));
                 triggerGlobalEvent(el, windowEventName);
             }
-        }) as EventListener);
+        }) as EventListener;
+        ctor.dataProperties[propertyName].localEventHandler = localEventHandler;
+        el.addEventListener(changeEvent, localEventHandler);
+
 
         // add global event handler
         const windowEventHandler = (event: Event) => {
@@ -213,6 +223,7 @@ const elementConnected = (el:DataElement) => {
         window.addEventListener(windowEventName, windowEventHandler);
     });    
     connectedMiddleware.mapThenExecute(getMiddlewareMetaData(el), () => {}, []);
+    el.__isConnected = true;
 };
 
 const getMiddlewareMetaData = (el:DataElement):DataElementMetaData => {
@@ -244,14 +255,17 @@ const elementDisconnected = (el:DataElement) => {
     Object.keys(ctor.dataProperties).forEach((propertyName) => {
         const dp = ctor.dataProperties[propertyName];
         const statePath = dp.statePath as string;
+        const changeEvent = dp.changeEvent as string;
         stateRefs[statePath] = stateRefs[statePath] - 1;
         stateRefs[statePath] === 0 && RootState.delete(statePath);
+        el.removeEventListener(changeEvent, dp.localEventHandler as EventListener);
         window.removeEventListener(dp.windowEventName as string,
             dp.windowEventHandler as EventListener);
         delete dp.windowEventName;
         delete dp.windowEventHandler;
     });
     disconnectedMiddleware.mapThenExecute(getMiddlewareMetaData(el), () => {}, []);
+    el.__isConnected = false;
 };
 
 
