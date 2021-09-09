@@ -31,20 +31,28 @@ interface DataElementCtor extends Function {
 /** Generic object key index accessor */
 interface StringKeyIndex<T> { [key:string]:T }
 
+/** The static DataProperties as defined on the DataElement */
 interface DataProperties extends StringKeyIndex<DataProperty> {}
 
 interface DataProperty {
     changeEvent?: string
-    statePath?: string,
-    windowEventName?: string,
-    localEventHandler?: EventListener,
-    windowEventHandler?: EventListener
+}
+
+/** DataProperty MetaData parsed per stateId */
+interface DataPropertiesMetaData extends StringKeyIndex<DataPropertyMetaData> {}
+
+interface DataPropertyMetaData {
+    changeEvent: string,
+    statePath: string,
+    windowEventName: string,
+    localEventHandler: EventListener,
+    windowEventHandler: EventListener
 }
 
 interface DataElementMetaData {
     elementName: string,
     element: DataElement,
-    dataProperties: DataProperties
+    dataProperties: DataPropertiesMetaData
 };
 
 /**
@@ -78,6 +86,7 @@ class DataElement extends EventMap(HTMLElement) {
     }
 
     __isConnected = false;
+    __dataPropertyMetaData:DataPropertiesMetaData = {};
     
     connectedCallback() {
         super.connectedCallback && super.connectedCallback();
@@ -90,10 +99,22 @@ class DataElement extends EventMap(HTMLElement) {
     }
 
     /**
-     * Refreshes the state with RootState; useful
-     * for when changing the stateId property.
+     * Resets the state and dispatches the changes;
+     * useful when changing the stateId property.
+     * @param states {StateMap} the key is the name of
+     * the state property, and the value is the state to set it to
      */
-    refreshState() {
+    refreshState(states:{[key:string]:object}) {
+        const dp = (this.constructor as DataElementCtor).dataProperties;
+        Object.keys(states).forEach((stateName) => {
+            const thisEl = this as unknown as {[key:string]:object};
+            const changeEvent = dp[stateName].changeEvent as string;
+            thisEl[stateName] = states[stateName];
+            this.dispatchEvent(new CustomEvent(changeEvent, {
+                detail: {isSyncUpdate: true}
+            }));
+        });
+
         if (this.__isConnected === true) {
             elementDisconnected(this);
             elementConnected(this); 
@@ -105,8 +126,8 @@ class DataElement extends EventMap(HTMLElement) {
      * @param prop {string} the name of the property to dispatch the change event on; default is "state"
      */
     dispatchChange(prop:string = "state") {
-        const ctor = this.constructor as DataElementCtor;
-        this.dispatchEvent(new CustomEvent(ctor.dataProperties[prop].changeEvent as string));
+        const dp = this.__dataPropertyMetaData;
+        this.dispatchEvent(new CustomEvent(dp[prop].changeEvent as string));
     }
 }
 
@@ -176,20 +197,43 @@ const elementConnected = (el:DataElement) => {
 
     Object.keys(ctor.dataProperties).forEach((propertyName) => {
 
-        // set up each data property
-        const dp = ctor.dataProperties[propertyName];
+        // determine the statePath and window event name
         const statePath = `${ctor.__elementName}.${propertyName}${stateIdPath}`;
-        const changeEvent = dp.changeEvent || `${propertyName}-changed`;
         const windowEventName = `${statePath}-changed`;
-        ctor.dataProperties[propertyName] = {
-            ...dp,
-            changeEvent,
-            statePath,
-            windowEventName
-        };
+        
+        // set/update the change event
+        const dp = ctor.dataProperties[propertyName];
+        const changeEvent = dp.changeEvent || `${propertyName}-changed`;
+        ctor.dataProperties[propertyName] = { changeEvent };
 
         // add to the stateRefs
         stateRefs[statePath] = stateRefs[statePath] ? stateRefs[statePath] + 1 : 1;
+
+        // define the local event handler to push changes to RootState 
+        // and other elements with the same statePath
+        const localEventHandler = ((event: CustomEvent) => {
+            if (event.detail?.isSyncUpdate !== true) {
+                RootState.set(statePath, getProp(el, propertyName));
+                triggerGlobalEvent(el, windowEventName);
+            }
+        }) as EventListener;
+
+        // define the global event handler
+        const windowEventHandler = (event: Event) => {
+            if (getProp<any>(event, "detail")?.sourceElement !== el) {
+                setProp(el, propertyName,RootState.get(statePath));
+                triggerSyncEvent(el, changeEvent);
+            }
+        };        
+
+        // store the meta data on the element
+        el.__dataPropertyMetaData[propertyName] = {
+            statePath,
+            changeEvent,
+            localEventHandler,
+            windowEventHandler,
+            windowEventName
+        };
 
         // set initial state
         const initialState = RootState.get(statePath);
@@ -200,26 +244,8 @@ const elementConnected = (el:DataElement) => {
             triggerSyncEvent(el, changeEvent);
         }
 
-        // add local event handler to push changes to RootState 
-        // and other elements with the same statePath
-        const localEventHandler = ((event: CustomEvent) => {
-            if (event.detail?.isSyncUpdate !== true) {
-                RootState.set(statePath, getProp(el, propertyName));
-                triggerGlobalEvent(el, windowEventName);
-            }
-        }) as EventListener;
-        ctor.dataProperties[propertyName].localEventHandler = localEventHandler;
+        // add the event handlers
         el.addEventListener(changeEvent, localEventHandler);
-
-
-        // add global event handler
-        const windowEventHandler = (event: Event) => {
-            if (getProp<any>(event, "detail")?.sourceElement !== el) {
-                setProp(el, propertyName,RootState.get(statePath));
-                triggerSyncEvent(el, changeEvent);
-            }
-        };
-        ctor.dataProperties[propertyName].windowEventHandler = windowEventHandler;
         window.addEventListener(windowEventName, windowEventHandler);
     });    
     connectedMiddleware.mapThenExecute(getMiddlewareMetaData(el), () => {}, []);
@@ -231,7 +257,7 @@ const getMiddlewareMetaData = (el:DataElement):DataElementMetaData => {
     const metaData:DataElementMetaData = {
         elementName: ctor.__elementName,
         element: el,
-        dataProperties: ctor.dataProperties
+        dataProperties: el.__dataPropertyMetaData
     };
     return metaData;
 };
@@ -251,18 +277,17 @@ const triggerGlobalEvent = (el: DataElement, changeEvent:string) =>
  * @param el {DataElement}
  */
 const elementDisconnected = (el:DataElement) => {
-    const ctor = el.constructor as DataElementCtor;
-    Object.keys(ctor.dataProperties).forEach((propertyName) => {
-        const dp = ctor.dataProperties[propertyName];
-        const statePath = dp.statePath as string;
-        const changeEvent = dp.changeEvent as string;
+    const dpmd = el.__dataPropertyMetaData;
+    Object.keys(dpmd).forEach((propertyName) => {
+        const dp = el.__dataPropertyMetaData[propertyName];
+        const statePath = dp.statePath;
+        const changeEvent = dp.changeEvent;
         stateRefs[statePath] = stateRefs[statePath] - 1;
         stateRefs[statePath] === 0 && RootState.delete(statePath);
-        el.removeEventListener(changeEvent, dp.localEventHandler as EventListener);
-        window.removeEventListener(dp.windowEventName as string,
-            dp.windowEventHandler as EventListener);
-        delete dp.windowEventName;
-        delete dp.windowEventHandler;
+        el.removeEventListener(changeEvent, dp.localEventHandler);
+        window.removeEventListener(dp.windowEventName, dp.windowEventHandler);
+        dp.windowEventHandler = (event:Event) => {}
+        dp.localEventHandler = (event:Event) => {}
     });
     disconnectedMiddleware.mapThenExecute(getMiddlewareMetaData(el), () => {}, []);
     el.__isConnected = false;
