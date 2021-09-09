@@ -66,19 +66,21 @@ const connectedCallback = (metaData:DataElementMetaData) => (next:Function) => (
             property: propertyName
         });
 
-        sendStateToDevTools(el, propertyName, statePath);
-        logChangeEvents && el.addEventListener(changeEvent, (event:Event) => {
-            sendStateToDevTools(el, propertyName, statePath);
-        });        
+        sendStateToDevTools(el, propertyName, statePath, changeEvent);
+        logChangeEvents && el.addEventListener(changeEvent, ((event:CustomEvent) => {
+            !event.detail?.isFromDevTools &&
+                sendStateToDevTools(el, propertyName, statePath, changeEvent);
+        }) as EventListener);
     });
 
     next();
 };
 
-const sendStateToDevTools = (el:DataElement, propertyName:string, statePath:string) => {
+const sendStateToDevTools = (el:DataElement, propertyName:string, statePath:string, changeEvent:string) => {
     // @ts-ignore TS7053 getting indexed property
     const nextState = el[propertyName] as object;
-    getDevToolsInstance().send(statePath, RootState.draft(statePath, nextState));
+    const action = `${(el.constructor as DataElementCtor).__elementName}@${changeEvent}`; 
+    getDevToolsInstance().send(action, RootState.draft(statePath, nextState));
 };
 
 const disconnectedCallback = (metaData:DataElementMetaData) => (next:Function) => () => {
@@ -170,7 +172,7 @@ const updateConnectedElements = () => {
             // @ts-ignore TS7053 setting indexed property
             element[property] = stateAtPath;
             element.dispatchEvent(new CustomEvent(changeEvent, {
-                detail: {isSyncUpdate: true}
+                detail: {isSyncUpdate: true, isFromDevTools: true}
             }));
         });
     });
