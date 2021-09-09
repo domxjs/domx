@@ -55,8 +55,7 @@ const connectedCallback = (metaData:DataElementMetaData) => (next:Function) => (
     const el = metaData.element;
     Object.keys(metaData.dataProperties).forEach((propertyName) => {
         const dp = metaData.dataProperties[propertyName];
-        const statePath = dp.statePath as string;
-        const changeEvent = dp.changeEvent as string;
+        const { statePath, changeEvent } = dp;
         
         // update the connected elements
         connectedElements[statePath] = connectedElements[statePath] || [];
@@ -67,10 +66,13 @@ const connectedCallback = (metaData:DataElementMetaData) => (next:Function) => (
         });
 
         sendStateToDevTools(el, propertyName, statePath, changeEvent);
-        logChangeEvents && el.addEventListener(changeEvent, ((event:CustomEvent) => {
+        const rdtListener = ((event:CustomEvent) => {
             !event.detail?.isFromDevTools &&
                 sendStateToDevTools(el, propertyName, statePath, changeEvent);
-        }) as EventListener);
+        }) as EventListener;
+        logChangeEvents && el.addEventListener(changeEvent, rdtListener);
+        //@ts-ignore TS2339 dynamic property
+        dp.rdtListener = rdtListener;
     });
 
     next();
@@ -88,9 +90,13 @@ const disconnectedCallback = (metaData:DataElementMetaData) => (next:Function) =
     Object.keys(metaData.dataProperties).forEach((propertyName) => {
         // update the connected elements
         const dp = metaData.dataProperties[propertyName];
-        const statePath = dp.statePath as string;
+        const {statePath, changeEvent} = dp;
         const elIndex = connectedElements[statePath].findIndex(cde => cde.element === el);
         connectedElements[statePath].splice(elIndex, 1);
+        //@ts-ignore TS2339 dynamic property
+        el.removeEventListener(changeEvent, dp.rdtLitener);
+        //@ts-ignore TS2339 dynamic property
+        delete dp.rdtListener;
     });
     next();
 };
@@ -98,8 +104,8 @@ const disconnectedCallback = (metaData:DataElementMetaData) => (next:Function) =
 const stateChangeNext = (stateChange:StateChange)  => (next:Function) => (state:any) => {
     const result = next(state);
     const meta = stateChange.meta;
-    const ctor = meta.el.constructor as DataElementCtor
-    const statePath = ctor.dataProperties[meta.property].statePath as string;
+    const dpmd = (meta.el as DataElement).__dataPropertyMetaData;
+    const statePath = dpmd[meta.property].statePath;
     getDevToolsInstance().send(getFnName(meta), RootState.draft(statePath, result));
     return result;
 };
