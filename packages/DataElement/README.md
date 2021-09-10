@@ -90,15 +90,15 @@ export class SessionData extends DataElement {
     }
 }
 ```
-**Note:** The static `userLoggedInEvent` is a good pattern to use
+> The static `userLoggedInEvent` is a good pattern to use
 to expose what events a DataElement can handle. This is
 similar to action creators in Redux. They can be defined
-directly on the DataElement or in a separate file
-if that works better for you.
+directly on the DataElement (or in a separate file
+if that works better for you) and used by UI components
+to trigger events.
 
-The same goes for the static `defaultState` property. This allows
-for UI components to reference the `defaultState` for initialization
-and events they need to dispatch.
+> The same goes for the static `defaultState` property. This allows
+for UI components to reference the `defaultState` for initialization.
 
 ### UI Component
 The `SessionData` element can be used in any UI component.
@@ -263,6 +263,9 @@ customDataElements.define("user-data", UserData);
 ```
 
 ### Handling stateId Change
+> Attribute changes should be driven by another DataElements state,
+otherwise state could get out of sync with Redux Dev Tool logging.
+
 In some cases, the stateId may be fed by a DOM attribute.
 If that attribute changes, or internally the `stateId` property changes,
 then the internal state will need to be refreshed.
@@ -275,25 +278,22 @@ This can be done by calling `refreshState()` on the DataElement.
 class UserData extends DataElement {
     
     static get observedAttributes() { return ["user-id"]; }
+    static defaultState = { userName: "unknown" };
 
-    userId:string|null = null;
+    // tying the userId property to the user-id attribute
+    get userId():string { return this.getAttribute("user-id") || ""; }
+    set userId(stateId:string) { this.setAttribute("user-id", stateId); }
 
     @dataProperty();
-    user = {
-        userName: "unknown"
-    };
-
-    constructor() {
-        super();
-        this.userId = this.getAttribute("user-id");    
-    }
+    user = UserData.defaultState;
 
     attributeChangedCallback(name:string, oldValue:string, newValue:string) {
-        if (name === "user-id" && newValue !== this.userId) {            
-            // the userId is changing so we
-            // need to call refresh state
-            this.userId = newValue;
-            this.refreshState();
+        if (name === "user-id") {            
+            // the user-id is changing so we need to
+            // refresh the state with the default state
+            this.refreshState({
+                user: UserData.defaultState
+            });
         }
     }
 }

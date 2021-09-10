@@ -26,16 +26,14 @@ describe("DataElement", () => {
         });
     
         it("expands the data properties", () => {
-            const el = fixture(html`<test-data-element></test-data-element>`);
-            const ctor = el.constructor as DataElementCtor;
-            expect(ctor.dataProperties["state"].statePath).toBe("test-data-element.state");
+            const el = fixture<DataElement>(html`<test-data-element></test-data-element>`);
+            expect(el.__dataPropertyMetaData["state"].statePath).toBe("test-data-element.state");
             el.restore();
         });
     
         it("expands the data properties with a stateId", () => {
-            const el = fixture(html`<test-instance-data-element user-id="1234"></test-instance-data-element>`);
-            const ctor = el.constructor as DataElementCtor;
-            expect(ctor.dataProperties["user"].statePath).toBe("test-instance-data-element.user.1234");
+            const el = fixture<DataElement>(html`<test-instance-data-element user-id="1234"></test-instance-data-element>`);
+            expect(el.__dataPropertyMetaData["user"].statePath).toBe("test-instance-data-element.user.1234");
             el.restore();
         });
     });
@@ -127,18 +125,21 @@ describe("DataElement", () => {
         it("supports setting the stateIdProperty", () => {
             const el = fixture<TestDecorators>(html`<test-decorators></test-decorators>`);
             const ctor = el.constructor as DataElementCtor;
-            expect(ctor.dataProperties.user.statePath).toBe("test-decorators.user.1234");
+            expect(el.__dataPropertyMetaData.user.statePath).toBe("test-decorators.user.1234");
             el.restore();
         });
     });
 
-    describe("stateId change, refreshState", () => {
+    describe("stateId change; refreshState", () => {
         it("changes the state tree appropriately", () => {
-            const el = fixture<TestDataElement>(html`
+            const el = fixture<TestInstanceDataElement>(html`
                 <test-instance-data-element user-id="1234"></test-instance-data-element>
             `);
             expect(RootState.get("test-instance-data-element.user.1234"))
                 .toStrictEqual({userName: "unknown"});
+            el.testChange();
+            expect(RootState.get("test-instance-data-element.user.1234"))
+                .toStrictEqual({userName: "joeuser"});
             el.setAttribute("user-id", "9876");
             expect(RootState.get("test-instance-data-element.user.1234"))
                 .toBe(null)
@@ -184,28 +185,32 @@ class TestDataElement extends DataElement {
 
 @customDataElement("test-instance-data-element")
 class TestInstanceDataElement extends DataElement {
+    static defaultState = { userName: "unknown" };
     static get observedAttributes() { return ["user-id"]; }
     static stateIdProperty = "userId";
     static dataProperties = {
         "user": {changeEvent:"user-changed"}
     }
 
-    userId:string|null = null;
+    get userId():string { return this.getAttribute("user-id") || ""; }
+    set userId(stateId:string) { this.setAttribute("user-id", stateId); }
 
-    user = {
-        userName: "unknown"
-    };
-
-    constructor() {
-        super();
-        this.userId = this.getAttribute("user-id");    
-    }
+    user = TestInstanceDataElement.defaultState;
 
     attributeChangedCallback(name:string, oldValue:string, newValue:string) {
-        if (name === "user-id" && newValue !== this.userId) {
-            this.userId = newValue;
-            this.refreshState();
+        if (name === "user-id") {
+            this.refreshState({
+                user: TestInstanceDataElement.defaultState
+            });
         }
+    }
+
+    testChange() {
+        this.user = {
+            ...this.user,
+            userName: "joeuser"
+        };
+        this.dispatchChange("user");
     }
 
     testDispatch() {
