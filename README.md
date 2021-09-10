@@ -1,4 +1,4 @@
-# DOMX &middot; [![GitHub license](https://img.shields.io/badge/license-MIT-blue.svg)](https://www.mit.edu/~amini/LICENSE.md) [![Build Status](https://travis-ci.com/domxjs/domx.svg?branch=master)](https://travis-ci.com/github/domxjs/domx) ![Lines](https://img.shields.io/badge/Coverage-96.75%25-brightgreen.svg) [![GitHub package.json version](https://img.shields.io/github/package-json/v/jhorback/harbor-utils)](https://github.com/jhorback/harbor-utils/releases)
+# DOMX &middot; [![GitHub license](https://img.shields.io/badge/license-MIT-blue.svg)](https://www.mit.edu/~amini/LICENSE.md) [![Build Status](https://travis-ci.com/domxjs/domx.svg?branch=master)](https://travis-ci.com/github/domxjs/domx) ![Lines](https://img.shields.io/badge/Coverage-99.35%25-brightgreen.svg) [![GitHub package.json version](https://img.shields.io/github/package-json/v/jhorback/harbor-utils)](https://github.com/jhorback/harbor-utils/releases)
 
 A mono repo containing packages with common web application script utilities.
 
