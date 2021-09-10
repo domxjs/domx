@@ -90,15 +90,15 @@ export class SessionData extends DataElement {
     }
 }
 ```
-**Note:** The static `userLoggedInEvent` is a good pattern to use
+> The static `userLoggedInEvent` is a good pattern to use
 to expose what events a DataElement can handle. This is
 similar to action creators in Redux. They can be defined
-directly on the DataElement or in a separate file
-if that works better for you.
+directly on the DataElement (or in a separate file
+if that works better for you) and used by UI components
+to trigger events.
 
-The same goes for the static `defaultState` property. This allows
-for UI components to reference the `defaultState` for initialization
-and events they need to dispatch.
+> The same goes for the static `defaultState` property. This allows
+for UI components to reference the `defaultState` for initialization.
 
 ### UI Component
 The `SessionData` element can be used in any UI component.
@@ -263,7 +263,8 @@ customDataElements.define("user-data", UserData);
 ```
 
 ### Handling stateId Change
-> Experimental: this works but can get the Redux Dev Tools jump to state out of sync
+> Attribute changes should be driven by another DataElements state,
+otherwise state could get out of sync with Redux Dev Tool logging.
 
 In some cases, the stateId may be fed by a DOM attribute.
 If that attribute changes, or internally the `stateId` property changes,
