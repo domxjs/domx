@@ -14,6 +14,7 @@ assignees: jhorback
 
 ## Feature completion
 - [ ] Build, run tests and coverage.
+- [ ] Create badges `npm run badges`
 - [ ] Update package readme, changelog, and package version.
 - [ ] Update root readme, and changelog.
 - [ ] Merge into master.
