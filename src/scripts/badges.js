@@ -31,11 +31,12 @@ function getDirectories(source) {
 async function runTestAndBadges(name, packageDir) {
     const coverageDir = `${packageDir}/.coverage`;
 
-    const jestCommand = `jest --coverage --coverage-directory=\"${coverageDir}\" \"${packageDir}\"`;
-    await run(`tests for ${name}`, jestCommand);
+    const jestCommand = `jest --coverage --coverage-directory=\"${coverageDir}\" --collectCoverageFrom=\"${packageDir}/**/!(*.d).ts\" \"${packageDir}\"`;
+    const jestOut = await run(`tests for ${name}`, jestCommand);
+    console.log(jestOut);
 
     const badgesCommand = `istanbul-badges-readme --linesLabel=\"Coverage\" --coverageDir=\"${coverageDir}\" --readmeDir=\"${packageDir}"`;
-    const out = await run(`badges for ${name}`, badgesCommand);
+    const badgesOut = await run(`badges for ${name}`, badgesCommand);
 }
 
 function run(name, command) {

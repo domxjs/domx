@@ -1,4 +1,4 @@
-# DataElement &middot; [![GitHub license](https://img.shields.io/badge/license-MIT-blue.svg)](https://www.mit.edu/~amini/LICENSE.md) [![Build Status](https://travis-ci.com/domxjs/domx.svg?branch=packages/DataElement)](https://travis-ci.com/github/domxjs/domx) ![Lines](https://img.shields.io/badge/Coverage-83.55%25-yellow.svg) [![npm](https://img.shields.io/npm/v/@domx/dataelement)](https://www.npmjs.com/package/@domx/dataelement)
+# DataElement &middot; [![GitHub license](https://img.shields.io/badge/license-MIT-blue.svg)](https://www.mit.edu/~amini/LICENSE.md) [![Build Status](https://travis-ci.com/domxjs/domx.svg?branch=packages/DataElement)](https://travis-ci.com/github/domxjs/domx) ![Lines](https://img.shields.io/badge/Coverage-99.53%25-brightgreen.svg) [![npm](https://img.shields.io/npm/v/@domx/dataelement)](https://www.npmjs.com/package/@domx/dataelement)
 
 A `DataElement` base class with root state support.
 

@@ -23,10 +23,11 @@
     "clean": "tsc --build --clean",
     "test": "tsc --build && jest",
     "test:watch": "tsc --build && jest --watch",
-    "test:coverage": "tsc --build && jest --coverage",
+    "test:coverage": "tsc --build && jest --coverage --collectCoverageFrom=\"./packages/**/!(*.d).ts\"",
     "badges": "node ./src/scripts/badges.js",
     "publish:all": "npm publish --access public --workspaces",
-    "prepare": "npm run build"
+    "prepare": "npm run build",
+    "test:coverage:single": "jest --coverage --coverage-directory=\"./packages/DataElement/.coverage\" --collectCoverageFrom=\"./packages/DataElement/**/!(*.d).ts\" \"./packages/DataElement\""
   },
   "dependencies": {
     "@vanillawc/wc-markdown": "^1.6.10",
