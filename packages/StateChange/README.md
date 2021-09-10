@@ -1,4 +1,5 @@
-# StateChange &middot; [![Build Status](https://travis-ci.com/domxjs/domx.svg?branch=packages/StateChange)](https://travis-ci.com/domxjs/domx)
+# StateChange &middot; [![GitHub license](https://img.shields.io/badge/license-MIT-blue.svg)](https://www.mit.edu/~amini/LICENSE.md) [![Build Status](https://travis-ci.com/domxjs/domx.svg?branch=packages/StateChange)](https://travis-ci.com/github/domxjs/domx) ![Lines](https://img.shields.io/badge/Coverage-96.86%25-brightgreen.svg) [![npm](https://img.shields.io/npm/v/@domx/statechange)](https://www.npmjs.com/package/@domx/statechange)
+
 
 
 `StateChange` is a monad-like object that enables changing a property on an HTMLElement in a `functional` way.
