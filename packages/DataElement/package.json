@@ -1,7 +1,7 @@
 {
   "name": "@domx/dataelement",
   "type": "module",
-  "version": "0.4.0",
+  "version": "0.4.1",
   "license": "MIT",
   "author": "John Horback",
   "description": "DataElement base class with root state support",

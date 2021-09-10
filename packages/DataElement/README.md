@@ -1,4 +1,4 @@
-# DataElement &middot; [![GitHub license](https://img.shields.io/badge/license-MIT-blue.svg)](https://www.mit.edu/~amini/LICENSE.md) [![Build Status](https://travis-ci.com/domxjs/domx.svg?branch=packages/DataElement)](https://travis-ci.com/github/domxjs/domx) ![Lines](https://img.shields.io/badge/Coverage-99.53%25-brightgreen.svg) [![npm](https://img.shields.io/npm/v/@domx/dataelement)](https://www.npmjs.com/package/@domx/dataelement)
+# DataElement &middot; [![GitHub license](https://img.shields.io/badge/license-MIT-blue.svg)](https://www.mit.edu/~amini/LICENSE.md) [![Build Status](https://travis-ci.com/domxjs/domx.svg?branch=packages/DataElement)](https://travis-ci.com/github/domxjs/domx) [![Lines](https://img.shields.io/badge/Coverage-99.53%25-brightgreen.svg)](https://app.travis-ci.com/github/domxjs/domx/branches) [![npm](https://img.shields.io/npm/v/@domx/dataelement)](https://www.npmjs.com/package/@domx/dataelement)
 
 A `DataElement` base class with root state support.
 
@@ -142,7 +142,7 @@ class UserData extends DataElement {
     // ...
 }
 ```
-This will register the custom element with the specified name
+> This will register the custom element with the specified name
 and will use the specified name in the root state tree.
 
 #### **@customDataElement(name, options)**
@@ -163,7 +163,7 @@ class UserData extends DataElement {
 }
 customDataElements.define("user-data", UserData);
 ```
-The `eventsListenAt` and `stateIdProperty` static properties are optional.
+> The `eventsListenAt` and `stateIdProperty` static properties are optional.
 
 
 ## Describing Data Properties
@@ -181,10 +181,10 @@ class UserData extends DataElement {
     sessionData = {};
 }
 ```
-The above example sets the `user` property as a data property. The change event
+> The above example sets the `user` property as a data property. The change event
 monitored will be `"user-changed"`.
 
-A second data property here is `sessionData` which specifically defines the
+> A second data property here is `sessionData` which specifically defines the
 change event as `"session-data-changed"`.
 
 ### Using the Static Property
@@ -298,7 +298,7 @@ class UserData extends DataElement {
     }
 }
 ```
-The static `observedAttributes` property and the `attributeChangedCallback` method
+> The static `observedAttributes` property and the `attributeChangedCallback` method
 are part of the custom element definition.
 See [Using Custom Elements](https://developer.mozilla.org/en-US/docs/Web/Web_Components/Using_custom_elements).
 
@@ -332,7 +332,7 @@ class UserData extends DataElement {
     }
 }
 ```
-This example is very simple but, in many cases, changing multiple parts
+> This example is very simple but, in many cases, changing multiple parts
 of the state object and adding to or removing items from Arrays
 can be greatly simplified by using Immer.
 

@@ -1,4 +1,4 @@
-# StateChange &middot; [![GitHub license](https://img.shields.io/badge/license-MIT-blue.svg)](https://www.mit.edu/~amini/LICENSE.md) [![Build Status](https://travis-ci.com/domxjs/domx.svg?branch=packages/StateChange)](https://travis-ci.com/github/domxjs/domx) ![Lines](https://img.shields.io/badge/Coverage-99.49%25-brightgreen.svg) [![npm](https://img.shields.io/npm/v/@domx/statechange)](https://www.npmjs.com/package/@domx/statechange)
+# StateChange &middot; [![GitHub license](https://img.shields.io/badge/license-MIT-blue.svg)](https://www.mit.edu/~amini/LICENSE.md) [![Build Status](https://travis-ci.com/domxjs/domx.svg?branch=packages/StateChange)](https://travis-ci.com/github/domxjs/domx) [![Lines](https://img.shields.io/badge/Coverage-99.49%25-brightgreen.svg)](https://app.travis-ci.com/github/domxjs/domx/branches) [![npm](https://img.shields.io/npm/v/@domx/statechange)](https://www.npmjs.com/package/@domx/statechange)
 
 
 
@@ -26,7 +26,7 @@ const defaultState = {
     users: []
 };
 ```
-and this HTMLElement
+> and this HTMLElement...
 
 ```js
 class UserListElement extends HTMLElement {
@@ -102,7 +102,7 @@ class UserListElement extends EventMap(HTMLElement){
     }
 }
 ```
-When using tap, the argument passed is the `StateChange` instance.
+> When using tap, the argument passed is the `StateChange` instance.
 ```js
 const requestUsers = async stateChange => {
   const response = await sendRequest({
@@ -128,14 +128,14 @@ const receiveUsers = users =>
         };
     }
 ```
-The reason for writing the method with an inner `function` is so that logging can pick up on the function name. The method could be written like this:
+> The reason for writing the method with an inner `function` is so that logging can pick up on the function name. The method could be written like this:
 ```js
 const receiveUsers = users => state => ({
     ...state,
     users
 });
 ```
-But logging would log an `anonymous` method.
+> But logging would log an `anonymous` method.
 
 
 ### Dispatching events
@@ -168,13 +168,13 @@ StateChange.of(this, {
     changeEvent: "current-user-changed"
 });
 ```
-A string can also be used to set the property and change event.
+> A string can also be used to set the property and change event.
 ```js
 StateChange.of(this, "user");
 // sets the property to "user"
 // and sets the changeEvent to "user-changed"
 ```
-For use with DataElements, the change event name will first be looked for on 
+> For use with DataElements, the change event name will first be looked for on 
 a static `dataProperties` property.
 ```js
 export class TestStateProp3 extends HTMLElement {
@@ -370,7 +370,7 @@ const setNextSkip = state => {
     return state;
 }
 ```
-It can be broken down into 3 separate functions.
+> It can be broken down into 3 separate functions.
 ```js
 const hasMoreItems = state =>
     state.totalCount < state.take + state.skip;
@@ -399,12 +399,12 @@ const setFilterFromUrl = stateChange => {
 };
 
 ```
-First by turning the first two lines into functions
+> First by turning the first two lines into functions
 ```js
 const getSearchParams => new URL(window.location.href).searchParams;
 const getFilterParam = searchParams => searchParams.get("filter");
 ```
-In order to use `StateChange` with a pipe there needs to be a way to insert the `stateChange` parameter into the pipe. This can be done with `StateChange.nextWith(stateChange)`.
+> In order to use `StateChange` with a pipe there needs to be a way to insert the `stateChange` parameter into the pipe. This can be done with `StateChange.nextWith(stateChange)`.
 ```js
 const setFilterFromUrl = stateChange => pipe(
     getSearchParams,
@@ -443,11 +443,11 @@ const requestUsers = stateChange => {
         .dispatchEvent(showSystemToastEvent({text: "Users loaded."}));
 };
 ```
-First we can extract two more methods. One to get the `userType`
+> First we can extract two more methods. One to get the `userType`
 ```js
 const getUserType = state => state.userType;
 ```
-And another to do the call to `sendRequest`
+> And another to do the call to `sendRequest`
 ```js
 const sendUsersRequest = async userType => await sendRequest({
     url: "/api/users",
