@@ -22,8 +22,9 @@
     "build": "tsc --build && vite build",
     "clean": "tsc --build --clean",
     "test": "tsc --build && jest",
-    "test:coverage": "tsc --build && jest --coverage && istanbul-badges-readme --linesLabel=\"Coverage\" --silent",
     "test:watch": "tsc --build && jest --watch",
+    "test:coverage": "tsc --build && jest --coverage",
+    "badges": "node ./src/scripts/badges.js",
     "publish:all": "npm publish --access public --workspaces",
     "prepare": "npm run build"
   },
@@ -50,6 +51,7 @@
     "transformIgnorePatterns": [
       "node_modules/(?!(lit-html|lit-element))"
     ],
+    "coverageDirectory": ".coverage",
     "coverageReporters": [
       "json-summary",
       "text",
