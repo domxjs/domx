@@ -263,6 +263,8 @@ customDataElements.define("user-data", UserData);
 ```
 
 ### Handling stateId Change
+> Experimental: this works but can get the Redux Dev Tools jump to state out of sync
+
 In some cases, the stateId may be fed by a DOM attribute.
 If that attribute changes, or internally the `stateId` property changes,
 then the internal state will need to be refreshed.
@@ -275,25 +277,22 @@ This can be done by calling `refreshState()` on the DataElement.
 class UserData extends DataElement {
     
     static get observedAttributes() { return ["user-id"]; }
+    static defaultState = { userName: "unknown" };
 
-    userId:string|null = null;
+    // tying the userId property to the user-id attribute
+    get userId():string { return this.getAttribute("user-id") || ""; }
+    set userId(stateId:string) { this.setAttribute("user-id", stateId); }
 
     @dataProperty();
-    user = {
-        userName: "unknown"
-    };
-
-    constructor() {
-        super();
-        this.userId = this.getAttribute("user-id");    
-    }
+    user = UserData.defaultState;
 
     attributeChangedCallback(name:string, oldValue:string, newValue:string) {
-        if (name === "user-id" && newValue !== this.userId) {            
-            // the userId is changing so we
-            // need to call refresh state
-            this.userId = newValue;
-            this.refreshState();
+        if (name === "user-id") {            
+            // the user-id is changing so we need to
+            // refresh the state with the default state
+            this.refreshState({
+                user: UserData.defaultState
+            });
         }
     }
 }
