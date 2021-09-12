@@ -23,6 +23,6 @@
     "clean": "tsc --build --clean"
   },
   "dependencies": {
-    "@domx/functional": "0.2.5"
+    "@domx/functional": "0.2.6"
   }
 }

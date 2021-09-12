@@ -17,10 +17,10 @@
   "main": "EventMap.js",
   "types": "EventMap.d.ts",
   "dependencies": {
-    "@domx/middleware": "0.2.7"
+    "@domx/middleware": "0.2.8"
   },
   "devDependencies": {
-    "@domx/testutils": "0.1.0"
+    "@domx/testutils": "0.1.1"
   },
   "scripts": {
     "build": "tsc",
