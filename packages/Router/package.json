@@ -23,6 +23,6 @@
     "clean": "tsc --build --clean"
   },
   "dependencies": {
-    "@domx/DataElement": "0.4.1"
+    "@domx/dataelement": "0.4.1"
   }
 }
