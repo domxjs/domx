@@ -14,6 +14,7 @@ branches:
   - packages/StateChange
   - packages/testUtils
   - packages/DataElement
+  - packages/Router
 cache:
   directories:
   - node_modules
@@ -48,6 +49,9 @@ matrix:
   - name: DataElement
     env: PACKAGE_LOCATION=packages/DataElement
     if: branch = packages/DataElement
+  - name: Router
+    env: PACKAGE_LOCATION=packages/Router
+    if: branch = packages/Router
 
 script:
   - npm run clean

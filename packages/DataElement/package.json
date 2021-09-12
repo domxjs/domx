@@ -33,11 +33,11 @@
     "clean": "tsc --build --clean"
   },
   "dependencies": {
-    "@domx/eventmap": "0.6.0",
-    "@domx/statechange": "0.6.0",
-    "@domx/middleware": "0.2.7"
+    "@domx/eventmap": "0.6.1",
+    "@domx/statechange": "0.6.1",
+    "@domx/middleware": "0.2.8"
   },
   "devDependencies": {
-    "@domx/testutils": "0.1.0"
+    "@domx/testutils": "0.1.1"
   }
 }
