@@ -19,7 +19,7 @@
   ],
   "scripts": {
     "dev": "vite",
-    "build": "tsc --build && vite build",
+    "build": "tsc --build && vite build && npm outdated --workspaces",
     "clean": "tsc --build --clean",
     "test": "tsc --build && jest",
     "test:watch": "tsc --build && jest --watch",
