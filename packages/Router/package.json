@@ -1,0 +1,28 @@
+{
+  "name": "@domx/router",
+  "type": "module",
+  "version": "0.0.0",
+  "license": "MIT",
+  "author": "John Horback",
+  "description": "A DOM based custom element router for client side routing.",
+  "keywords": [
+    "Custom Elements",
+    "Router",
+    "Client Router"
+  ],
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/domxjs/domx.git",
+    "directory": "packages/Router"
+  },
+  "homepage": "https://github.com/domxjs/domx/blob/master/packages/Router/README.md",
+  "main": "index.js",
+  "types": "index.d.ts",
+  "scripts": {
+    "build": "tsc --build",
+    "clean": "tsc --build --clean"
+  },
+  "dependencies": {
+    "@domx/DataElement": "0.4.1"
+  }
+}
