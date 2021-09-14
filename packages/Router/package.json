@@ -21,5 +21,9 @@
   "scripts": {
     "build": "tsc --build",
     "clean": "tsc --build --clean"
+  },
+  "dependencies": {
+    "@domx/dataelement": "^0.4.1",
+    "lit": "^2.0.0-rc.4"
   }
 }

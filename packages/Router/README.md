@@ -9,3 +9,16 @@ A DOM based custom element router for client side routing
 ```sh
 npm install @domx/router
 ```
+
+## To Document as Primary Usage [Review]
+- Router.init();
+
+
+
+
+## Router
+Static methods
+- Router.init()
+- Router.pushUrl(url)
+- Router.replaceUrl(url)
+- Router.replaceUrlParams(params)
