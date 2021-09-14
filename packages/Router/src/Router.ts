@@ -1,4 +1,5 @@
 import { DomxRouteData } from "./DomxRouteData";
+import { routeMatches, getRouteMatch } from "./routeMatcher";
 export {
     Router,
     Route,
@@ -7,7 +8,8 @@ export {
     RouteLocation,
     LocationChangedDetail,
     RouteState,
-    QueryParams
+    QueryParams,
+    RouteMatch
 }
 
 
@@ -37,7 +39,7 @@ interface RouteState {
     routeId:string,
     url: string,
     matches: boolean,
-    tail:Route,
+    tail:Route|null,
     routeData:RouteData,
     queryParams:QueryParams
 }
@@ -53,16 +55,21 @@ interface RouteInfo {
 /** Parsed query parameters */
 interface QueryParams extends StringIndex<string> {}
 
-
 interface LocationChangedDetail {
     sourceElement?: EventTarget|null,
     pushState?: boolean,
     replaceState?: boolean,
     pageLoad?: boolean
 }
+
+interface RouteMatch {
+    matches:boolean,
+    routeData:RouteData,
+    tail:Route|null
+}
   
 
-/** Used for testing root routes against body@click */
+/** Used for testing routes against body@click */
 const routes:StringIndex<DomxRouteData> = {};
 
 
@@ -79,7 +86,7 @@ class Router {
         }
 
         const url = `${window.location.pathname}${window.location.search}`;
-        if (routeMatches(url)) {
+        if (routesMatch(url)) {
             triggerLocationChanged({pageLoad: true});
         }
 
@@ -96,6 +103,10 @@ class Router {
 
     static removeRoute(routeData:DomxRouteData) {
         delete routes[routeData.routeId as string];
+    }
+
+    static MatchRoute(route:DomxRouteData, url:string):RouteMatch {
+        return getRouteMatch(getPathFromRoute(route), url);
     }
 
     /**
@@ -168,9 +179,9 @@ document.body.addEventListener("click", event => {
         return;
     }
   
-    // see if a registered root route matches the URL
+    // see if a route matches the URL
     const url = `${anchor.pathname}${anchor.search}`;
-    if (!routeMatches(url)) {
+    if (!routesMatch(url)) {
         return;
     }
   
@@ -182,10 +193,10 @@ document.body.addEventListener("click", event => {
     });
 });
 
-
-const routeMatches = (url:string) =>
+/** Returns true when finding the first route that matches */
+const routesMatch = (url:string) =>
    Object.keys(routes).find(key => 
-        routes[key].parentRoute !== null && routes[key].matches(url)) ?
+        routeMatchesUrl(routes[key], url)) ?
         true : false;
 
 const triggerLocationChanged = (detail:LocationChangedDetail) => {
@@ -228,5 +239,7 @@ const getNextRouteId = (pattern:string):string => {
         searchParams1.get(key) !== searchParams2.get(key)) ? false : true;
     return paramsMatch;
 };
-  
+
+const getPathFromRoute = (route:DomxRouteData):string => `${route.parentRoute?.prefix}${route.pattern}`;
+const routeMatchesUrl = (route:DomxRouteData, url:string):boolean => routeMatches(getPathFromRoute(route), url);
 

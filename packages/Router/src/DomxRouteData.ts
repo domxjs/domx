@@ -47,35 +47,22 @@ class DomxRouteData extends DataElement {
      * Update the state when the location changes.
      */
     locationChanged() {
+
+        const {matches, routeData, tail} = Router.MatchRoute(this, this.__location.url);
+
         this.state = {
             routeId: this.routeId as string,
             url: this.__location.url,
             queryParams: this.__location.queryParams,
-            matches: false,
-            routeData: {},            
-            tail: {path: "", prefix: ""}
+            matches,
+            routeData,            
+            tail
         };
+        this.dispatchChange();
 
-        // jch
-        // determine if this pattern + parentRoute  matches
-        // update the matches, tail, and routeData properties
-        // dispatch change
 
-        // jch also need to set routeInfo from DomxRoute
-    }
+        // jch also need to set routeInfo from DomxRoute! and dispatchChange?
 
-    /**
-     * Returns true of this is a root route
-     * and the pattern matches.
-     * Used by the Router to determine
-     * if a route link has been clicked.
-     */
-    //@ts-ignore - remove
-    testMatch(url:string) {
-        if (this.parentRoute) {
-            return false;
-        }
-        // else return true if pathname matches pattern!!!
     }
 
     connectedCallback() {
