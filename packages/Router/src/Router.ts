@@ -3,7 +3,7 @@ import { routeMatches, getRouteMatch } from "./routeMatcher";
 export {
     Router,
     Route,
-    RouteData,
+    RouteParams,
     RouteInfo,
     RouteLocation,
     LocationChangedDetail,
@@ -24,7 +24,7 @@ interface StringIndex<T> {
 }
 
 /** Contains the parsed route segments */
-interface RouteData extends StringIndex<string|null> {}
+interface RouteParams extends StringIndex<string|null> {}
 
 /** Parsed URL by DomxLocation */
 interface RouteLocation {
@@ -40,7 +40,7 @@ interface RouteState {
     url: string,
     matches: boolean,
     tail:Route|null,
-    routeData:RouteData,
+    routeParams:RouteParams,
     queryParams:QueryParams
 }
 
@@ -64,7 +64,7 @@ interface LocationChangedDetail {
 
 interface RouteMatch {
     matches:boolean,
-    routeData:RouteData,
+    routeParams:RouteParams,
     tail:Route|null
 }
   

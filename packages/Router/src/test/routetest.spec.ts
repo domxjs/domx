@@ -1,5 +1,5 @@
 import { describe, it, expect } from "@jest/globals";
-import { Route, RouteData } from "../Router";
+import { Route, RouteParams } from "../Router";
 import {
     getRouteMatch
 } from "../routeMatcher";
@@ -146,110 +146,110 @@ describe("DataElement index", () => {
         currentTest = tests[0];
         const result = getRouteMatch(currentTest.path, currentTest.url);
         expect(result.matches).toBe(currentTest.matches);
-        expect(result.routeData).toStrictEqual(currentTest.routeParams);
+        expect(result.routeParams).toStrictEqual(currentTest.routeParams);
     });
     it("passes 1", () => {
         currentTest = tests[1];
         const result = getRouteMatch(currentTest.path, currentTest.url);
         expect(result.matches).toBe(currentTest.matches);
-        expect(result.routeData).toStrictEqual(currentTest.routeParams);
+        expect(result.routeParams).toStrictEqual(currentTest.routeParams);
     });
     it("passes 2", () => {
         currentTest = tests[2];
         const result = getRouteMatch(currentTest.path, currentTest.url);
         expect(result.matches).toBe(currentTest.matches);
-        expect(result.routeData).toStrictEqual(currentTest.routeParams);
+        expect(result.routeParams).toStrictEqual(currentTest.routeParams);
     });
     it("passes 3", () => {
         currentTest = tests[3];
         const result = getRouteMatch(currentTest.path, currentTest.url);
         expect(result.matches).toBe(currentTest.matches);
-        expect(result.routeData).toStrictEqual(currentTest.routeParams);
+        expect(result.routeParams).toStrictEqual(currentTest.routeParams);
     });
     it("passes 4", () => {
         currentTest = tests[4];
         const result = getRouteMatch(currentTest.path, currentTest.url);
         expect(result.matches).toBe(currentTest.matches);
-        expect(result.routeData).toStrictEqual(currentTest.routeParams);
+        expect(result.routeParams).toStrictEqual(currentTest.routeParams);
     });
     it("passes 5", () => {
         currentTest = tests[5];
         const result = getRouteMatch(currentTest.path, currentTest.url);
         expect(result.matches).toBe(currentTest.matches);
-        expect(result.routeData).toStrictEqual(currentTest.routeParams);
+        expect(result.routeParams).toStrictEqual(currentTest.routeParams);
     });
     it("passes 6", () => {
         currentTest = tests[6];
         const result = getRouteMatch(currentTest.path, currentTest.url);
         expect(result.matches).toBe(currentTest.matches);
-        expect(result.routeData).toStrictEqual(currentTest.routeParams);
+        expect(result.routeParams).toStrictEqual(currentTest.routeParams);
     });
     it("passes 7", () => {
         currentTest = tests[7];
         const result = getRouteMatch(currentTest.path, currentTest.url);
         expect(result.matches).toBe(currentTest.matches);
-        expect(result.routeData).toStrictEqual(currentTest.routeParams);
+        expect(result.routeParams).toStrictEqual(currentTest.routeParams);
     });
     it("passes 8", () => {
         currentTest = tests[8];
         const result = getRouteMatch(currentTest.path, currentTest.url);
         expect(result.matches).toBe(currentTest.matches);
-        expect(result.routeData).toStrictEqual(currentTest.routeParams);
+        expect(result.routeParams).toStrictEqual(currentTest.routeParams);
     });
     it("passes 9", () => {
         currentTest = tests[9];
         const result = getRouteMatch(currentTest.path, currentTest.url);
         expect(result.matches).toBe(currentTest.matches);
-        expect(result.routeData).toStrictEqual(currentTest.routeParams);
+        expect(result.routeParams).toStrictEqual(currentTest.routeParams);
     });
     it("passes 10", () => {
         currentTest = tests[10];
         const result = getRouteMatch(currentTest.path, currentTest.url);
         expect(result.matches).toBe(currentTest.matches);
-        expect(result.routeData).toStrictEqual(currentTest.routeParams);
+        expect(result.routeParams).toStrictEqual(currentTest.routeParams);
     });
     it("passes 11", () => {
         currentTest = tests[11];
         const result = getRouteMatch(currentTest.path, currentTest.url);
         expect(result.matches).toBe(currentTest.matches);
-        expect(result.routeData).toStrictEqual(currentTest.routeParams);
+        expect(result.routeParams).toStrictEqual(currentTest.routeParams);
     });
     it("passes 12", () => {
         currentTest = tests[12];
         const result = getRouteMatch(currentTest.path, currentTest.url);
         expect(result.matches).toBe(currentTest.matches);
-        expect(result.routeData).toStrictEqual(currentTest.routeParams);
+        expect(result.routeParams).toStrictEqual(currentTest.routeParams);
     });
     it("passes 13", () => {
         currentTest = tests[13];
         const result = getRouteMatch(currentTest.path, currentTest.url);
         expect(result.matches).toBe(currentTest.matches);
-        expect(result.routeData).toStrictEqual(currentTest.routeParams);
+        expect(result.routeParams).toStrictEqual(currentTest.routeParams);
     });
     it("passes 14", () => {
         currentTest = tests[14];
         const result = getRouteMatch(currentTest.path, currentTest.url);
         expect(result.matches).toBe(currentTest.matches);
-        expect(result.routeData).toStrictEqual(currentTest.routeParams);
+        expect(result.routeParams).toStrictEqual(currentTest.routeParams);
     });
     it("passes 15", () => {
         currentTest = tests[15];
         const result = getRouteMatch(currentTest.path, currentTest.url);
         expect(result.matches).toBe(currentTest.matches);
-        expect(result.routeData).toStrictEqual(currentTest.routeParams);
+        expect(result.routeParams).toStrictEqual(currentTest.routeParams);
     });
     it("passes 16", () => {
         currentTest = tests[16];
         const result = getRouteMatch(currentTest.path, currentTest.url);
         expect(result.matches).toBe(currentTest.matches);
-        expect(result.routeData).toStrictEqual(currentTest.routeParams);
+        expect(result.routeParams).toStrictEqual(currentTest.routeParams);
         expect(result.tail).toStrictEqual(currentTest.tail);
     });
     it("passes 17", () => {
         currentTest = tests[17];
         const result = getRouteMatch(currentTest.path, currentTest.url);
         expect(result.matches).toBe(currentTest.matches);
-        expect(result.routeData).toStrictEqual(currentTest.routeParams);
+        expect(result.routeParams).toStrictEqual(currentTest.routeParams);
         expect(result.tail).toStrictEqual(currentTest.tail);
     });
 });
@@ -258,6 +258,6 @@ interface TestInput {
     path: string,
     url: string,
     matches: boolean,
-    routeParams: RouteData,
+    routeParams: RouteParams,
     tail:Route|null
 }

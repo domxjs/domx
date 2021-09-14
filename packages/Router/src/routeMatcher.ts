@@ -1,4 +1,4 @@
-import { Route, RouteData, RouteMatch } from "./Router";
+import { Route, RouteParams, RouteMatch } from "./Router";
 export { routeMatches, getRouteMatch };
 
 
@@ -12,7 +12,7 @@ const getRouteMatch = (path:string, url:string):RouteMatch => {
     if (!matches) {
         return {
             matches,
-            routeData: {},
+            routeParams: {},
             tail: routeTail
         };
     }
@@ -41,11 +41,11 @@ const getRouteMatch = (path:string, url:string):RouteMatch => {
             routeParams[name.substring(1, name.length)] = values[i];
         }
         return routeParams;
-    }, {} as RouteData);
+    }, {} as RouteParams);
 
     return {
         matches,
-        routeData: routeParams,
+        routeParams: routeParams,
         tail: routeTail
     };
 };

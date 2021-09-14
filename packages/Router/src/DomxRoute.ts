@@ -1,12 +1,12 @@
 import { LitElement, html } from "lit";
 import {customElement, property, query} from 'lit/decorators.js';
-import { QueryParams, Route, RouteData } from "./Router";
+import { QueryParams, Route, RouteParams } from "./Router";
 export { DomxRoute, NavigateOptions }
 
 
 interface NavigateOptions {
     replaceState:boolean,
-    routeData?: RouteData,
+    routeData?: RouteParams,
     queryParams?:QueryParams
 }
 
@@ -53,7 +53,7 @@ class DomxRoute extends LitElement {
     //@ts-ignore - remove
     isActive: false;
     activeElement:HTMLElement|null = null;
-    activeRouteData:RouteData|null = null;
+    activeRouteData:RouteParams|null = null;
     activeSourceElement:HTMLElement|null = null;
     lastSourceElement:HTMLElement|null = null;
 

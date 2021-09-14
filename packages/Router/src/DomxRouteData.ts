@@ -48,14 +48,14 @@ class DomxRouteData extends DataElement {
      */
     locationChanged() {
 
-        const {matches, routeData, tail} = Router.MatchRoute(this, this.__location.url);
+        const {matches, routeParams: routeData, tail} = Router.MatchRoute(this, this.__location.url);
 
         this.state = {
             routeId: this.routeId as string,
             url: this.__location.url,
             queryParams: this.__location.queryParams,
             matches,
-            routeData,            
+            routeParams: routeData,            
             tail
         };
         this.dispatchChange();
