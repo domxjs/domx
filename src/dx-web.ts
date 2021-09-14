@@ -5,8 +5,8 @@ import logoUrl from "./favicon.svg";
 /**
  * 
  */
-@customElement('pm-web')
-export class MyElement extends LitElement {
+@customElement('dx-web')
+export class DxWeb extends LitElement {
   static styles = css`
     :host {
       background: #0d1117;
@@ -37,6 +37,12 @@ export class MyElement extends LitElement {
     a {
       color: #4283db;
     }
+    #routerDemoLink {
+      position: absolute;
+      padding: 1rem;
+      top: 0;
+      right:0;
+    }
   `
 
   render() {
@@ -44,13 +50,14 @@ export class MyElement extends LitElement {
       <img class="logo" src="${logoUrl}"/>
       <wc-markdown
         src="https://raw.githubusercontent.com/domxjs/domx/master/README.md"
-      ></wc-markdown>   
+      ></wc-markdown>
+      <a id="routerDemoLink" href="/demo/index.html">Router Demo</a>
     `
   }
 }
 
 declare global {
   interface HTMLElementTagNameMap {
-    'pm-web': MyElement
+    'dx-web': DxWeb
   }
 }
