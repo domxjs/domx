@@ -46,7 +46,7 @@ interface RouteState {
 
 /** Route information passed from DomxRoute to DomxRouteData */
 interface RouteInfo {
-    parentRoute:Route,
+    parentRoute:Route|null,
     pattern:string,
     element:string,
     appendTo: string

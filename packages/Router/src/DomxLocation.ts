@@ -1,6 +1,6 @@
 import { DataElement, customDataElement, dataProperty, event } from "@domx/dataelement";
 import { RouteLocation, LocationChangedDetail, QueryParams } from "./Router";
-
+export { DomxLocation }
 
 /**
  * Used by all domx-route elements to provide

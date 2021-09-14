@@ -4,12 +4,22 @@ export { DomxRouteData }
 
 @customDataElement("domx-route-data", {stateIdProperty: "routeId"})
 class DomxRouteData extends DataElement {
+    static defaultState:RouteState = {
+        routeId: "",
+        matches: false,
+        queryParams: {},
+        routeParams: {},
+        tail: null,
+        url: ""
+    };
 
     /** Set by the Router when adding the route */
     routeId:string|null = null;
 
+    /** Set from/by the DomxRoute */
     parentRoute:Route|null = null;
-    
+    element:string = "";
+    appendTo:string = "";
     _pattern:string|null = null;
     set pattern(pattern:string|null) {
         if (this._pattern === null) {
@@ -17,15 +27,14 @@ class DomxRouteData extends DataElement {
         }
         throw new Error("DomxRouteData: route pattern cannot be changed");
     }
-    get pattern():string|null { return this._pattern }
+    get pattern():string { return this._pattern || "" }
 
 
     /**
      * Set by the DomxRoute when DomxLocation.location changes
      * on window@location-changed
      */
-    //@ts-ignore - remove
-    private __location:RouteLocation = {};
+    private __location:RouteLocation|null = null;
 
     set location(location:RouteLocation) { 
         this.__location = location;
@@ -33,40 +42,43 @@ class DomxRouteData extends DataElement {
     }
 
     @dataProperty()
-    state:RouteState|null = null;
+    state:RouteState = DomxRouteData.defaultState;
 
     @dataProperty({changeEvent: "route-info-changed"})
-    routeInfo:RouteInfo = {
-        parentRoute: {path: "", prefix: ""},
-        pattern: "",
-        element: "",
-        appendTo: "parent"
-    };
+    routeInfo:RouteInfo|null = null;
 
     /** 
      * Update the state when the location changes.
      */
     locationChanged() {
-
-        const {matches, routeParams: routeData, tail} = Router.MatchRoute(this, this.__location.url);
-
+        this.updateRouteInfo();
+        const location = this.__location as RouteLocation;
+        const {matches, routeParams: routeData, tail} = Router.MatchRoute(this, location.url);
         this.state = {
             routeId: this.routeId as string,
-            url: this.__location.url,
-            queryParams: this.__location.queryParams,
+            url: location.url,
+            queryParams: location.queryParams,
             matches,
             routeParams: routeData,            
             tail
         };
         this.dispatchChange();
-
-
-        // jch also need to set routeInfo from DomxRoute! and dispatchChange?
-
     }
 
     connectedCallback() {
         Router.addRoute(this);
+        this.updateRouteInfo();
+    }
+
+    updateRouteInfo() {
+        const { parentRoute, pattern, element, appendTo } = this;
+        this.routeInfo = {
+            parentRoute,
+            pattern,
+            element,
+            appendTo
+        };
+        this.dispatchChange("routeInfo");
     }
 
     disconnectedCallback() {

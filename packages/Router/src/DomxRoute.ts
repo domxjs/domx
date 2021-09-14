@@ -1,12 +1,15 @@
 import { LitElement, html } from "lit";
 import {customElement, property, query} from 'lit/decorators.js';
-import { QueryParams, Route, RouteParams } from "./Router";
+import { QueryParams, Route, RouteLocation, RouteParams, RouteState } from "./Router";
+import { DomxLocation } from "./DomxLocation";
+import { DomxRouteData } from "./DomxRouteData";
+import { Router } from ".";
 export { DomxRoute, NavigateOptions }
 
 
 interface NavigateOptions {
     replaceState:boolean,
-    routeData?: RouteParams,
+    routeParams?: RouteParams,
     queryParams?:QueryParams
 }
 
@@ -40,32 +43,53 @@ class DomxRoute extends LitElement {
     @property({type:Number, attribute:"cache-count"})
     cacheCount:number = 10;
 
-    navigate({replaceState, routeData, queryParams}:NavigateOptions = {replaceState:false}) {
-        if (!this.parentRoute) {
-            // pushState using "/" + pattern
-        } else {
-            // pushState using parentRoute prefix + pattern
+    navigate({replaceState, routeParams, queryParams}:NavigateOptions = {replaceState:false}) {
+
+        let path = this.pattern;
+
+        if (routeParams !== undefined) {
+            Object.keys(routeParams as object).forEach(name => {
+                path = path.replace(`:${name}`, routeParams[name] as string);
+            });
         }
+
+        if (queryParams) {
+            const sp = new URLSearchParams();
+            Object.keys(queryParams).forEach(name => {
+                sp.set(name, queryParams[name]);
+            });
+            path = `${path}?${sp.toString()}`;
+        }
+
+        if (this.parentRoute) {
+            path = `${this.parentRoute.prefix}${path}`;
+        }
+
+        replaceState === true ?
+            Router.replaceUrl(path) :
+            Router.pushUrl(path);
     }
 
     cachedElements = {}; // key is stringified routedata, value is element
 
-    //@ts-ignore - remove
-    isActive: false;
+ 
+    isActive = false;
     activeElement:HTMLElement|null = null;
-    activeRouteData:RouteParams|null = null;
-    activeSourceElement:HTMLElement|null = null;
-    lastSourceElement:HTMLElement|null = null;
+    activeRouteParams:RouteParams|null = null;
+    activeTail:Route|null = null;
+    activeSourceElement:EventTarget|null|undefined = null;
+    lastSourceElement:EventTarget|null|undefined = undefined;
 
     @query("domx-route-data")
-    $routeData = null;
+    $routeData:DomxRouteData|null = null;
 
     @query("domx-location")
-    $location = null;
+    $location:DomxLocation|null = null;
+
+    routeState:RouteState = DomxRouteData.defaultState;
 
     connectedCallback() {
-        // if there is a route-from, set that as the parentRoute
-        // use this.getRootNode().querySelector(this.rootFrom)
+        this.handleRouteFrom();
     }
 
     render() {
@@ -84,30 +108,118 @@ class DomxRoute extends LitElement {
     }
 
     locationChanged(event:Event) {
-        //@ts-ignore - remove
-        this.lastSourceElement = $location.sourceElement;
-        //@ts-ignore - remove
-        $routeData.location = $location.location;
+        this.lastSourceElement = this.$location?.locationChangedDetail.sourceElement;
+        if (this.$routeData) {
+            this.$routeData.location = this.$location?.location as RouteLocation;
+        }
+    }
+
+    handleRouteFrom() {
+        if (this.routeFrom) {
+            const parentRouteEl = (<Element>this.getRootNode()).querySelector(this.routeFrom) as DomxRoute;
+            this.parentRoute = parentRouteEl.tail;
+        }       
     }
 
     routeStateChanged() {
-        // if active is changing from false to true (or if active and routeData has changed or
-        //     if route tail has changed)
-        // see if element already exists if so jump to trigger
-        // if not create the element
-        //    remove an element from cache if needed
-        //    add the each routeData as attributes        
-        //    add queryParams as a property
-        //    update the activeRouteData, activeElement, and activeSourceElement
-        //    add element to cache if needed
-        // trigger route-active with element and sourceElement
-        //    add the parentRoute as a property (use route tail)
-        //    if not event.preventDefault called then
-        //    append to the DOM according to append-to
+        if (!this.$routeData) {
+            return;
+        }
 
-        // if active is changing from true to false
-        // trigger route-inactive with element and sourceElement
-        //    if not event.preventDefault
-        //    remove from the DOM and add to cache if needed
+        const routeState = this.$routeData.state as RouteState;
+        if ((this.isActive === false && routeState.matches) ||
+            (this.isActive && (
+                hasChanged(this.activeRouteParams, routeState.routeParams) ||
+                hasChanged(this.activeTail, routeState.tail)
+            ))
+        ){
+            // get/create the element
+            const el = (this.isActive && this.activeElement) ? this.activeElement :
+                document.createElement(this.element as string);
+            
+            // set each route parameter as an attribute
+            Object.keys(routeState.routeParams).map(name => {
+                el.setAttribute(name, routeState.routeParams[name] as string);
+            });
+
+            // set queryParams and parentRoute as properties
+            setElementProperties(el, {
+                queryParams: routeState.queryParams,
+                parentRoute: routeState.tail
+            });
+
+            // record activeElement
+            this.activeElement = el;
+            this.activeRouteParams = routeState.routeParams;
+            this.activeSourceElement = this.lastSourceElement;
+
+            // dispatch the active event
+            const routeActiveEvent = new RouteActiveChangedEvent(
+                RouteActiveChangedEventType.Active, el, this.activeSourceElement);
+            this.dispatchEvent(routeActiveEvent);
+            if (routeActiveEvent.isDefaultPrevented) {
+                return;
+            }
+
+            // append to the DOM
+            if (this.appendTo === "parent") {
+                this.getRootNode().appendChild(el);
+            } else if(this.appendTo === "body") {
+                document.body.appendChild(el);                
+            } else {
+                (<Element>this.getRootNode()).querySelector(this.appendTo)?.appendChild(el);
+            }
+
+
+        } else if (this.isActive && routeState.matches === false) {
+            const el = this.activeElement as HTMLElement;
+            
+            // dispatch inactive event
+            const routeActiveEvent = new RouteActiveChangedEvent(
+                RouteActiveChangedEventType.Inactive, el, this.activeSourceElement);
+            this.dispatchEvent(routeActiveEvent);
+            if (routeActiveEvent.isDefaultPrevented) {
+                return;
+            }
+
+            // remove from DOM
+            el.remove();
+
+            this.activeElement = null;
+            this.activeRouteParams = null;
+            this.activeSourceElement = null;
+        }
     }
 }
+
+enum RouteActiveChangedEventType {
+    Active = "active",
+    Inactive = "inactive"
+}
+class RouteActiveChangedEvent extends CustomEvent<any> {
+    constructor(type: RouteActiveChangedEventType, element:HTMLElement, sourceElement:EventTarget|null|undefined) {
+        super(`route-${type}`, {
+            detail: {
+                element,
+                sourceElement
+            }
+        });
+    }
+
+    private _isDefaultPrevented = false;
+    get isDefaultPrevented() { return this._isDefaultPrevented }
+
+    preventDefault() {
+        this._isDefaultPrevented = true;
+    }
+}
+
+const hasChanged = (obj1:any, obj2:any) => 
+    JSON.stringify(obj1) !== JSON.stringify(obj2);
+
+
+const setElementProperties = (el:any, properties:any) => {
+    Object.keys(properties).map(prop => {
+        el[prop] = properties[prop];
+    });
+};
