@@ -6,6 +6,7 @@ export {
     DataElement,
     DataElementCtor,
     DataElementMetaData,
+    DataProperties,
     dataProperty,
     event
 };
@@ -183,10 +184,11 @@ interface DataPropertyOptions {
  * @param options 
  */
 const dataProperty = (options?:DataPropertyOptions):any =>
-    (prototype: any, propertyName: string) =>
+    (prototype: any, propertyName: string) => {
         (prototype.constructor as DataElementCtor).dataProperties[propertyName] = {
             changeEvent: options ? options.changeEvent : `${propertyName}-changed`
         };
+    };
 
 
 const elementConnected = (el:DataElement) => {
