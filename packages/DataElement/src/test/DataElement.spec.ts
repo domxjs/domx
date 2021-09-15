@@ -5,9 +5,9 @@ import {
     customDataElement,
     DataElement,
     DataElementCtor,
+    DataProperties,
     dataProperty
 } from "../DataElement";
-import { state } from "lit-element";
 
 
 describe("DataElement", () => {
@@ -179,6 +179,10 @@ class TestDataElement extends DataElement {
     };
 
     testDispatch() {
+        this.state = {
+            ...this.state,
+            status: "changed"
+        };
         this.dispatchChange();
     }
 }

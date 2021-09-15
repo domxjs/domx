@@ -22,6 +22,6 @@
     "clean": "tsc --build --clean"
   },
   "devDependencies": {
-    "lit-html": "1.4.1"
+    "lit": "latest"
   }
 }

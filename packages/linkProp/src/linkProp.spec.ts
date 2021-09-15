@@ -1,6 +1,6 @@
 import { describe, it, expect } from "@jest/globals";
-import {LitElement, property, customElement, html} from "lit-element";
-
+import { LitElement, html } from "lit";
+import { property, customElement } from "lit/decorators";
 
 import {
     linkProp,

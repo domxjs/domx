@@ -4,7 +4,6 @@ import {customDataElement, DataElement, dataProperty} from "../DataElement";
 import { StateChange } from "@domx/statechange";
 import {applyDataElementRdtLogging} from "../applyDataElementRdtLogging";
 import { DevToolsExtension, DevToolsInstance } from "../rdtTypes";
-import { state } from "lit-element";
 import { RootState } from "../RootState";
 
 describe("applyDataElementRdtLogging", () => {

@@ -13,14 +13,14 @@ interface NavigateOptions {
     queryParams?:QueryParams
 }
 
-
+// parentRoute, pattern, element, appendTo, routeFrom, cache, cacheCount
 @customElement("domx-route")
 class DomxRoute extends LitElement {
 
     @property({attribute:false}) 
     parentRoute:Route|null = null;
 
-    @property({attribute:false})
+    //@property({attribute:false})
     get tail():Route|null { return this._tail; };
     _tail:Route|null = null;
 
@@ -81,19 +81,21 @@ class DomxRoute extends LitElement {
     lastSourceElement:EventTarget|null|undefined = undefined;
 
     @query("domx-route-data")
-    $routeData:DomxRouteData|null = null;
+    $routeData!:DomxRouteData;
 
     @query("domx-location")
-    $location:DomxLocation|null = null;
+    $location!:DomxLocation;
 
     routeState:RouteState = DomxRouteData.defaultState;
 
     connectedCallback() {
+        super.connectedCallback();
         this.handleRouteFrom();
     }
 
     render() {
         return html`
+        DOMX-ROUTE
             <domx-route-data
                 .parentRoute="${this.parentRoute}"
                 .pattern="${this.pattern}"
@@ -108,10 +110,8 @@ class DomxRoute extends LitElement {
     }
 
     locationChanged(event:Event) {
-        this.lastSourceElement = this.$location?.locationChangedDetail.sourceElement;
-        if (this.$routeData) {
-            this.$routeData.location = this.$location?.location as RouteLocation;
-        }
+        this.lastSourceElement = this.$location.locationChangedDetail.sourceElement;
+        this.$routeData.location = this.$location.location;
     }
 
     handleRouteFrom() {
@@ -122,10 +122,6 @@ class DomxRoute extends LitElement {
     }
 
     routeStateChanged() {
-        if (!this.$routeData) {
-            return;
-        }
-
         const routeState = this.$routeData.state as RouteState;
         if ((this.isActive === false && routeState.matches) ||
             (this.isActive && (

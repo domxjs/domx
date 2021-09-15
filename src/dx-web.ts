@@ -1,4 +1,5 @@
-import { LitElement, html, customElement, property, css } from 'lit-element';
+import { LitElement, html, css } from "lit";
+import { customElement } from "lit/decorators.js";
 import "@vanillawc/wc-markdown";
 import logoUrl from "./favicon.svg";
 

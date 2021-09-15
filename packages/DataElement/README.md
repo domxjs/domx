@@ -104,7 +104,8 @@ for UI components to reference the `defaultState` for initialization.
 The `SessionData` element can be used in any UI component.
 
 ```js
-import { customElement, LitElement, html } from "@lit-element";
+import { LitElement, html } from "lit";
+import { customElement } from "lit/decorators";
 import { linkProp } from "@domx/linkProp";
 import { SessionData } from "./SessionData";
 

@@ -24,8 +24,9 @@ class DomxRouteData extends DataElement {
     set pattern(pattern:string|null) {
         if (this._pattern === null) {
             this._pattern = pattern;
+        } else if (this._pattern !== pattern) {
+            throw new Error("DomxRouteData: route pattern cannot be changed");
         }
-        throw new Error("DomxRouteData: route pattern cannot be changed");
     }
     get pattern():string { return this._pattern || "" }
 
@@ -66,6 +67,7 @@ class DomxRouteData extends DataElement {
     }
 
     connectedCallback() {
+        super.connectedCallback();
         Router.addRoute(this);
         this.updateRouteInfo();
     }
@@ -82,6 +84,7 @@ class DomxRouteData extends DataElement {
     }
 
     disconnectedCallback() {
+        super.disconnectedCallback();
         Router.removeRoute(this);
     }
 }
