@@ -100,7 +100,6 @@ class DomxRoute extends LitElement {
 
     render() {
         return html`
-        DOMX-ROUTE
             <domx-route-data
                 .parentRoute="${this.parentRoute}"
                 .pattern="${this.pattern}"

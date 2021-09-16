@@ -5,6 +5,7 @@ import logoUrl from "./favicon.svg";
 import { Router, DomxRoute } from "@domx/router";
 import { dxStyles } from "./dx-router-demo/dxStyles";
 import "./dx-router-demo/dx-router-demo";
+import "@domx/Router/DomxRoute";
 
 /**
  * 
@@ -12,11 +13,6 @@ import "./dx-router-demo/dx-router-demo";
 @customElement('dx-web')
 export class DxWeb extends LitElement {
   static styles = dxStyles;
-
-  async firstUpdated() {
-    await this.updateComplete;
-    Router.init();
-  }
 
   render() {
     return html`      

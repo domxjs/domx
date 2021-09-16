@@ -1,4 +1,5 @@
 import { DataElement, customDataElement, dataProperty, event } from "@domx/dataelement";
+import { Router } from ".";
 import { RouteLocation, LocationChangedDetail, QueryParams } from "./Router";
 export { DomxLocation }
 
@@ -10,9 +11,15 @@ export { DomxLocation }
  */
  @customDataElement("domx-location")
  class DomxLocation extends DataElement {
+
+    connectedCallback() {
+        super.connectedCallback();
+        Router.init();
+    }
  
     @dataProperty()
     location:RouteLocation = {
+        root: Router.root,
         url: "",
         pathname: "",
         queryParams: {}

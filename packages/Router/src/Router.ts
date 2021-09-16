@@ -28,6 +28,7 @@ interface RouteParams extends StringIndex<string|null> {}
 
 /** Parsed URL by DomxLocation */
 interface RouteLocation {
+    root: string,
     url:string,
     /** do I need the pathname here? yes separates the pahtname from query params */
     pathname: string,
@@ -80,25 +81,24 @@ const routes:StringIndex<DomxRouteData> = {};
 class Router {
     private static _isInitialized = false;
 
-    private static _root:string|undefined;
-    static get root():string|undefined { return Router._root; }
-    private static set root(root:string|undefined) { Router._root = root; }
+    private static _root = "/";
+    static get root():string { return Router._root; }
+    static set root(root:string) {
+        if (Router._root !== "/") {
+            Router._root = root;
+        } else {
+            throw new Error("Router root has already been set.");
+        }
+    }
 
     /**
-     * Initializes the router.
-     * @param options option to set the root path
+     * Initializes the router; called by DomxLocation.
      */
-    static init({root}:{root?:string}={}):void {
+    static init():void {
         if (Router._isInitialized) {
             return;
         }
-
-        Router.root = root;
-        const url = `${window.location.pathname}${window.location.search}`;
-        if (routesMatch(url)) {
-            triggerLocationChanged({pageLoad: true});
-        }
-
+        triggerLocationChanged({pageLoad: true});
         Router._isInitialized = true;
     }
 

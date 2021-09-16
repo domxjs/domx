@@ -5,7 +5,7 @@ export { routeMatches, getRouteMatch };
 const prependRoot = (url:string) => {
     const root = Router.root;
 
-    if (!root) {
+    if (root === "/") {
         return url;
     }
 
