@@ -1,11 +1,24 @@
-import { Route, RouteParams, RouteMatch } from "./Router";
+import { Router, Route, RouteParams, RouteMatch } from "./Router";
 export { routeMatches, getRouteMatch };
 
 
-const routeMatches = (path:string, url:string):boolean => pathToRegExp(path).test(url);     
+const prependRoot = (url:string) => {
+    const root = Router.root;
 
+    if (!root) {
+        return url;
+    }
+
+    if (url.indexOf(root) === 0) {
+        url = url.replace(root, "");
+    }
+    return url;
+}
+
+const routeMatches = (path:string, url:string):boolean => pathToRegExp(path).test(prependRoot(url));     
 
 const getRouteMatch = (path:string, url:string):RouteMatch => {
+    url = prependRoot(url);
     const pathRegex = pathToRegExp(path);
     const matches = pathRegex.test(url);     
     let routeTail:Route|null = null;
@@ -32,9 +45,10 @@ const getRouteMatch = (path:string, url:string):RouteMatch => {
     const routeParams = names.reduce((routeParams, name, i) => {
         if (name !== null) {
             if (name.substring(0, 1) === "*") {
-                const path = `/${values[i] as string}`;
+                const path = `/${(values[i] as string) || ""}`;
+                const prefix = url.substring(0, url.indexOf(path));
                 routeTail = {
-                    prefix: url.substring(0, url.indexOf(path)),
+                    prefix,
                     path
                 };
             }

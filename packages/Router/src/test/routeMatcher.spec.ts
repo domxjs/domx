@@ -5,7 +5,7 @@ import {
 } from "../routeMatcher";
 
 
-describe("DataElement index", () => {
+describe("routeMatcher", () => {
     let currentTest:TestInput;
 
     const tests:Array<TestInput> = [{

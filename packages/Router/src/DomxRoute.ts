@@ -1,10 +1,13 @@
-import { LitElement, html } from "lit";
+import { LitElement, html, css } from "lit";
 import {customElement, property, query} from 'lit/decorators.js';
 import { QueryParams, Route, RouteLocation, RouteParams, RouteState } from "./Router";
 import { DomxLocation } from "./DomxLocation";
 import { DomxRouteData } from "./DomxRouteData";
 import { Router } from ".";
+// import again since DomxLocation is included for types
+import "./DomxLocation"; 
 export { DomxRoute, NavigateOptions }
+
 
 
 interface NavigateOptions {
@@ -13,11 +16,11 @@ interface NavigateOptions {
     queryParams?:QueryParams
 }
 
-// parentRoute, pattern, element, appendTo, routeFrom, cache, cacheCount
 @customElement("domx-route")
 class DomxRoute extends LitElement {
 
     @property({attribute:false}) 
+    
     parentRoute:Route|null = null;
 
     //@property({attribute:false})
@@ -93,6 +96,8 @@ class DomxRoute extends LitElement {
         this.handleRouteFrom();
     }
 
+    static styles = css`:host { display:none }`;
+
     render() {
         return html`
         DOMX-ROUTE
@@ -122,9 +127,10 @@ class DomxRoute extends LitElement {
     }
 
     routeStateChanged() {
-        const routeState = this.$routeData.state as RouteState;
+        const routeState = this.$routeData.state;
+
         if ((this.isActive === false && routeState.matches) ||
-            (this.isActive && (
+            (this.isActive && routeState.matches && (
                 hasChanged(this.activeRouteParams, routeState.routeParams) ||
                 hasChanged(this.activeTail, routeState.tail)
             ))
@@ -133,9 +139,14 @@ class DomxRoute extends LitElement {
             const el = (this.isActive && this.activeElement) ? this.activeElement :
                 document.createElement(this.element as string);
             
+
+            console.debug(`DomxRoute - ${this.activeElement ?
+                "Have Active Element" : "Create Element"}`, el.tagName);
+   
+            
             // set each route parameter as an attribute
             Object.keys(routeState.routeParams).map(name => {
-                el.setAttribute(name, routeState.routeParams[name] as string);
+                routeState.routeParams[name] && el.setAttribute(name, routeState.routeParams[name]!);
             });
 
             // set queryParams and parentRoute as properties
@@ -145,6 +156,7 @@ class DomxRoute extends LitElement {
             });
 
             // record activeElement
+            this.isActive = true;
             this.activeElement = el;
             this.activeRouteParams = routeState.routeParams;
             this.activeSourceElement = this.lastSourceElement;
@@ -173,17 +185,21 @@ class DomxRoute extends LitElement {
             // dispatch inactive event
             const routeActiveEvent = new RouteActiveChangedEvent(
                 RouteActiveChangedEventType.Inactive, el, this.activeSourceElement);
+            
             this.dispatchEvent(routeActiveEvent);
+            
+            this.isActive = false;
+            this.activeElement = null;
+            this.activeRouteParams = null;
+            this.activeSourceElement = null;
+
             if (routeActiveEvent.isDefaultPrevented) {
                 return;
             }
 
             // remove from DOM
             el.remove();
-
-            this.activeElement = null;
-            this.activeRouteParams = null;
-            this.activeSourceElement = null;
+            console.debug("DomxRoute - removed element", el.tagName);      
         }
     }
 }

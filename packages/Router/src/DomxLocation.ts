@@ -2,6 +2,7 @@ import { DataElement, customDataElement, dataProperty, event } from "@domx/datae
 import { RouteLocation, LocationChangedDetail, QueryParams } from "./Router";
 export { DomxLocation }
 
+
 /**
  * Used by all domx-route elements to provide
  * a parsed window location and stores the event
@@ -10,28 +11,27 @@ export { DomxLocation }
  @customDataElement("domx-location")
  class DomxLocation extends DataElement {
  
-     @dataProperty()
-     location:RouteLocation = {
-         url: "",
-         pathname: "",
-         queryParams: {}
-     };
- 
-     locationChangedDetail:LocationChangedDetail = {};
- 
-     @event("location-changed", {listenAt: "window"})
-     locationChanged({detail}:{detail:LocationChangedDetail}) {        
+    @dataProperty()
+    location:RouteLocation = {
+        url: "",
+        pathname: "",
+        queryParams: {}
+    };
+
+    locationChangedDetail:LocationChangedDetail = {};
+
+    @event("location-changed", {listenAt: "window"})
+    locationChanged({detail}:{detail:LocationChangedDetail}) { 
         this.locationChangedDetail = detail || {};
         const { pathname, search } = window.location;
         const url = `${pathname}${search}`;
         const queryParams = parseQueryParams();
-        this.location = {
+        this.dispatchChange("location", {
             url,
             pathname,
             queryParams
-        };
-        this.dispatchChange("location");
-     }
+        });
+    }
  }
 
 

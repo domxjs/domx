@@ -125,9 +125,16 @@ class DataElement extends EventMap(HTMLElement) {
     /**
      * Dispatches a change event on this DataElement.
      * @param prop {string} the name of the property to dispatch the change event on; default is "state"
+     * @param change {object} checks for JSON equals before dispatching (props must be in same order).
      */
-    dispatchChange(prop:string = "state") {
+    dispatchChange(prop:string = "state", change?:object) {
         const dp = this.__dataPropertyMetaData;
+        if (change) {
+            if (JSON.stringify(change) === JSON.stringify((this as any)[prop])) {
+                return;
+            }
+            (this as any)[prop] = change;
+        }
         this.dispatchEvent(new CustomEvent(dp[prop].changeEvent as string));
     }
 }

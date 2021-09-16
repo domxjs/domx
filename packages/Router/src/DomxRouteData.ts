@@ -6,18 +6,25 @@ export { DomxRouteData }
 class DomxRouteData extends DataElement {
     static defaultState:RouteState = {
         routeId: "",
+        url: "",
+        parentRoute: null,
         matches: false,
-        queryParams: {},
         routeParams: {},
-        tail: null,
-        url: ""
+        queryParams: {},
+        tail: null
     };
 
     /** Set by the Router when adding the route */
     routeId:string|null = null;
 
     /** Set from/by the DomxRoute */
-    parentRoute:Route|null = null;
+    _parentRoute:Route|null = null;
+    get parentRoute():Route|null { return this._parentRoute; };
+    set parentRoute(route:Route|null) {
+        this._parentRoute = route;
+        this.parentRouteChanged();
+    };
+
     element:string = "";
     appendTo:string = "";
     _pattern:string|null = null;
@@ -48,39 +55,41 @@ class DomxRouteData extends DataElement {
     @dataProperty({changeEvent: "route-info-changed"})
     routeInfo:RouteInfo|null = null;
 
+    parentRouteChanged() {
+        console.debug("parentRouteChanged for", this.routeInfo?.element);
+        this.__location && this.locationChanged();
+    }
+
     /** 
      * Update the state when the location changes.
      */
     locationChanged() {
-        this.updateRouteInfo();
         const location = this.__location as RouteLocation;
         const {matches, routeParams: routeData, tail} = Router.MatchRoute(this, location.url);
-        this.state = {
+        this.dispatchChange("state", {
             routeId: this.routeId as string,
             url: location.url,
-            queryParams: location.queryParams,
+            parentRoute: this.parentRoute,
             matches,
             routeParams: routeData,            
+            queryParams: location.queryParams,
             tail
-        };
-        this.dispatchChange();
+        });
     }
 
     connectedCallback() {
-        super.connectedCallback();
         Router.addRoute(this);
+        super.connectedCallback();
         this.updateRouteInfo();
     }
 
     updateRouteInfo() {
-        const { parentRoute, pattern, element, appendTo } = this;
-        this.routeInfo = {
-            parentRoute,
+        const { pattern, element, appendTo } = this;
+        this.dispatchChange("routeInfo", {
             pattern,
             element,
             appendTo
-        };
-        this.dispatchChange("routeInfo");
+        });
     }
 
     disconnectedCallback() {

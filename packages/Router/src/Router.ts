@@ -38,6 +38,7 @@ interface RouteLocation {
 interface RouteState {
     routeId:string,
     url: string,
+    parentRoute:Route|null,
     matches: boolean,
     tail:Route|null,
     routeParams:RouteParams,
@@ -46,7 +47,6 @@ interface RouteState {
 
 /** Route information passed from DomxRoute to DomxRouteData */
 interface RouteInfo {
-    parentRoute:Route|null,
     pattern:string,
     element:string,
     appendTo: string
@@ -80,11 +80,20 @@ const routes:StringIndex<DomxRouteData> = {};
 class Router {
     private static _isInitialized = false;
 
-    static init() {
+    private static _root:string|undefined;
+    static get root():string|undefined { return Router._root; }
+    private static set root(root:string|undefined) { Router._root = root; }
+
+    /**
+     * Initializes the router.
+     * @param options option to set the root path
+     */
+    static init({root}:{root?:string}={}):void {
         if (Router._isInitialized) {
             return;
         }
 
+        Router.root = root;
         const url = `${window.location.pathname}${window.location.search}`;
         if (routesMatch(url)) {
             triggerLocationChanged({pageLoad: true});
@@ -95,9 +104,13 @@ class Router {
 
     static addRoute(routeData:DomxRouteData) {
         if (routeData.pattern === null) {
-            throw new Error("Router: cannot addRout without a pattern")
+            throw new Error("Router: cannot add a route without a pattern")
         }
-        routeData.routeId = getNextRouteId(routeData.pattern);
+        
+        if (routeData.routeId === null) {
+            routeData.routeId = getNextRouteId(routeData.pattern);
+        }
+
         routes[routeData.routeId] = routeData;
     }
 
@@ -113,9 +126,12 @@ class Router {
      * Uses history.pushState to push a URL on the history stack.
      * @param url {string} the absolute URL path to push.
      */
-    static pushUrl(url:string) {
+    static pushUrl(url:string, detail:LocationChangedDetail = {}) {
         window.history.pushState({}, "", url);
-        triggerLocationChanged({pushState: true});
+        triggerLocationChanged({
+            ...detail,
+            pushState: true
+        });
     }
 
     /**
@@ -149,7 +165,7 @@ class Router {
 }
 
 
-document.body.addEventListener("click", event => {
+const routerHandleBodyClick = (event:MouseEvent) => {
 
     // test if this is a standard click
     if (event.defaultPrevented || event.button !== 0 ||
@@ -182,16 +198,19 @@ document.body.addEventListener("click", event => {
     // see if a route matches the URL
     const url = `${anchor.pathname}${anchor.search}`;
     if (!routesMatch(url)) {
+        debugger;
         return;
     }
   
     // handle the url
     event.preventDefault();
-    Router.pushUrl(url);
-    triggerLocationChanged({
+    Router.pushUrl(url, {
         sourceElement: event.target
     });
-});
+};
+
+document.body.addEventListener("click", routerHandleBodyClick);
+
 
 /** Returns true when finding the first route that matches */
 const routesMatch = (url:string) =>
@@ -240,6 +259,14 @@ const getNextRouteId = (pattern:string):string => {
     return paramsMatch;
 };
 
-const getPathFromRoute = (route:DomxRouteData):string => `${route.parentRoute?.prefix}${route.pattern}`;
-const routeMatchesUrl = (route:DomxRouteData, url:string):boolean => routeMatches(getPathFromRoute(route), url);
+const getPathFromRoute = (route:DomxRouteData):string => {
+    const path = `${route.parentRoute?.prefix || ""}${route.pattern}`;
+    return path;
+};
+
+const routeMatchesUrl = (route:DomxRouteData, url:string):boolean => {
+    const matches = routeMatches(getPathFromRoute(route), url);
+    console.debug("routeMatchesUrl", matches, url, route.parentRoute, route.pattern);
+    return matches;
+};
 
