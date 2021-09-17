@@ -20,7 +20,7 @@ interface CachedElement {
     element:HTMLElement,
     routeParams:RouteParams,
     queryParams:QueryParams,
-    tail:Route|null
+    parentRoute:Route|null
 }
 
 @customElement("domx-route")
@@ -32,6 +32,10 @@ class DomxRoute extends LitElement {
 
     //@property({attribute:false})
     get tail():Route|null { return this._tail; };
+    private set tail(tail:Route|null) {
+        this._tail = tail;
+        this.dispatchEvent(new CustomEvent("tail-changed"));
+    }
     _tail:Route|null = null;
 
     @property({type:String})
@@ -42,10 +46,6 @@ class DomxRoute extends LitElement {
 
     @property({attribute: "append-to"})
     appendTo:string = "parent"; // parent, body, or shadow query
-
-    // this is used to declaratively set the parent route
-    @property({attribute: "route-from"})
-    routeFrom:string|null = null;
 
     @property({type:Boolean})
     cache:boolean = false;
@@ -95,7 +95,7 @@ class DomxRoute extends LitElement {
 
     connectedCallback() {
         super.connectedCallback();
-        this.handleRouteFrom();
+        this.findParent();
     }
 
     static styles = css`:host { display:none }`;
@@ -120,20 +120,43 @@ class DomxRoute extends LitElement {
         this.$routeData.location = this.$location.location;
     }
 
-    handleRouteFrom() {
-        if (this.routeFrom) {
-            const parentRouteEl = (<Element>this.getRootNode()).querySelector(this.routeFrom) as DomxRoute;
-            this.parentRoute = parentRouteEl.tail;
-        }       
+    /**
+     * Checks to see if the parent element is a DomxRoute
+     * and associates its tail with this parentRoute.
+     */
+    async findParent() {
+        const parentEl = this.parentElement;
+        if (parentEl && parentEl instanceof DomxRoute) {
+            await this.updateComplete;
+            this._removeTailListener && this._removeTailListener();
+            this._addTailListener(parentEl);
+        }
+    }
+
+    _tailListener:EventListener|null = null;
+    _removeTailListener:Function|null = null;
+    _addTailListener(parentElement:DomxRoute) {
+        const el = this;
+        const updateParent = () => {
+            el.parentRoute = parentElement.tail;
+            console.debug("DomxRoute - findParent, setting parentRoute from tail:", parentElement.tail);
+        };
+        parentElement.addEventListener("tail-changed", updateParent);
+        this._tailListener = updateParent;
+        updateParent();
+        this._removeTailListener = () => {
+            parentElement.removeEventListener("tail-changed", updateParent);
+        }
     }
 
     routeStateChanged() {
         const routeState = this.$routeData.state;
+        this.tail = routeState.tail;
         const ae = this.activeElement;
         if ((!ae && routeState.matches) ||
             (ae && routeState.matches && (
                 hasChanged(ae.routeParams, routeState.routeParams) ||
-                hasChanged(ae.tail, routeState.tail) ||
+                hasChanged(ae.parentRoute, routeState.tail) ||
                 hasChanged(ae.queryParams, routeState.queryParams)
             ))
         ){
@@ -144,8 +167,7 @@ class DomxRoute extends LitElement {
 
             console.debug(`DomxRoute - ${this.activeElement ?
                 "Have Active Element" : "Create Element"}`, el.tagName);
-   
-            
+
             // set each route parameter as an attribute
             Object.keys(routeState.routeParams).map(name => {
                 const val = routeState.routeParams[name];
@@ -163,7 +185,7 @@ class DomxRoute extends LitElement {
                 element: el,
                 routeParams: routeState.routeParams,
                 queryParams: routeState.queryParams,
-                tail: routeState.tail
+                parentRoute: routeState.tail
             };
             this.activeSourceElement = this.lastSourceElement;
 
