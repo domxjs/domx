@@ -204,8 +204,10 @@ const routerHandleBodyClick = (event:MouseEvent) => {
   
     // handle the url
     event.preventDefault();
+    const sourceElement = event.composed ?
+        event.composedPath()[0] : event.target;
     Router.pushUrl(url, {
-        sourceElement: event.target
+        sourceElement
     });
 };
 

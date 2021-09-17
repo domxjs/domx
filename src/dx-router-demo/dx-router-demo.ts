@@ -2,9 +2,9 @@ import { LitElement, html, css } from "lit";
 import { customElement, property } from "lit/decorators.js";
 import { applyDataElementRdtLogging } from "@domx/dataelement/applyDataElementRdtLogging";
 import { applyEventMapLogging } from "@domx/dataelement";
-import { Router, DomxRoute } from "@domx/router";
+import { Router, Route } from "@domx/router";
+import { RouteActiveChangedEvent } from "@domx/router/DomxRoute";
 import "./dx-pages";
-import { Route } from "@domx/router/Router";
 import { dxStyles } from "./dxStyles";
 
 
@@ -46,7 +46,9 @@ export class DxRouterDemo extends LitElement {
         .parentRoute="${this.parentRoute}"
         pattern="/page2(/*routeTail)"
         element="dx-p2"
-      ><!-- try without element too -->
+        @route-active="${this.routeActive}"
+        @route-inactive="${this.routeInactive}"
+      >
         <domx-route
             pattern="/page3"
             element="dx-p4"
@@ -62,6 +64,14 @@ export class DxRouterDemo extends LitElement {
         <h3>Container</h3>
       </div>
     `
+  }
+
+  routeActive(event:RouteActiveChangedEvent) {
+    console.log(">>> /page2(/*routeTail):ACTIVE", event.detail);
+  }
+
+  routeInactive(event:RouteActiveChangedEvent) {
+    console.log(">>> /page2(/*routeTail):INACTIVE", event.detail);
   }
 }
 

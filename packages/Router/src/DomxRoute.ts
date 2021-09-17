@@ -1,14 +1,17 @@
 import { LitElement, html, css } from "lit";
 import {customElement, property, query} from 'lit/decorators.js';
-import { QueryParams, Route, RouteLocation, RouteParams, RouteState } from "./Router";
+import { LocationChangedDetail, QueryParams, Route, RouteLocation, RouteParams, RouteState } from "./Router";
 import { DomxLocation } from "./DomxLocation";
 import { DomxRouteData } from "./DomxRouteData";
 import { Router } from ".";
 // import again since DomxLocation is included for types
 import "./DomxLocation"; 
-export { DomxRoute, NavigateOptions }
-
-
+export {
+    DomxRoute,
+    NavigateOptions,
+    RouteActiveChangedEvent,
+    RouteActiveChangedEventType
+}
 
 interface NavigateOptions {
     replaceState:boolean,
@@ -116,7 +119,7 @@ class DomxRoute extends LitElement {
     }
 
     locationChanged(event:Event) {
-        this.lastSourceElement = this.$location.locationChangedDetail.sourceElement;
+        this.lastSourceElement = DomxLocation.lastSourceElement;
         this.$routeData.location = this.$location.location;
     }
 
@@ -162,7 +165,7 @@ class DomxRoute extends LitElement {
         ){
             // get/create the element
             const el = ae ? ae.element :
-                document.createElement(this.element as string);
+                document.createElement(this.element || "div");
             
 
             console.debug(`DomxRoute - ${this.activeElement ?

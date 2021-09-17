@@ -12,6 +12,8 @@ export { DomxLocation }
  @customDataElement("domx-location")
  class DomxLocation extends DataElement {
 
+    static lastSourceElement:EventTarget|null = null;
+
     connectedCallback() {
         super.connectedCallback();
         Router.init();
@@ -25,11 +27,9 @@ export { DomxLocation }
         queryParams: {}
     };
 
-    locationChangedDetail:LocationChangedDetail = {};
-
     @event("location-changed", {listenAt: "window"})
     locationChanged({detail}:{detail:LocationChangedDetail}) { 
-        this.locationChangedDetail = detail || {};
+        DomxLocation.lastSourceElement = detail.sourceElement || null;
         const { pathname, search } = window.location;
         const url = `${pathname}${search}`;
         const queryParams = parseQueryParams();
