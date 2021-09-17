@@ -16,6 +16,13 @@ interface NavigateOptions {
     queryParams?:QueryParams
 }
 
+interface CachedElement {
+    element:HTMLElement,
+    routeParams:RouteParams,
+    queryParams:QueryParams,
+    tail:Route|null
+}
+
 @customElement("domx-route")
 class DomxRoute extends LitElement {
 
@@ -73,13 +80,8 @@ class DomxRoute extends LitElement {
             Router.pushUrl(path);
     }
 
-    cachedElements = {}; // key is stringified routedata, value is element
-
- 
-    isActive = false;
-    activeElement:HTMLElement|null = null;
-    activeRouteParams:RouteParams|null = null;
-    activeTail:Route|null = null;
+    cachedElements:{[key:string]:CachedElement} = {};
+    activeElement:CachedElement|null = null;    
     activeSourceElement:EventTarget|null|undefined = null;
     lastSourceElement:EventTarget|null|undefined = undefined;
 
@@ -127,15 +129,16 @@ class DomxRoute extends LitElement {
 
     routeStateChanged() {
         const routeState = this.$routeData.state;
-
-        if ((this.isActive === false && routeState.matches) ||
-            (this.isActive && routeState.matches && (
-                hasChanged(this.activeRouteParams, routeState.routeParams) ||
-                hasChanged(this.activeTail, routeState.tail)
+        const ae = this.activeElement;
+        if ((!ae && routeState.matches) ||
+            (ae && routeState.matches && (
+                hasChanged(ae.routeParams, routeState.routeParams) ||
+                hasChanged(ae.tail, routeState.tail) ||
+                hasChanged(ae.queryParams, routeState.queryParams)
             ))
         ){
             // get/create the element
-            const el = (this.isActive && this.activeElement) ? this.activeElement :
+            const el = ae ? ae.element :
                 document.createElement(this.element as string);
             
 
@@ -145,7 +148,8 @@ class DomxRoute extends LitElement {
             
             // set each route parameter as an attribute
             Object.keys(routeState.routeParams).map(name => {
-                routeState.routeParams[name] && el.setAttribute(name, routeState.routeParams[name]!);
+                const val = routeState.routeParams[name];
+                val ? el.setAttribute(name, val!) : el.removeAttribute(name);
             });
 
             // set queryParams and parentRoute as properties
@@ -155,9 +159,12 @@ class DomxRoute extends LitElement {
             });
 
             // record activeElement
-            this.isActive = true;
-            this.activeElement = el;
-            this.activeRouteParams = routeState.routeParams;
+            this.activeElement = {
+                element: el,
+                routeParams: routeState.routeParams,
+                queryParams: routeState.queryParams,
+                tail: routeState.tail
+            };
             this.activeSourceElement = this.lastSourceElement;
 
             // dispatch the active event
@@ -178,18 +185,15 @@ class DomxRoute extends LitElement {
             }
 
 
-        } else if (this.isActive && routeState.matches === false) {
-            const el = this.activeElement as HTMLElement;
+        } else if (ae &&  routeState.matches === false) {
+            const el = ae.element;
             
             // dispatch inactive event
             const routeActiveEvent = new RouteActiveChangedEvent(
                 RouteActiveChangedEventType.Inactive, el, this.activeSourceElement);
             
-            this.dispatchEvent(routeActiveEvent);
-            
-            this.isActive = false;
+            this.dispatchEvent(routeActiveEvent);            
             this.activeElement = null;
-            this.activeRouteParams = null;
             this.activeSourceElement = null;
 
             if (routeActiveEvent.isDefaultPrevented) {

@@ -27,7 +27,9 @@ export class DxRouterDemo extends LitElement {
       <h1>Router Demo</h1>
       <span>
         <a href="/demo/page1">Page 1</a> | 
-        <a href="/demo/page2">Page 2</a>
+        <a href="/demo/page1?a=b&c=some value">page1?a=b&c=some value</a> | 
+        <a href="/demo/page2">Page 2</a> |
+        <a href="/demo/page2/testValue">page2/testValue</a>
       </span>
       <domx-route
         .parentRoute="${this.parentRoute}"
@@ -36,7 +38,7 @@ export class DxRouterDemo extends LitElement {
       ></domx-route>
       <domx-route
         .parentRoute="${this.parentRoute}"
-        pattern="/page2"
+        pattern="/page2(/:testParam)"
         element="dx-p2"
       ></domx-route>
     `

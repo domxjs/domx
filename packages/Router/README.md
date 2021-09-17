@@ -11,14 +11,37 @@ npm install @domx/router
 ```
 
 ## To Document as Primary Usage [Review]
-- Router.init();
 
 
+
+## Patterns
+```
+Patterns starts with "/"
+pattern="/"
+
+routeParams
+/users/:id
+/users/:id/stats/:year
+All route parameters are added as attributes on the element created.
+Also, a .queryParams property will be set on the element with any search parameters
+
+optional
+/users(/)
+/users(/:id)
+/users(/stats)(/:year)
+
+Subroutes
+/users/*nameOfRouteParam
+Creates a routeTail for use with subroutes,
+and adds a route parameter called nameOfRouteParam
+which is added as an attribute on the element created.
+The routeTail can be used to set a parentRoute property of another route.
+```
 
 
 ## Router
-Static methods
-- Router.init()
+Static
 - Router.pushUrl(url)
 - Router.replaceUrl(url)
 - Router.replaceUrlParams(params)
+- Router.root - can set once
