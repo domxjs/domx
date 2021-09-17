@@ -37,4 +37,10 @@ a {
   top: 0;
   right:0;
 }
+.highlight {
+  min-height: 50px;
+  padding: 1rem;
+  margin: 1rem 0;
+  background-color: #2a374a;
+}
 `;

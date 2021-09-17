@@ -34,3 +34,13 @@ export class DxP2 extends LitElement {
   }
 }
 
+@customElement('dx-p3')
+export class DxP3 extends LitElement {
+  render() {
+    return html`
+      <h1>Page 3</h1>
+    `;
+  }
+}
+
+
