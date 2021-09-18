@@ -14,7 +14,7 @@ export {
 }
 
 interface NavigateOptions {
-    replaceState:boolean,
+    replaceState?:boolean,
     routeParams?: RouteParams,
     queryParams?:QueryParams
 }
@@ -56,26 +56,56 @@ class DomxRoute extends LitElement {
     @property({type:Number, attribute:"cache-count"})
     cacheCount:number = 10;
 
+    /**
+     * Navigates to this route.
+     * Must supply all routeParams including parent
+     * routeParams if a subroute.
+     * @param options {NavigationOptions}
+     */
     navigate({replaceState, routeParams, queryParams}:NavigateOptions = {replaceState:false}) {
 
-        let path = this.pattern;
+        let path = "";
+        let el = this as HTMLElement;
+        // need to walk parent elements patterns, prepending and removing
+        // splats until no parent; then prepend the parentRoute.prefix
+        while(el.parentElement) {
+            if (el.parentElement instanceof DomxRoute) {
+                let pattern = el.parentElement.pattern;
+                // remove splat
+                const splatIndex = pattern.indexOf("/*");
+                if (splatIndex > 0) {
+                    pattern = pattern.substring(0, splatIndex);
+                }
+                path = `${pattern}${path}`;
+            }
+            el = el.parentElement;
+        }
+        if (el instanceof DomxRoute && el.parentRoute) {
+            path = `${el.parentRoute.prefix}${path}`;
+        }
+        path = `${path}${this.pattern}`;
 
-        if (routeParams !== undefined) {
+        // remove parens
+        path = path.replace(/\(/g, "").replace(/\)/g, "");
+
+        // add routeParams
+        if (routeParams) {
             Object.keys(routeParams as object).forEach(name => {
                 path = path.replace(`:${name}`, routeParams[name] as string);
             });
         }
 
+        if (path.indexOf(":") > -1) {
+            throw new Error(`DomxRoute: cannot navigate; all routeParams were not provided: "${path}"`);
+        }
+
+        // add queryParams
         if (queryParams) {
             const sp = new URLSearchParams();
             Object.keys(queryParams).forEach(name => {
                 sp.set(name, queryParams[name]);
             });
             path = `${path}?${sp.toString()}`;
-        }
-
-        if (this.parentRoute) {
-            path = `${this.parentRoute.prefix}${path}`;
         }
 
         replaceState === true ?
@@ -142,13 +172,14 @@ class DomxRoute extends LitElement {
         const el = this;
         const updateParent = () => {
             el.parentRoute = parentElement.tail;
-            console.debug("DomxRoute - findParent, setting parentRoute from tail:", parentElement.tail);
+            console.debug("DomxRoute - findParent, setting parentRoute from tail:", el.tagName, parentElement.tail);
         };
         parentElement.addEventListener("tail-changed", updateParent);
         this._tailListener = updateParent;
         updateParent();
         this._removeTailListener = () => {
             parentElement.removeEventListener("tail-changed", updateParent);
+            console.debug("DomxRoute - findParent, REMOVING listener");
         }
     }
 

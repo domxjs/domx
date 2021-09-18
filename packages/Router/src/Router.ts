@@ -198,7 +198,6 @@ const routerHandleBodyClick = (event:MouseEvent) => {
     // see if a route matches the URL
     const url = `${anchor.pathname}${anchor.search}`;
     if (!routesMatch(url)) {
-        debugger;
         return;
     }
   

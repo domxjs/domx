@@ -45,8 +45,9 @@ const getRouteMatch = (path:string, url:string):RouteMatch => {
     const routeParams = names.reduce((routeParams, name, i) => {
         if (name !== null) {
             if (name.substring(0, 1) === "*") {
-                const path = `/${(values[i] as string) || ""}`;
-                const prefix = url.substring(0, url.indexOf(path));
+                const value = values[i];
+                const path = value ? `/${(value as string) || ""}` : "";
+                const prefix = value ? url.substring(0, url.indexOf(path)) : url;
                 routeTail = {
                     prefix,
                     path
