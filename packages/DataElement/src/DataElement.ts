@@ -192,6 +192,9 @@ interface DataPropertyOptions {
  */
 const dataProperty = (options?:DataPropertyOptions):any =>
     (prototype: any, propertyName: string) => {
+        if (prototype.constructor.dataProperties === DataElement.dataProperties) {
+            prototype.constructor.dataProperties = {};
+        }
         (prototype.constructor as DataElementCtor).dataProperties[propertyName] = {
             changeEvent: options ? options.changeEvent : `${propertyName}-changed`
         };
