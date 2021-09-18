@@ -75,7 +75,6 @@ export class DxRouterDemo extends LitElement {
   }
 
   testNavigate() {
-    // alert("here:" + this.$subroute.element);
     this.$subroute.navigate({
       replaceState: true,
       routeParams: {

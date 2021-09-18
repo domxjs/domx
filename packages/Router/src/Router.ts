@@ -60,6 +60,7 @@ interface LocationChangedDetail {
     sourceElement?: EventTarget|null,
     pushState?: boolean,
     replaceState?: boolean,
+    popState?: boolean,
     pageLoad?: boolean
 }
 
@@ -164,8 +165,8 @@ class Router {
     }
 }
 
-
-const routerHandleBodyClick = (event:MouseEvent) => {
+/** Handles link navigation */
+const routerOnBodyClick = (event:MouseEvent) => {
 
     // test if this is a standard click
     if (event.defaultPrevented || event.button !== 0 ||
@@ -210,7 +211,17 @@ const routerHandleBodyClick = (event:MouseEvent) => {
     });
 };
 
-document.body.addEventListener("click", routerHandleBodyClick);
+document.body.addEventListener("click", routerOnBodyClick);
+
+
+/** Handles browser back button navigation */
+const routerOnPopState = () => {
+    triggerLocationChanged({
+        popState: true
+    });
+};
+
+window.addEventListener("popstate", routerOnPopState);
 
 
 /** Returns true when finding the first route that matches */
