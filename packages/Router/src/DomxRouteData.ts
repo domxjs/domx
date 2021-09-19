@@ -1,4 +1,5 @@
-import { DataElement, customDataElement, dataProperty } from "@domx/dataelement";
+import { DataElement } from "@domx/dataelement";
+import { customDataElement, dataProperty } from "@domx/dataelement/decorators";
 import { Router, Route, RouteLocation, RouteState, RouteInfo } from "./Router";
 export { DomxRouteData }
 

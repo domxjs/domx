@@ -1,5 +1,5 @@
-import { DataElement, customDataElement, dataProperty, event } from "@domx/dataelement";
-import { RootState } from "@domx/dataelement/src/RootState";
+import { DataElement,  } from "@domx/dataelement";
+import { customDataElement, dataProperty, event } from "@domx/dataelement/decorators";
 import { Router } from ".";
 import { RouteLocation, LocationChangedDetail, QueryParams } from "./Router";
 export { DomxLocation }

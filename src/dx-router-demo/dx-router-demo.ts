@@ -1,8 +1,7 @@
 import { LitElement, html, css } from "lit";
 import { customElement, property, query } from "lit/decorators.js";
-import { applyDataElementRdtLogging } from "@domx/dataelement/applyDataElementRdtLogging";
-import { applyEventMapLogging } from "@domx/dataelement";
-import { Router, Route } from "@domx/router";
+import { applyDataElementRdtLogging, applyEventMapLogging } from "@domx/dataelement/middleware";
+import { Route } from "@domx/router";
 import { DomxRoute, RouteActiveChangedEvent } from "@domx/router/DomxRoute";
 import "./dx-pages";
 import { dxStyles } from "./dxStyles";

@@ -1,4 +1,5 @@
 import { Middleware } from "@domx/middleware/Middleware";
+import "./decorators";
 export {
   EventMap,
   EventMapEvent,

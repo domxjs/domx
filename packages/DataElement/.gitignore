@@ -2,3 +2,5 @@
 /DataElement.*
 /RootState.*
 /applyDataElementRdtLogging.*
+/decorators.*
+/middleware.*
