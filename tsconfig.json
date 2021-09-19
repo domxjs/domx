@@ -7,7 +7,7 @@
     "moduleResolution": "node",
     "composite": true,
     "sourceMap": true,
-    "inlineSourceMap": true,
+    "inlineSourceMap": false,
     "inlineSources": true,
     "declaration": true,
     "declarationMap": true,

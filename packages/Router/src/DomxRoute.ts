@@ -62,55 +62,8 @@ class DomxRoute extends LitElement {
      * routeParams if a subroute.
      * @param options {NavigationOptions}
      */
-    navigate({replaceState, routeParams, queryParams}:NavigateOptions = {replaceState:false}) {
-
-        let path = "";
-        let el = this as HTMLElement;
-        // need to walk parent elements patterns, prepending and removing
-        // splats until no parent; then prepend the parentRoute.prefix
-        while(el.parentElement) {
-            if (el.parentElement instanceof DomxRoute) {
-                let pattern = el.parentElement.pattern;
-                // remove splat
-                const splatIndex = pattern.indexOf("/*");
-                if (splatIndex > 0) {
-                    pattern = pattern.substring(0, splatIndex);
-                }
-                path = `${pattern}${path}`;
-            }
-            el = el.parentElement;
-        }
-        if (el instanceof DomxRoute && el.parentRoute) {
-            path = `${el.parentRoute.prefix}${path}`;
-        }
-        path = `${path}${this.pattern}`;
-
-        // remove parens
-        path = path.replace(/\(/g, "").replace(/\)/g, "");
-
-        // add routeParams
-        if (routeParams) {
-            Object.keys(routeParams as object).forEach(name => {
-                path = path.replace(`:${name}`, routeParams[name] as string);
-            });
-        }
-
-        if (path.indexOf(":") > -1) {
-            throw new Error(`DomxRoute: cannot navigate; all routeParams were not provided: "${path}"`);
-        }
-
-        // add queryParams
-        if (queryParams) {
-            const sp = new URLSearchParams();
-            Object.keys(queryParams).forEach(name => {
-                sp.set(name, queryParams[name]);
-            });
-            path = `${path}?${sp.toString()}`;
-        }
-
-        replaceState === true ?
-            Router.replaceUrl(path) :
-            Router.pushUrl(path);
+    navigate(options:NavigateOptions = {replaceState:false}) {
+        navigate(this as DomxRoute, options)
     }
 
     cachedElements:{[key:string]:CachedElement} = {};
@@ -189,80 +142,7 @@ class DomxRoute extends LitElement {
             return;
         }
         this.tail = routeState.tail;
-        const ae = this.activeElement;
-        if ((!ae && routeState.matches) ||
-            (ae && routeState.matches && (
-                hasChanged(ae.routeParams, routeState.routeParams) ||
-                hasChanged(ae.parentRoute, routeState.tail) ||
-                hasChanged(ae.queryParams, routeState.queryParams)
-            ))
-        ){
-            // get/create the element
-            const el = ae ? ae.element :
-                document.createElement(this.element || "div");
-            
-
-            console.debug(`DomxRoute - ${this.activeElement ?
-                "Have Active Element" : "Create Element"}`, el.tagName);
-
-            // set each route parameter as an attribute
-            Object.keys(routeState.routeParams).map(name => {
-                const val = routeState.routeParams[name];
-                val ? el.setAttribute(name, val!) : el.removeAttribute(name);
-            });
-
-            // set queryParams and parentRoute as properties
-            setElementProperties(el, {
-                queryParams: routeState.queryParams,
-                parentRoute: routeState.tail
-            });
-
-            // record activeElement
-            this.activeElement = {
-                element: el,
-                routeParams: routeState.routeParams,
-                queryParams: routeState.queryParams,
-                parentRoute: routeState.tail
-            };
-            this.activeSourceElement = this.lastSourceElement;
-
-            // dispatch the active event
-            const routeActiveEvent = new RouteActiveChangedEvent(
-                RouteActiveChangedEventType.Active, el, this.activeSourceElement);
-            this.dispatchEvent(routeActiveEvent);
-            if (routeActiveEvent.isDefaultPrevented) {
-                return;
-            }
-
-            // append to the DOM
-            if (this.appendTo === "parent") {
-                this.getRootNode().appendChild(el);
-            } else if(this.appendTo === "body") {
-                document.body.appendChild(el);                
-            } else {
-                (<Element>this.getRootNode()).querySelector(this.appendTo)?.appendChild(el);
-            }
-
-
-        } else if (ae &&  routeState.matches === false) {
-            const el = ae.element;
-            
-            // dispatch inactive event
-            const routeActiveEvent = new RouteActiveChangedEvent(
-                RouteActiveChangedEventType.Inactive, el, this.activeSourceElement);
-            
-            this.dispatchEvent(routeActiveEvent);            
-            this.activeElement = null;
-            this.activeSourceElement = null;
-
-            if (routeActiveEvent.isDefaultPrevented) {
-                return;
-            }
-
-            // remove from DOM
-            el.remove();
-            console.debug("DomxRoute - removed element", el.tagName);      
-        }
+        showHideElement(this, routeState);
     }
 }
 
@@ -270,6 +150,7 @@ enum RouteActiveChangedEventType {
     Active = "active",
     Inactive = "inactive"
 }
+
 class RouteActiveChangedEvent extends CustomEvent<any> {
     constructor(type: RouteActiveChangedEventType, element:HTMLElement, sourceElement:EventTarget|null|undefined) {
         super(`route-${type}`, {
@@ -288,6 +169,7 @@ class RouteActiveChangedEvent extends CustomEvent<any> {
     }
 }
 
+
 const hasChanged = (obj1:any, obj2:any) => 
     JSON.stringify(obj1) !== JSON.stringify(obj2);
 
@@ -296,4 +178,137 @@ const setElementProperties = (el:any, properties:any) => {
     Object.keys(properties).map(prop => {
         el[prop] = properties[prop];
     });
+};
+
+
+const navigate = (routeEl:DomxRoute, options:NavigateOptions)  => {
+
+    const {replaceState, routeParams, queryParams} = options;
+    let path = "";
+    let el = routeEl as HTMLElement;
+
+    // need to walk parent elements patterns, prepending and removing
+    // splats until no parent; then prepend the parentRoute.prefix
+    while(el.parentElement) {
+        if (el.parentElement instanceof DomxRoute) {
+            let pattern = el.parentElement.pattern;
+            // remove splat
+            const splatIndex = pattern.indexOf("/*");
+            if (splatIndex > 0) {
+                pattern = pattern.substring(0, splatIndex);
+            }
+            path = `${pattern}${path}`;
+        }
+        el = el.parentElement;
+    }
+    if (el instanceof DomxRoute && el.parentRoute) {
+        path = `${el.parentRoute.prefix}${path}`;
+    }
+    path = `${path}${routeEl.pattern}`;
+
+    // remove parens
+    path = path.replace(/\(/g, "").replace(/\)/g, "");
+
+    // add routeParams
+    if (routeParams) {
+        Object.keys(routeParams as object).forEach(name => {
+            path = path.replace(`:${name}`, routeParams[name] as string);
+        });
+    }
+
+    if (path.indexOf(":") > -1) {
+        throw new Error(`DomxRoute: cannot navigate; all routeParams were not provided: "${path}"`);
+    }
+
+    // add queryParams
+    if (queryParams) {
+        const sp = new URLSearchParams();
+        Object.keys(queryParams).forEach(name => {
+            sp.set(name, queryParams[name]);
+        });
+        path = `${path}?${sp.toString()}`;
+    }
+
+    replaceState === true ?
+        Router.replaceUrl(path) :
+        Router.pushUrl(path);
+};
+
+
+const showHideElement = (routeEl:DomxRoute, routeState:RouteState) => {   
+    const ae = routeEl.activeElement;
+    if ((!ae && routeState.matches) ||
+        (ae && routeState.matches && (
+            hasChanged(ae.routeParams, routeState.routeParams) ||
+            hasChanged(ae.parentRoute, routeState.tail) ||
+            hasChanged(ae.queryParams, routeState.queryParams)
+        ))
+    ){
+        // get/create the element
+        const el = ae ? ae.element :
+            document.createElement(routeEl.element || "div");
+        
+
+        console.debug(`DomxRoute - ${routeEl.activeElement ?
+            "Have Active Element" : "Create Element"}`, el.tagName);
+
+        // set each route parameter as an attribute
+        Object.keys(routeState.routeParams).map(name => {
+            const val = routeState.routeParams[name];
+            val ? el.setAttribute(name, val!) : el.removeAttribute(name);
+        });
+
+        // set queryParams and parentRoute as properties
+        setElementProperties(el, {
+            queryParams: routeState.queryParams,
+            parentRoute: routeState.tail
+        });
+
+        // record activeElement
+        routeEl.activeElement = {
+            element: el,
+            routeParams: routeState.routeParams,
+            queryParams: routeState.queryParams,
+            parentRoute: routeState.tail
+        };
+        routeEl.activeSourceElement = routeEl.lastSourceElement;
+
+        // dispatch the active event
+        const routeActiveEvent = new RouteActiveChangedEvent(
+            RouteActiveChangedEventType.Active, el, routeEl.activeSourceElement);
+        routeEl.dispatchEvent(routeActiveEvent);
+        if (routeActiveEvent.isDefaultPrevented) {
+            return;
+        }
+
+        // append to the DOM
+        if (routeEl.appendTo === "parent") {
+            routeEl.getRootNode().appendChild(el);
+        } else if(routeEl.appendTo === "body") {
+            document.body.appendChild(el);                
+        } else {
+            (<Element>routeEl.getRootNode()).querySelector(routeEl.appendTo)?.appendChild(el);
+        }
+
+
+    } else if (ae &&  routeState.matches === false) {
+        const el = ae.element;
+        
+        // dispatch inactive event
+        const routeActiveEvent = new RouteActiveChangedEvent(
+            RouteActiveChangedEventType.Inactive, el, routeEl.activeSourceElement);
+        
+        routeEl.dispatchEvent(routeActiveEvent);            
+        routeEl.activeElement = null;
+        routeEl.activeSourceElement = null;
+
+        if (routeActiveEvent.isDefaultPrevented) {
+            return;
+        }
+
+        // remove from DOM
+        el.remove();
+        console.debug("DomxRoute - removed element", el.tagName);      
+    }
+
 };
