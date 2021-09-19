@@ -1,4 +1,5 @@
-import { EventMap, event, EventMapListenAt } from "@domx/eventmap";
+import { EventMap, EventMapListenAt } from "@domx/eventmap";
+import { event } from "@domx/eventmap/decorators";
 import { Middleware } from "@domx/middleware";
 export {
     customDataElements,

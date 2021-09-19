@@ -13,7 +13,7 @@ There are two ways to use the mixin. Using decorators or by adding static proper
 
 ### Using Decorators
 ```js
-import { eventsListenAt, events } from "@domx/eventmap";
+import { eventsListenAt, events } from "@domx/eventmap/decorators";
 
 @eventsListenAt("parent")
 class MyCass extends EventMap(HTMLElement) {
