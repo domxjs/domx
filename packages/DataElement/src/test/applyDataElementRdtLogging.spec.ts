@@ -1,6 +1,7 @@
 import { describe, it, expect } from "@jest/globals";
 import {fixture, html} from "@domx/testutils";
-import {customDataElement, DataElement, dataProperty} from "../DataElement";
+import { DataElement } from "../DataElement";
+import { customDataElement, dataProperty } from "../decorators";
 import { StateChange } from "@domx/statechange";
 import {applyDataElementRdtLogging} from "../applyDataElementRdtLogging";
 import { DevToolsExtension, DevToolsInstance } from "../rdtTypes";

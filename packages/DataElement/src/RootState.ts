@@ -83,14 +83,14 @@ class RootState {
 const setState = (state:StateMap, path:string, value:object|undefined):StateMap => {
     let currentState = state;
     const pathParts = path.split(".");
+    let deleteElStatePath:string|null = null;
     pathParts.forEach((prop:string, index:number) => {
         if (index === pathParts.length - 1) {
             if (value === undefined) {
                 delete currentState[prop];
                 // if empty, then delete that part as well
                 if (Object.keys(currentState).length === 0) {
-                    setState(RootState.current,
-                        pathParts.splice(0, pathParts.length - 1).join("."), undefined);
+                    deleteElStatePath = [...pathParts].splice(0, pathParts.length - 1).join(".");
                 }
             } else {
                 currentState[prop] = { ...value } as StateMap;
@@ -100,5 +100,8 @@ const setState = (state:StateMap, path:string, value:object|undefined):StateMap 
         }
         currentState = currentState[prop] as StateMap;
     });
+    if (deleteElStatePath) {
+        return setState(RootState.current, deleteElStatePath, undefined);
+    }
     return state;
 };

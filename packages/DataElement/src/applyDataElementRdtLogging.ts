@@ -90,7 +90,7 @@ const sendStateToDevTools = (el:DataElement, propertyName:string, statePath:stri
     // @ts-ignore TS7053 getting indexed property
     const nextState = el[propertyName] as object;
     const action = `${(el.constructor as DataElementCtor).__elementName}@${changeEvent}`;
-    if (excludeActions.find(a => action.indexOf(a) === 0) === null) {
+    if (!excludeActions.find(a => action.indexOf(a) === 0)) {
         getDevToolsInstance().send(action, RootState.draft(statePath, nextState));
     }
 };
