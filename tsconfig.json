@@ -2,11 +2,12 @@
   // domx
   "compilerOptions": {
     "strict": true,
-    "target": "ESNext",
-    "module": "ESNext",
+    "target": "ES6",
+    "module": "ES2020",
     "moduleResolution": "node",
     "composite": true,
     "sourceMap": true,
+    "inlineSourceMap": true,
     "inlineSources": true,
     "declaration": true,
     "declarationMap": true,
