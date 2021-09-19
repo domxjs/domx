@@ -210,7 +210,7 @@ const elementConnected = (el:DataElement) => {
     Object.keys(ctor.dataProperties).forEach((propertyName) => {
 
         // determine the statePath and window event name
-        const statePath = `${ctor.__elementName}.${propertyName}${stateIdPath}`;
+        const statePath = `${ctor.__elementName}${stateIdPath}.${propertyName}`;
         const windowEventName = `${statePath}-changed`;
         
         // set/update the change event
