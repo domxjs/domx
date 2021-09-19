@@ -1,3 +1,4 @@
+import { RootState } from "@domx/dataelement/src/RootState";
 import { DomxRouteData } from "./DomxRouteData";
 import { routeMatches, getRouteMatch } from "./routeMatcher";
 export {
@@ -234,6 +235,7 @@ const triggerLocationChanged = (detail:LocationChangedDetail) => {
     window.dispatchEvent(new CustomEvent("location-changed", {
         detail
     }));
+    setTimeout(() => RootState.snapshot("window@location-changed"), 0);
 };
 
 /** Used for tracking registered routes */
