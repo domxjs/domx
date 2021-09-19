@@ -16,8 +16,7 @@ declare global {
 }
 
 
-const stateProp = "^dxrs^";
-
+const stateProp = Symbol();
 
 
 /**
