@@ -1,4 +1,5 @@
 import { DataElement, customDataElement, dataProperty, event } from "@domx/dataelement";
+import { RootState } from "@domx/dataelement/src/RootState";
 import { Router } from ".";
 import { RouteLocation, LocationChangedDetail, QueryParams } from "./Router";
 export { DomxLocation }
@@ -19,7 +20,7 @@ export { DomxLocation }
         Router.init();
     }
  
-    @dataProperty()
+    @dataProperty({changeEvent:"state-changed"})
     location:RouteLocation = {
         root: Router.root,
         url: "",
@@ -27,8 +28,15 @@ export { DomxLocation }
         queryParams: {}
     };
 
+    @event("state-changed", {listenAt: "self", stopImmediatePropagation: false})
+    locationChanged(event:CustomEvent) {
+        if (event.detail?.isFromDevTools) {
+            window.history.replaceState(history.state, "", this.location.url);
+        }
+    }
+
     @event("location-changed", {listenAt: "window"})
-    locationChanged({detail}:{detail:LocationChangedDetail}) { 
+    windowLocationChanged({detail}:{detail:LocationChangedDetail}) { 
         DomxLocation.lastSourceElement = detail.sourceElement || null;
         const { pathname, search } = window.location;
         const url = `${pathname}${search}`;

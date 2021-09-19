@@ -143,7 +143,7 @@ class DomxRoute extends LitElement {
                 @state-changed="${this.routeStateChanged}"
             ></domx-route-data>
             <domx-location
-                @location-changed="${this.locationChanged}"
+                @state-changed="${this.locationChanged}"
             ></domx-location>
         `;
     }
@@ -185,6 +185,9 @@ class DomxRoute extends LitElement {
 
     routeStateChanged() {
         const routeState = this.$routeData.state;
+        if (!routeState) {
+            return;
+        }
         this.tail = routeState.tail;
         const ae = this.activeElement;
         if ((!ae && routeState.matches) ||
