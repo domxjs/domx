@@ -1,6 +1,7 @@
 import { LitElement, html, css } from "lit";
 import {customElement, property, query} from 'lit/decorators.js';
-import { LocationChangedDetail, QueryParams, Route, RouteLocation, RouteParams, RouteState } from "./Router";
+import { QueryParams, Route, RouteParams, RouteState } from "./Router";
+import { Logger } from "@domx/middleware/Logger";
 import { DomxLocation } from "./DomxLocation";
 import { DomxRouteData } from "./DomxRouteData";
 import { Router } from ".";
@@ -124,15 +125,16 @@ class DomxRoute extends LitElement {
     _addTailListener(parentElement:DomxRoute) {
         const el = this;
         const updateParent = () => {
-            el.parentRoute = parentElement.tail;
-            console.debug("DomxRoute - findParent, setting parentRoute from tail:", el.tagName, parentElement.tail);
+            const { tail } = parentElement;
+            el.parentRoute = tail;
+            Logger.log(this, "debug", `DomxRoute: set parentRoute: ${el.element} ` +
+                `${tail ? `prefix: ${tail.prefix}, path: ${tail.path}` : `null`}`);
         };
         parentElement.addEventListener("tail-changed", updateParent);
         this._tailListener = updateParent;
         updateParent();
         this._removeTailListener = () => {
             parentElement.removeEventListener("tail-changed", updateParent);
-            console.debug("DomxRoute - findParent, REMOVING listener");
         }
     }
 
@@ -248,9 +250,8 @@ const showHideElement = (routeEl:DomxRoute, routeState:RouteState) => {
         const el = ae ? ae.element :
             document.createElement(routeEl.element || "div");
         
-
-        console.debug(`DomxRoute - ${routeEl.activeElement ?
-            "Have Active Element" : "Create Element"}`, el.tagName);
+        Logger.log(routeEl, "debug", `DomxRoute: ${routeEl.activeElement ?
+            "appending cached element" : "appending new element"}`, el.tagName);
 
         // set each route parameter as an attribute
         Object.keys(routeState.routeParams).map(name => {
@@ -308,7 +309,6 @@ const showHideElement = (routeEl:DomxRoute, routeState:RouteState) => {
 
         // remove from DOM
         el.remove();
-        console.debug("DomxRoute - removed element", el.tagName);      
+        Logger.log(routeEl, "debug", "DomxRoute: removed element", el.tagName);
     }
-
 };

@@ -200,6 +200,7 @@ const routerOnBodyClick = (event:MouseEvent) => {
     // see if a route matches the URL
     const url = `${anchor.pathname}${anchor.search}`;
     if (!routesMatch(url)) {
+        console.debug(`Router: no routes match \"${url}\"`);
         return;
     }
   
@@ -280,7 +281,6 @@ const getPathFromRoute = (route:DomxRouteData):string => {
 
 const routeMatchesUrl = (route:DomxRouteData, url:string):boolean => {
     const matches = routeMatches(getPathFromRoute(route), url);
-    console.debug("routeMatchesUrl", matches, url, route.parentRoute, route.pattern);
     return matches;
 };
 

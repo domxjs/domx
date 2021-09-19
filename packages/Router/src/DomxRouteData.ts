@@ -56,7 +56,6 @@ class DomxRouteData extends DataElement {
     routeInfo:RouteInfo|null = null;
 
     parentRouteChanged() {
-        console.debug("parentRouteChanged for", this.routeInfo?.element);
         this.__location && this.locationChanged();
     }
 
