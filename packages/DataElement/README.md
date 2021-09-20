@@ -218,10 +218,11 @@ class UserData extends DataElement {
 
     @dataProperty()
     user = {
-        fullName: "unknown"
+        userName: "unknown",
+        fullName: "unknown",
     };
 
-    @event("user-updated")
+    @event("fullname-updated")
     userUpdated({detail:{fullName}}) {
         this.state = {
             ...this.state,
@@ -229,8 +230,19 @@ class UserData extends DataElement {
         };
         this.dispatchChange("user");
     }
+
+    @event("username-updated")
+    userUpdated({detail:{userName}}) {
+        this.dispatchChange("user", {
+            ...this.state,
+            userName
+        });
+    }
 }
 ```
+> Note: the `username-updated` event handler passes the state as a second parameter;
+when doing this, it does a quick JSON.stringify comparison between the existing
+and new state and only dispatches the changes if they differ.
 
 
 ## Setting a stateId Property
@@ -390,13 +402,15 @@ There is also a function available to apply Redux dev tool logging.
 Logs change events and if usining `StateChange` logs state snapshots
 with each `next` call.
 ```js
-import {applyDataElementRdtLogging} from "@domx/DataElement/applyDataElementRdtLogging";
+import {applyDataElementRdtLogging} from "@domx/DataElement/middleware";
 applyDataElementRdtLogging();
 ```
 #### **applyDataElementRdtLogging(options)**
 **options**
 - logChangeEvents - set to false if using `StateChange` and do not want the additional
 change event logged.
+- exclude - an array of strings that excludes any events/actions from being logged that start with the exclude string.
+> This can be used alongside `RootState.snapshot(name)` to create a named snapshot in Redux Dev Tools.
 
 ### Adding custom middleware
 ```js

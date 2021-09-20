@@ -10,6 +10,7 @@ describe("Router", () => {
     // look at other methods to test
     // outside links not handled
     // browser back button
+    // replace-state on links
 });
 
 /*
