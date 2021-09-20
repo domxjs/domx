@@ -30,8 +30,7 @@ interface CachedElement {
 @customElement("domx-route")
 class DomxRoute extends LitElement {
 
-    @property({attribute:false}) 
-    
+    @property({attribute:false})  
     parentRoute:Route|null = null;
 
     //@property({attribute:false})
@@ -102,7 +101,7 @@ class DomxRoute extends LitElement {
         `;
     }
 
-    locationChanged(event:Event) {
+    private locationChanged(event:Event) {
         this.lastSourceElement = DomxLocation.lastSourceElement;
         this.$routeData.location = this.$location.location;
     }
@@ -111,7 +110,7 @@ class DomxRoute extends LitElement {
      * Checks to see if the parent element is a DomxRoute
      * and associates its tail with this parentRoute.
      */
-    async findParent() {
+    private async findParent() {
         const parentEl = this.parentElement;
         if (parentEl && parentEl instanceof DomxRoute) {
             await this.updateComplete;
@@ -120,9 +119,9 @@ class DomxRoute extends LitElement {
         }
     }
 
-    _tailListener:EventListener|null = null;
-    _removeTailListener:Function|null = null;
-    _addTailListener(parentElement:DomxRoute) {
+    private _tailListener:EventListener|null = null;
+    private _removeTailListener:Function|null = null;
+    private _addTailListener(parentElement:DomxRoute) {
         const el = this;
         const updateParent = () => {
             const { tail } = parentElement;
@@ -134,11 +133,12 @@ class DomxRoute extends LitElement {
         this._tailListener = updateParent;
         updateParent();
         this._removeTailListener = () => {
+            el._tailListener = null;
             parentElement.removeEventListener("tail-changed", updateParent);
         }
     }
 
-    routeStateChanged() {
+    private routeStateChanged() {
         const routeState = this.$routeData.state;
         if (!routeState) {
             return;

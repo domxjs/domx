@@ -130,10 +130,7 @@ class Router {
      */
     static pushUrl(url:string, detail:LocationChangedDetail = {}) {
         window.history.pushState({}, "", url);
-        triggerLocationChanged({
-            ...detail,
-            pushState: true
-        });
+        triggerLocationChanged({...detail, pushState: true});
     }
 
     /**
@@ -141,9 +138,9 @@ class Router {
      * Useful for inner page navigation such as tabs.
      * @param url {String} the absolute URL path used to replace the current one.
      */
-    static replaceUrl(url:string) {
+    static replaceUrl(url:string, detail:LocationChangedDetail = {}) {
         window.history.replaceState(history.state, "", url);
-        triggerLocationChanged({replaceState: true});
+        triggerLocationChanged({...detail, replaceState: true});
     }
 
     /**
@@ -208,9 +205,10 @@ const routerOnBodyClick = (event:MouseEvent) => {
     event.preventDefault();
     const sourceElement = event.composed ?
         event.composedPath()[0] : event.target;
-    Router.pushUrl(url, {
-        sourceElement
-    });
+    
+    sourceElement instanceof HTMLElement && sourceElement.hasAttribute("replace-state") ?
+        Router.replaceUrl(url, { sourceElement }) :
+        Router.pushUrl(url, { sourceElement});
 };
 
 document.body.addEventListener("click", routerOnBodyClick);

@@ -29,7 +29,7 @@ export class DxRouterDemo extends LitElement {
       <h1>Router Demo</h1>
       <div>
         <a href="/demo/page1">Page 1</a> | 
-        <a href="/demo/page1?a=b&c=some value">page1?a=b&c=some value</a> | 
+        <a href="/demo/page1?a=b&c=some value" replace-state>page1?a=b&c=some value</a> | 
         <a href="/demo/page2">Page 2</a> |
         <a href="/demo/page2/testValue">page2/testValue</a> |
         <a href="/demo/page2/page3">Page 3</a>
