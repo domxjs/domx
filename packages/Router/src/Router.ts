@@ -105,7 +105,7 @@ class Router {
     }
 
     static addRoute(routeData:DomxRouteData) {
-        if (routeData.pattern === null) {
+        if (!routeData.pattern) {
             throw new Error("Router: cannot add a route without a pattern")
         }
         
@@ -120,7 +120,7 @@ class Router {
         delete routes[routeData.routeId as string];
     }
 
-    static MatchRoute(route:DomxRouteData, url:string):RouteMatch {
+    static matchRoute(route:DomxRouteData, url:string):RouteMatch {
         return getRouteMatch(getPathFromRoute(route), url);
     }
 
@@ -203,9 +203,7 @@ const routerOnBodyClick = (event:MouseEvent) => {
   
     // handle the url
     event.preventDefault();
-    const sourceElement = event.composed ?
-        event.composedPath()[0] : event.target;
-    
+    const sourceElement = anchor;    
     sourceElement instanceof HTMLElement && sourceElement.hasAttribute("replace-state") ?
         Router.replaceUrl(url, { sourceElement }) :
         Router.pushUrl(url, { sourceElement});
@@ -254,11 +252,6 @@ const getNextRouteId = (pattern:string):string => {
  * @returns Boolean
  */
  const urlsAreEqual = (url1:URL, url2:URL):boolean => {
-    // Does the path match
-    if (url1.origin + url1.pathname !== url2.origin + url2.pathname) {
-        return false;
-    }
-  
     const searchParams1 = url1.searchParams;
     const searchParams2 = url2.searchParams;
   
