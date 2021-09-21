@@ -158,6 +158,8 @@ describe("applyDataElementRdtLogging", () => {
             el.restore();
         });
     });
+
+    // jch - add test for window event and sendSnapshot
 });
 
 

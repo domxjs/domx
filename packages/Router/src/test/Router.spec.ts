@@ -3,34 +3,30 @@ import { Router } from "../Router";
 
 
 describe("Router", () => {
+    afterEach(() => {
+        Router.root = "/";
+    });
+
     it("exists", () => {
         expect(Router).toBeDefined();
     })
+
+    describe("root", () => {
+        it("can be set", () => {
+            Router.root = "/root/path";
+            expect(Router.root).toBe("/root/path");
+        });
+
+        it("throws an error if set twice after a reset", () => {
+            Router.root = "/root/path";
+            const setRootAgain = () => Router.root = "/second/path";
+            expect(setRootAgain).toThrow("Router.root has already been set.");
+            expect(Router.root).toBe("/root/path");
+        });
+    });
     
-    // look at other methods to test
+    // jch Router tests
     // outside links not handled
     // browser back button
     // replace-state on links
 });
-
-/*
-index.spec.ts - update
-
-DomxRoute.spec.ts
-    routeParams
-    queryParams
-    append-to
-    inner route
-    parentRoute
-    tail
-    route-active, route-inactive events
-    navigate
-
-MAY NOT NEED TESTS FOR THES
-    DomxLocation.spec.ts
-    DomxRouteData.spec.ts
-
-OTHER PACKAGES TESTS
-    RootState.snapshot
-    rdt state (and url) pushes 
-*/

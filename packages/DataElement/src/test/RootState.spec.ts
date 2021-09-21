@@ -89,4 +89,6 @@ describe("RootState", () => {
             expect(RootState.get("test-state.state.123")).toBe(null);
         });
     });
+
+    // jch add test for RootState.snapshot
 });
