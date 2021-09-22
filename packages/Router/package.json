@@ -1,7 +1,7 @@
 {
   "name": "@domx/router",
   "type": "module",
-  "version": "0.1.1",
+  "version": "0.1.2",
   "license": "MIT",
   "author": "John Horback",
   "description": "A DOM based custom element router for client side routing.",
@@ -23,7 +23,7 @@
     "clean": "tsc --build --clean"
   },
   "dependencies": {
-    "@domx/dataelement": "0.5.1",
+    "@domx/dataelement": "0.5.2",
     "@domx/middleware": "0.2.9",
     "lit": "latest"
   },
