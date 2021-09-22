@@ -5,6 +5,7 @@ import { customElement, property } from "lit/decorators";
 import { ifDefined } from "lit/directives/if-defined";
 import { QueryParams, Router } from "../Router";
 import { DomxRoute } from "../DomxRoute";
+import { DomxRouteData } from "../DomxRouteData";
 
 
 describe("DomxRoute", () => {
@@ -60,6 +61,15 @@ describe("DomxRoute", () => {
             const el = (container as any).shadowRoot.querySelector("#container test-el");
             expect(el.tagName).toBe("TEST-EL");
             container.remove();
+        });
+
+        it("throws error if route pattern is changed", async () => {
+            const rd = new DomxRouteData();
+            rd.pattern = "/";
+            const changePattern = () => {
+                rd.pattern = "/should/fail";
+            }
+            expect(changePattern).toThrow();
         });
     });
 
@@ -121,21 +131,99 @@ describe("DomxRoute", () => {
             container.remove();            
         });
 
+        // jch
         // have to update code for this
         // add test that parentRoute routeParameters are added to subroutes
  
 
     });
-    
-    // jch DomxRoute tests
 
-    /*
-    inner route
-    parentRoute
-    tail
-    route-active, route-inactive events
-    navigate
-    */
+    describe("route events", () => {
+
+        afterEach(() => {
+            Router._reset();
+            window.history.replaceState({}, "", "/");
+        });
+
+        it("dispatches an active event when the route matches", async () => {
+            const route = getRoute({pattern:"/test"});
+            let el = document.querySelector("test-el") as TestEl;
+            let activeEvent:CustomEvent|null = null;
+            const listener = ((event:CustomEvent) => {
+                activeEvent = event;
+            }) as EventListener;
+            route.addEventListener("route-active", listener);
+            Router.replaceUrl("/test");
+            await route.updateComplete;
+            el = document.querySelector("test-el") as TestEl;
+            expect(activeEvent).not.toBeNull();
+            expect((activeEvent as unknown as CustomEvent).detail.element).toBe(el);
+            route.removeEventListener("route-active", listener);
+            route.remove();
+        });
+
+        it("dispatches an inactive event when the route matches", async () => {
+            const route = getRoute({pattern:"/test"});
+            let el = document.querySelector("test-el") as TestEl;
+            let activeEvent:CustomEvent|null = null;
+            const listener = ((event:CustomEvent) => {
+                activeEvent = event;
+            }) as EventListener;
+            route.addEventListener("route-inactive", listener);
+            Router.replaceUrl("/test");
+            await route.updateComplete;
+            el = document.querySelector("test-el") as TestEl;
+            expect(el).not.toBeNull();
+            Router.replaceUrl("/");
+            await route.updateComplete;
+            expect((activeEvent as unknown as CustomEvent).detail.element).toBe(el);
+            route.removeEventListener("route-inactive", listener);
+            route.remove();
+        })
+    });
+
+    describe("navigate", () => {
+        afterEach(() => {
+            Router._reset();
+            window.history.replaceState({}, "", "/");
+        });
+
+        it("navigates to the correct url", () => {
+            const route = getRoute({pattern:"/test"});
+            expect(window.location.pathname).toBe("/");
+            route.navigate();
+            expect(window.location.pathname).toBe("/test");
+        });
+
+        it("navigates to the correct url with queryParams", () => {
+            const route = getRoute({pattern:"/test"});
+            expect(window.location.pathname).toBe("/");
+            route.navigate({
+                queryParams: {test:"worked"}
+            });
+            expect(window.location.pathname).toBe("/test");
+            expect(window.location.search).toBe("?test=worked");
+        });
+
+
+        it("navigates to the correct url when it has a parent route", async () => {
+            const container = getRouteContainer({
+                pattern:"/users/*routeTail",
+                subroutePattern: "/profile/:test"
+            });
+            await container.updateComplete;
+            const subRoute = (container as any).shadowRoot.querySelector("#subroute") as DomxRoute;
+            subRoute.navigate({routeParams: {test: "worked"}});
+            expect(window.location.pathname).toBe("/users/profile/worked");
+            container.remove();
+        });
+
+
+        // jch
+        // navigates with a parent route.
+        // can update parents with routeData
+
+    });
 });
 
 
