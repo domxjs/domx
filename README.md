@@ -6,7 +6,7 @@ DOMX is an approach to building modern web applications using the DOM, browser, 
 See: **[domxjs.com](https://www.domxjs.com/)**
 
 
-> This repo close to a version [1.0 release](https://github.com/domxjs/domx/milestone/1).
+> This repo is close to a version [1.0 release](https://github.com/domxjs/domx/milestone/1).
 The last few items slated are a couple of Router enhancements and a demo app to show
 how the multiple packages work together.
 
