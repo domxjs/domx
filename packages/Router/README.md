@@ -14,7 +14,7 @@ A full featured DOM based custom element router for client side routing.
 [Route.Navigate](#route.navigate) \
 [Route Events](#route-events) \
 [Router](#router) \
-[Public API](#public-api) \
+[DomxRoute Public API](#domxroute-public-api) \
 [TypeScript Interfaces](#typescript-interfaces) \
 [Redux Dev Tools](#redux-dev-tools)
 
@@ -387,7 +387,7 @@ The `Router` has static methods that can be useful for navigation and for settin
 - **Router.root** - set the root path for all routes; this can only be set once and should start with a backslash, e.g. `Router.root = "/demo";`
 
 
-## Public API
+## DomxRoute Public API
 ### Attributes
 - **pattern** - the route pattern to match.
 - **element** - the element to create when the route matches
