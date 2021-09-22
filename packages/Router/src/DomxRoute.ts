@@ -168,11 +168,11 @@ class RouteActiveChangedEvent extends CustomEvent<any> {
         });
     }
 
-    private _isDefaultPrevented = false;
-    get isDefaultPrevented() { return this._isDefaultPrevented }
+    private _defaultPrevented = false;
+    get defaultPrevented() { return this._defaultPrevented }
 
     preventDefault() {
-        this._isDefaultPrevented = true;
+        this._defaultPrevented = true;
     }
 }
 
@@ -194,23 +194,24 @@ const navigate = (routeEl:DomxRoute, options:NavigateOptions)  => {
     let path = "";
     let el = routeEl as HTMLElement;
 
-    // need to walk parent elements patterns, prepending and removing
-    // splats until no parent; then prepend the parentRoute.prefix
-    while(el.parentElement) {
-        if (el.parentElement instanceof DomxRoute) {
-            let pattern = el.parentElement.pattern;
-            // remove splat
-            const splatIndex = pattern.indexOf("/*");
-            if (splatIndex > 0) {
-                pattern = pattern.substring(0, splatIndex);
-            }
-            path = `${pattern}${path}`;
-        }
-        el = el.parentElement;
-    }
     if (el instanceof DomxRoute && el.parentRoute) {
         path = `${el.parentRoute.prefix}${path}`;
-    }
+    } else {
+        // need to walk parent elements patterns, prepending and removing
+        // splats until no parent; then prepend the parentRoute.prefix
+        while(el.parentElement) {
+            if (el.parentElement instanceof DomxRoute) {
+                let pattern = el.parentElement.pattern;
+                // remove splat
+                const splatIndex = pattern.indexOf("/*");
+                if (splatIndex > 0) {
+                    pattern = pattern.substring(0, splatIndex);
+                }
+                path = `${pattern}${path}`;
+            }
+            el = el.parentElement;
+        }
+    }    
     path = `${path}${routeEl.pattern}`;
 
     // remove parens
@@ -218,9 +219,7 @@ const navigate = (routeEl:DomxRoute, options:NavigateOptions)  => {
 
     // add routeParams
     if (routeParams) {
-        Object.keys(routeParams as object).forEach(name => {
-            path = path.replace(`:${name}`, routeParams[name] as string);
-        });
+        path = replaceRouteParams(routeParams, path);
     }
 
     if (path.indexOf(":") > -1) {
@@ -241,6 +240,13 @@ const navigate = (routeEl:DomxRoute, options:NavigateOptions)  => {
         Router.pushUrl(path);
 };
 
+const replaceRouteParams = (routeParams:RouteParams, path:string):string => {
+    Object.keys(routeParams as object).forEach(name => {
+        path = path.replace(`:${name}`, routeParams[name] as string);
+    });
+    return path;
+};
+
 
 const showHideElement = (routeEl:DomxRoute, routeState:RouteState) => {   
     const ae = routeEl.activeElement;
@@ -258,11 +264,12 @@ const showHideElement = (routeEl:DomxRoute, routeState:RouteState) => {
         Logger.log(routeEl, "debug", `DomxRoute: ${routeEl.activeElement ?
             "appending cached element" : "appending new element"}`, el.tagName);
 
-        // set each route parameter as an attribute
-        Object.keys(routeState.routeParams).map(name => {
-            const val = routeState.routeParams[name];
-            val ? el.setAttribute(name, val!) : el.removeAttribute(name);
-        });
+        // add routeParams as attributes
+        if (routeEl.parentRoute) {
+            addRouteParamAttributes(el, routeEl.parentRoute.routeParams);
+        }
+        addRouteParamAttributes(el, routeState.routeParams);
+       
 
         // set queryParams and parentRoute as properties
         setElementProperties(el, {
@@ -283,7 +290,7 @@ const showHideElement = (routeEl:DomxRoute, routeState:RouteState) => {
         const routeActiveEvent = new RouteActiveChangedEvent(
             RouteActiveChangedEventType.Active, el, routeEl.activeSourceElement);
         routeEl.dispatchEvent(routeActiveEvent);
-        if (routeActiveEvent.isDefaultPrevented) {
+        if (routeActiveEvent.defaultPrevented) {
             return;
         }
 
@@ -305,6 +312,14 @@ const showHideElement = (routeEl:DomxRoute, routeState:RouteState) => {
 };
 
 
+const addRouteParamAttributes = (el:HTMLElement, routeParams:RouteParams) => {
+    Object.keys(routeParams).map(name => {
+        const val = routeParams[name];
+        val ? el.setAttribute(name, val!) : el.removeAttribute(name);
+    });
+};
+
+
 const hideElement = (routeEl:DomxRoute) => {
     const ae = routeEl.activeElement;
     if (!ae) {
@@ -321,7 +336,7 @@ const hideElement = (routeEl:DomxRoute) => {
     routeEl.activeElement = null;
     routeEl.activeSourceElement = null;
 
-    if (routeActiveEvent.isDefaultPrevented) {
+    if (routeActiveEvent.defaultPrevented) {
         return;
     }
 

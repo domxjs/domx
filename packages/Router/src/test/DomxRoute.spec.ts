@@ -131,11 +131,48 @@ describe("DomxRoute", () => {
             container.remove();            
         });
 
-        // jch
-        // have to update code for this
-        // add test that parentRoute routeParameters are added to subroutes
- 
+        it("adds parent route params as subroute element attributes", async () => {
+            Router.replaceUrl("/users/1234/profile");
+            const container = getRouteContainer({
+                pattern:"/users/:user-id/*routeTail",
+                subroutePattern: "/profile/:test"
+            });
+            await container.updateComplete;
+            const subRoute = (container as any).shadowRoot.querySelector("#subroute");
+            Router.replaceUrl("/users/1234/profile/worked");
+            await container.updateComplete;
+            await subRoute.updateComplete;
+            const el = (container as any).shadowRoot.querySelectorAll("test-el")[1];
+            expect(el.tagName).toBe("TEST-EL");
+            expect(el.getAttribute("test")).toBe("worked");
+            expect(el.getAttribute("user-id")).toBe("1234");
+            container.remove();
+        });
 
+        it("removes updates the parent route when parent route tail changes", async () => {
+            Router.replaceUrl("/users/profile");
+            const container = getRouteContainer({
+                pattern:"/users/*routeTail",
+                subroutePattern: "/profile/:test"
+            });
+            await container.updateComplete;
+            const subRoute = (container as any).shadowRoot.querySelector("#subroute");
+            Router.replaceUrl("/users/profile/worked");
+            await container.updateComplete;
+            await subRoute.updateComplete;
+            const el = (container as any).shadowRoot.querySelectorAll("test-el")[1];
+            expect(el.tagName).toBe("TEST-EL");
+            expect(el.getAttribute("test")).toBe("worked");
+            Router.replaceUrl("/users/profile/worked-again");
+            await container.updateComplete;
+            await subRoute.updateComplete;
+            expect(el.getAttribute("test")).toBe("worked-again");
+            Router.replaceUrl("/users/profile/new");
+            await container.updateComplete;
+            await subRoute.updateComplete;
+            expect(el.getAttribute("test")).toBe("new");
+            container.remove();            
+        });
     });
 
     describe("route events", () => {
@@ -179,7 +216,44 @@ describe("DomxRoute", () => {
             expect((activeEvent as unknown as CustomEvent).detail.element).toBe(el);
             route.removeEventListener("route-inactive", listener);
             route.remove();
-        })
+        });
+
+        it("can call preventDefault on active", async () => {
+            const route = getRoute({pattern:"/test"});
+            let el = document.querySelector("test-el") as TestEl;
+            let event:CustomEvent|null = null;            
+            const listener = ((e:CustomEvent) => {
+                event = e;
+                e.preventDefault();
+            }) as EventListener;
+            route.addEventListener("route-active", listener);
+            Router.replaceUrl("/test");
+            await route.updateComplete;
+            el = document.querySelector("test-el") as TestEl;
+            expect(event!.defaultPrevented).toBe(true);            
+            route.removeEventListener("route-active", listener);
+            route.remove();
+        });
+
+        it("can call preventDefault on inactive", async () => {
+            const route = getRoute({pattern:"/test"});
+            let el = document.querySelector("test-el") as TestEl;
+            let event:CustomEvent|null = null;
+            const listener = ((e:CustomEvent) => {
+                event = e;
+                e.preventDefault();
+            }) as EventListener;
+            route.addEventListener("route-inactive", listener);
+            Router.replaceUrl("/test");
+            await route.updateComplete;
+            el = document.querySelector("test-el") as TestEl;
+            expect(el).not.toBeNull();
+            Router.replaceUrl("/");
+            await route.updateComplete;
+            expect(event!.defaultPrevented).toBe(true);            
+            route.removeEventListener("route-active", listener);
+            route.remove();
+        });
     });
 
     describe("navigate", () => {
@@ -205,6 +279,20 @@ describe("DomxRoute", () => {
             expect(window.location.search).toBe("?test=worked");
         });
 
+        it("navigates to the correct url with route params", () => {
+            const route = getRoute({pattern:"/test/:test"});
+            expect(window.location.pathname).toBe("/");
+            route.navigate({
+                routeParams: {test:"worked"}
+            });
+            expect(window.location.pathname).toBe("/test/worked");
+        });
+
+        it("throws an error if route params are not specified", () => {
+            const route = getRoute({pattern:"/test/:test"});
+            expect(window.location.pathname).toBe("/");
+            expect(() => route.navigate()).toThrow();
+        });
 
         it("navigates to the correct url when it has a parent route", async () => {
             const container = getRouteContainer({
@@ -218,16 +306,24 @@ describe("DomxRoute", () => {
             container.remove();
         });
 
-
-        // jch
-        // navigates with a parent route.
-        // can update parents with routeData
+        it("navigates to the correct url when it has a parent route", async () => {
+            Router.pushUrl("/users/1234/profile")
+            const container = getRouteContainer({
+                pattern:"/users/:user-id/*routeTail",
+                subroutePattern: "/profile/:test"
+            });
+            await container.updateComplete;
+            const parentRoute = (container as any).shadowRoot.querySelector("domx-route") as DomxRoute;
+            await parentRoute.updateComplete;
+            const subRoute = (container as any).shadowRoot.querySelector("#subroute") as DomxRoute;
+            await subRoute.updateComplete;
+            subRoute.navigate({routeParams: {test: "worked"}});
+            expect(window.location.pathname).toBe("/users/1234/profile/worked");
+            container.remove();
+        });
 
     });
 });
-
-
-const timeout = (ms:number) => new Promise(resolve => setTimeout(resolve, ms));
 
 
 

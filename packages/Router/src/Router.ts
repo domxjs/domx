@@ -17,7 +17,8 @@ export {
 /** Used for parent and tail routes */
 interface Route {
     prefix: string,
-    path: string
+    path: string,
+    routeParams: RouteParams
 }
 
 interface StringIndex<T> {

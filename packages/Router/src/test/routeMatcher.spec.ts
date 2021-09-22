@@ -143,7 +143,12 @@ describe("routeMatcher", () => {
             },
             tail: {
                 prefix: "/docs/faq/install",
-                path: "/route/tail"
+                path: "/route/tail",
+                routeParams: {
+                    section: "faq",
+                    subsection: "install",
+                    routeTail: "route/tail"
+                }
             }
         },  { // 17
             path: "/docs(/:section)(/:subsection)(/*routeTail)",
@@ -156,7 +161,12 @@ describe("routeMatcher", () => {
             },
             tail: {
                 prefix: "/docs/faq/install",
-                path: "/route/tail"
+                path: "/route/tail",
+                routeParams: {
+                    section: "faq",
+                    subsection: "install",
+                    routeTail: "route/tail"
+                }
             }
         }, { // 18
             path: "/docs",

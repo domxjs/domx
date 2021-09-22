@@ -42,21 +42,27 @@ const getRouteMatch = (path:string, url:string):RouteMatch => {
         names = extractParameters(pathRegex, pathToTest);
     }
     
+    let routeTailPath = "";
+    let routeTailPrefix = "";
     const routeParams = names.reduce((routeParams, name, i) => {
         if (name !== null) {
             if (name.substring(0, 1) === "*") {
                 const value = values[i];
-                const path = value ? `/${(value as string) || ""}` : "";
-                const prefix = value ? url.substring(0, url.indexOf(path)) : url;
-                routeTail = {
-                    prefix,
-                    path
-                };
+                routeTailPath = value ? `/${(value as string) || ""}` : "";
+                routeTailPrefix = value ? url.substring(0, url.indexOf(routeTailPath)) : url;
             }
             routeParams[name.substring(1, name.length)] = values[i];
         }
         return routeParams;
     }, {} as RouteParams);
+
+    if (routeTailPath) {
+        routeTail = {
+            prefix: routeTailPrefix,
+            path: routeTailPath,
+            routeParams
+        };
+    }
 
     return {
         matches,
