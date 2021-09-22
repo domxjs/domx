@@ -30,8 +30,8 @@
     "test:coverage:single": "jest --coverage --coverage-directory=\"./packages/DataElement/.coverage\" --collectCoverageFrom=\"./packages/DataElement/**/!(*.d).ts\" \"./packages/DataElement\""
   },
   "dependencies": {
-    "@domx/dataelement": "0.5.1",
-    "@domx/router": "0.1.1",
+    "@domx/dataelement": "0.5.2",
+    "@domx/router": "0.1.2",
     "@vanillawc/wc-markdown": "^1.6.10",
     "lit": "latest"
   },

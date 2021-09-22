@@ -2,10 +2,10 @@ import { LitElement, html, css } from "lit";
 import { customElement } from "lit/decorators.js";
 import "@vanillawc/wc-markdown";
 import logoUrl from "./favicon.svg";
-import { Router, DomxRoute } from "@domx/router";
+import { Router } from "@domx/router";
 import { dxStyles } from "./dx-router-demo/dxStyles";
 import "./dx-router-demo/dx-router-demo";
-import "@domx/Router/DomxRoute";
+import "@domx/router/DomxRoute";
 
 /**
  * 

@@ -1,7 +1,7 @@
 {
   "name": "@domx/dataelement",
   "type": "module",
-  "version": "0.5.1",
+  "version": "0.5.2",
   "license": "MIT",
   "author": "John Horback",
   "description": "DataElement base class with root state support",
@@ -34,7 +34,7 @@
   },
   "dependencies": {
     "@domx/eventmap": "0.7.1",
-    "@domx/statechange": "0.7.1",
+    "@domx/statechange": "0.7.2",
     "@domx/middleware": "0.2.9"
   },
   "devDependencies": {

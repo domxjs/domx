@@ -1,6 +1,6 @@
 {
   "name": "@domx/statechange",
-  "version": "0.7.1",
+  "version": "0.7.2",
   "license": "MIT",
   "author": "John Horback",
   "description": "A monad-like object that enables changing a property on an HTMLElement in a functional way",
@@ -19,7 +19,7 @@
   "main": "StateChange.js",
   "types": "StateChange.d.ts",
   "dependencies": {
-    "@domx/middleware": "0.2.8",
+    "@domx/middleware": "0.2.9",
     "immer": "^9.0.5"
   },
   "devDependencies": {
