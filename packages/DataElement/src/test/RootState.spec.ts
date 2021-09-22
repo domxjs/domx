@@ -90,5 +90,17 @@ describe("RootState", () => {
         });
     });
 
-    // jch add test for RootState.snapshot
+    describe("snapshot", () => {
+        it("dispatches a window event", () => {
+            let detail:any = null;
+            const listener = ((event:CustomEvent) => {
+                detail = event.detail;
+            }) as EventListener;
+            window.addEventListener("rootstate-snapshot", listener);
+            RootState.snapshot("test-snapshot");
+            expect(detail.name).toBe("test-snapshot");
+            expect(detail.state).toBeDefined();
+            window.removeEventListener("rootstate-snapshot", listener);
+        });
+    });
 });

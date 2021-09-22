@@ -20,6 +20,12 @@ describe("applyDataElementRdtLogging", () => {
     });
 
     describe("logging", () => {
+        it("does not error if called twice", () => {
+            setDevTools();
+            applyDataElementRdtLogging();
+            expect(applyDataElementRdtLogging).not.toThrow();
+        });
+
         it("does not error when there is no rdt", () => {
             const el = fixture<TestEl>(html`<test-el></test-el>`);
             expect(() => el.test1()).not.toThrow();
@@ -82,6 +88,13 @@ describe("applyDataElementRdtLogging", () => {
             expect(MockDevToolsInstance.lastError).toBe("");
             el.restore();
         });
+
+        it("logs RootState snapshots", () => {
+            setDevTools();
+            applyDataElementRdtLogging();
+            RootState.snapshot("test-snapshot");
+            expect(MockDevToolsInstance.lastAction).toBe("test-snapshot");
+        })
     });
     
     describe("listener", () => {
@@ -158,8 +171,6 @@ describe("applyDataElementRdtLogging", () => {
             el.restore();
         });
     });
-
-    // jch - add test for window event and sendSnapshot
 });
 
 

@@ -166,6 +166,30 @@ describe("DataElement", () => {
             el.testDispatch();
             expect(message).toBe("event dispatched");
         });
+
+        it("dispatches change with data", () => {
+            const el = fixture<TestInstanceDataElement>(html`<test-instance-data-element></test-instance-data-element>`)
+            let message = "";
+            el.addEventListener("user-changed", (event: Event) => {
+                message = "event dispatched";
+            });
+            el.testDispatchWithData();
+            expect(message).toBe("event dispatched");
+        });
+
+        it("does not dispatch change if the data is the same", () => {
+            const el = fixture<TestInstanceDataElement>(html`<test-instance-data-element></test-instance-data-element>`)
+            let message = "";
+            el.addEventListener("user-changed", (event: Event) => {
+                message = "event dispatched";
+            });
+            el.testDispatch(); // rests the data
+            el.testDispatchWithData();
+            expect(message).toBe("event dispatched");
+            message = "not dispatched";
+            el.testDispatchWithData();
+            expect(message).toBe("not dispatched");
+        });
     });
 });
 
@@ -218,10 +242,18 @@ class TestInstanceDataElement extends DataElement {
     testDispatch() {
         this.dispatchChange("user");
     }
+
+    testDispatchWithData() {
+        this.dispatchChange("user", {
+            ...this.user,
+            userName: "janeuser"
+        });
+    }
 }
 
 @customDataElement("test-decorators", {
-    stateIdProperty: "dataId"
+    stateIdProperty: "dataId",
+    eventsListenAt: "self"
 })
 class TestDecorators extends DataElement {
 
