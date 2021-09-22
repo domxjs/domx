@@ -1,13 +1,12 @@
-import { EventMap, event, EventMapListenAt } from "@domx/eventmap";
+import { EventMap, EventMapListenAt } from "@domx/eventmap";
+import { event } from "@domx/eventmap/decorators";
 import { Middleware } from "@domx/middleware";
 export {
     customDataElements,
-    customDataElement,
     DataElement,
     DataElementCtor,
     DataElementMetaData,
-    dataProperty,
-    event
+    DataProperties
 };
 import { RootState } from "./RootState";
 
@@ -124,9 +123,16 @@ class DataElement extends EventMap(HTMLElement) {
     /**
      * Dispatches a change event on this DataElement.
      * @param prop {string} the name of the property to dispatch the change event on; default is "state"
+     * @param change {object} checks for JSON equals before dispatching (props must be in same order).
      */
-    dispatchChange(prop:string = "state") {
+    dispatchChange(prop:string = "state", change?:object) {
         const dp = this.__dataPropertyMetaData;
+        if (change) {
+            if (JSON.stringify(change) === JSON.stringify((this as any)[prop])) {
+                return;
+            }
+            (this as any)[prop] = change;
+        }
         this.dispatchEvent(new CustomEvent(dp[prop].changeEvent as string));
     }
 }
@@ -148,47 +154,6 @@ const customDataElements = {
 };
 
 
-interface CustomDataElementOptions {
-    /** Sets which property is to be used as the stateId; default: stateId */
-    stateIdProperty?: string,
-    /** Sets the default event listener element for events; default: "self" */
-    eventsListenAt?: EventMapListenAt|string
-}
-/**
- * A class decorator that defines the custom element with
- * `window.customElements.define` and tags the element name
- * for use in RootState.
- * 
- * Options allow for setting `stateIdProperty` and `eventsListenAt`.
- * @param elementName {string}
- * @param options {CustomDataElementOptions}
- */
-const customDataElement = (elementName:string, options:CustomDataElementOptions={}) =>
-    (ctor: CustomElementConstructor) => {    
-    options.stateIdProperty && setProp(ctor, "stateIdProperty", options.stateIdProperty);
-    options.eventsListenAt && setProp(ctor, "eventsListenAt", options.eventsListenAt);
-    customDataElements.define(elementName, ctor);
-};
-
-
-
-interface DataPropertyOptions {
-    changeEvent:string
-}
-/**
- * A property decorator that tags a class property
- * as a state property.
- * 
- * Options allow for setting the change event name.
- * @param options 
- */
-const dataProperty = (options?:DataPropertyOptions):any =>
-    (prototype: any, propertyName: string) =>
-        (prototype.constructor as DataElementCtor).dataProperties[propertyName] = {
-            changeEvent: options ? options.changeEvent : `${propertyName}-changed`
-        };
-
-
 const elementConnected = (el:DataElement) => {
     const ctor = el.constructor as DataElementCtor;
         
@@ -198,7 +163,7 @@ const elementConnected = (el:DataElement) => {
     Object.keys(ctor.dataProperties).forEach((propertyName) => {
 
         // determine the statePath and window event name
-        const statePath = `${ctor.__elementName}.${propertyName}${stateIdPath}`;
+        const statePath = `${ctor.__elementName}${stateIdPath}.${propertyName}`;
         const windowEventName = `${statePath}-changed`;
         
         // set/update the change event

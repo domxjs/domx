@@ -1,7 +1,8 @@
 
 import { describe, it, expect } from "@jest/globals";
 import { html, fixture, FixtureElement } from "@domx/testutils";
-import { EventMap, EventMapHandlerInfo, eventsListenAt, event } from "./EventMap";
+import { EventMap, EventMapHandlerInfo } from "./EventMap";
+import { eventsListenAt, event } from "./decorators";
 
 
 const test1Html = html`

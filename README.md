@@ -1,9 +1,14 @@
-# DOMX &middot; [![GitHub license](https://img.shields.io/badge/license-MIT-blue.svg)](https://www.mit.edu/~amini/LICENSE.md) [![Build Status](https://travis-ci.com/domxjs/domx.svg?branch=master)](https://travis-ci.com/github/domxjs/domx) ![Lines](https://img.shields.io/badge/Coverage-99.35%25-brightgreen.svg) [![GitHub package.json version](https://img.shields.io/github/package-json/v/jhorback/harbor-utils)](https://github.com/jhorback/harbor-utils/releases)
+# DOMX &middot; [![GitHub license](https://img.shields.io/badge/license-MIT-blue.svg)](https://www.mit.edu/~amini/LICENSE.md) [![Build Status](https://travis-ci.com/domxjs/domx.svg?branch=master)](https://travis-ci.com/github/domxjs/domx) ![Lines](https://img.shields.io/badge/Coverage-98.87%25-brightgreen.svg) [![GitHub package.json version](https://img.shields.io/github/package-json/v/jhorback/harbor-utils)](https://github.com/jhorback/harbor-utils/releases)
 
 A mono repo containing packages with common web application script utilities.
 
 DOMX is an approach to building modern web applications using the DOM, browser, and patterns morso than relying on frameworks or libraries.
 See: **[domxjs.com](https://www.domxjs.com/)**
+
+
+> This repo is close to a version [1.0 release](https://github.com/domxjs/domx/milestone/1).
+The last few items slated are a couple of Router enhancements and a demo app to show
+how the multiple packages work together.
 
 ## Packages
 

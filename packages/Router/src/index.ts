@@ -1,7 +1,4 @@
 export {
-    Router
-    /*
-    // not DomxLocation or DomxRouteData
-    DomxRoute
-    */
+    Router,
+    Route
 } from "./Router";

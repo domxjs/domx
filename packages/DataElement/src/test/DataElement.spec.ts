@@ -2,12 +2,10 @@ import { describe, it, expect } from "@jest/globals";
 import { fixture, html} from "@domx/testutils/fixture";
 import { RootState } from "../RootState";
 import {
-    customDataElement,
     DataElement,
-    DataElementCtor,
-    dataProperty
+    DataElementCtor
 } from "../DataElement";
-import { state } from "lit-element";
+import {customDataElement, dataProperty} from "../decorators";
 
 
 describe("DataElement", () => {
@@ -33,7 +31,7 @@ describe("DataElement", () => {
     
         it("expands the data properties with a stateId", () => {
             const el = fixture<DataElement>(html`<test-instance-data-element user-id="1234"></test-instance-data-element>`);
-            expect(el.__dataPropertyMetaData["user"].statePath).toBe("test-instance-data-element.user.1234");
+            expect(el.__dataPropertyMetaData["user"].statePath).toBe("test-instance-data-element.1234.user");
             el.restore();
         });
     });
@@ -107,7 +105,7 @@ describe("DataElement", () => {
             const el = fixture<TestDataElement>(html`
                 <test-instance-data-element user-id="1234"></test-instance-data-element>
             `);
-            expect(RootState.get("test-instance-data-element.user.1234"))
+            expect(RootState.get("test-instance-data-element.1234.user"))
                 .toStrictEqual({userName: "unknown"});
             el.restore();
         });
@@ -125,7 +123,7 @@ describe("DataElement", () => {
         it("supports setting the stateIdProperty", () => {
             const el = fixture<TestDecorators>(html`<test-decorators></test-decorators>`);
             const ctor = el.constructor as DataElementCtor;
-            expect(el.__dataPropertyMetaData.user.statePath).toBe("test-decorators.user.1234");
+            expect(el.__dataPropertyMetaData.user.statePath).toBe("test-decorators.1234.user");
             el.restore();
         });
     });
@@ -135,15 +133,15 @@ describe("DataElement", () => {
             const el = fixture<TestInstanceDataElement>(html`
                 <test-instance-data-element user-id="1234"></test-instance-data-element>
             `);
-            expect(RootState.get("test-instance-data-element.user.1234"))
+            expect(RootState.get("test-instance-data-element.1234.user"))
                 .toStrictEqual({userName: "unknown"});
             el.testChange();
-            expect(RootState.get("test-instance-data-element.user.1234"))
+            expect(RootState.get("test-instance-data-element.1234.user"))
                 .toStrictEqual({userName: "joeuser"});
             el.setAttribute("user-id", "9876");
-            expect(RootState.get("test-instance-data-element.user.1234"))
+            expect(RootState.get("test-instance-data-element.1234.user"))
                 .toBe(null)
-            expect(RootState.get("test-instance-data-element.user.9876"))
+            expect(RootState.get("test-instance-data-element.9876.user"))
                 .toStrictEqual({userName: "unknown"});
         });
     });
@@ -168,6 +166,30 @@ describe("DataElement", () => {
             el.testDispatch();
             expect(message).toBe("event dispatched");
         });
+
+        it("dispatches change with data", () => {
+            const el = fixture<TestInstanceDataElement>(html`<test-instance-data-element></test-instance-data-element>`)
+            let message = "";
+            el.addEventListener("user-changed", (event: Event) => {
+                message = "event dispatched";
+            });
+            el.testDispatchWithData();
+            expect(message).toBe("event dispatched");
+        });
+
+        it("does not dispatch change if the data is the same", () => {
+            const el = fixture<TestInstanceDataElement>(html`<test-instance-data-element></test-instance-data-element>`)
+            let message = "";
+            el.addEventListener("user-changed", (event: Event) => {
+                message = "event dispatched";
+            });
+            el.testDispatch(); // rests the data
+            el.testDispatchWithData();
+            expect(message).toBe("event dispatched");
+            message = "not dispatched";
+            el.testDispatchWithData();
+            expect(message).toBe("not dispatched");
+        });
     });
 });
 
@@ -179,6 +201,10 @@ class TestDataElement extends DataElement {
     };
 
     testDispatch() {
+        this.state = {
+            ...this.state,
+            status: "changed"
+        };
         this.dispatchChange();
     }
 }
@@ -216,10 +242,18 @@ class TestInstanceDataElement extends DataElement {
     testDispatch() {
         this.dispatchChange("user");
     }
+
+    testDispatchWithData() {
+        this.dispatchChange("user", {
+            ...this.user,
+            userName: "janeuser"
+        });
+    }
 }
 
 @customDataElement("test-decorators", {
-    stateIdProperty: "dataId"
+    stateIdProperty: "dataId",
+    eventsListenAt: "self"
 })
 class TestDecorators extends DataElement {
 
