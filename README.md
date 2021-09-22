@@ -5,6 +5,11 @@ A mono repo containing packages with common web application script utilities.
 DOMX is an approach to building modern web applications using the DOM, browser, and patterns morso than relying on frameworks or libraries.
 See: **[domxjs.com](https://www.domxjs.com/)**
 
+
+> This repo close to a version [1.0 release](https://github.com/domxjs/domx/milestone/1).
+The last few items slated are a couple of Router enhancements and a demo app to show
+how the multiple packages work together.
+
 ## Packages
 
 | Package   | Status   | Latest | Description

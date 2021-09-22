@@ -3,8 +3,6 @@
 
 A full featured DOM based custom element router for client side routing.
 
-> This package has not yet been published on NPM
-
 
 [Description](#description) \
 [Installation](#installation) \
@@ -82,7 +80,7 @@ class ExampleApp extends LitElement {
 }
 
 ```
-> This example uses a DOM query for `#container` so the elements will be appended to the `main` element. 
+> The `append-to` attribute in this example uses a DOM query for `#container` so the element will be appended to the `main` element. 
 
 > Note: a `replace-state` attribute can be added to hyperlinks to use `history.replaceState` over `history.pushState`.
 This may be desirable for something like tab navigation.
@@ -124,7 +122,7 @@ element created.
 ></domx-route>
 ```
 > Givent the url: `/users/1234`, this route will match and create the `app-user` element
-with a `user-id` attribute set to `1234`.
+with a `user-id` attribute set to `"1234"`.
 
 ### Optional Route Parameters
 Route parameters can also use parentheses to denote they are optional.
@@ -138,7 +136,7 @@ Route parameters can also use parentheses to denote they are optional.
 as attributes on the `app-user` element.
 
 ### Route Tails (enabling subroutes)
-Tails are created using a asterisk. Tails are used to capture any remaining parts of the URL and can be used for subroutes.
+Tails are created using an asterisk. Tails are used to capture any remaining parts of the URL and can be used for subroutes.
 ```html
 <domx-route
     pattern="/attachments/*file-path"
@@ -187,9 +185,10 @@ class UserSearch extends LitElement {
 ## Element Creation
 There are five types of items that are added to an element when created.
 - **routeParams** - for each matching route parameter, an attribute is added on the element with the route parameter name.
+(parent route params are also added when the route is a subroute.)
 - **queryParams** - a `queryParams` property is set on the element containing the query parameters in the current URL. This is updated as long as the route matches.
 - **tail path** - an attribute is added to the element when using an asterisk; the name of the attribute is denoted by the text after the asterisk and the value is the remaining portion of the URL.
-- **tail** - a `tail` property is set on the element if the pattern uses the asterisk. This is used internally for subroutes. It is an object that contains a `prefix` and a `path` property.
+- **tail** - a `tail` property is set on the element if the pattern uses the asterisk. This is used internally for subroutes. It is an object that contains `prefix`, `path`, and `routeParams` properties.
 - **parentRoute** - a `parentRoute` property is set when a route is created as a subroute. Its value is the `tail` of the parent route and can be used for subroutes.
 
 
@@ -226,8 +225,6 @@ class ExampleApp extends LitElement {
 ```
 > Here the subroute is created inside the parent and so the parents tail
 is kept in sync with the child's parentRoute property.
-
-> This doesn't do much more than make it explicit that one route is related to the other.
 
 ### Using Separate Elements
 Subrouting can also be accomplished in separate elements by setting the `parentRoute` property of a sub route.
@@ -411,19 +408,18 @@ The `Router` has static methods that can be useful for navigation and for settin
 ## TypeScript Interfaces
 Here are a few TypeScript interfaces that may be helpful when developing in TypeScript.
 ```ts
-/** Used for parent and tail routes */
-interface Route {
-    prefix: string,
-    path: string
-}
-
 /** Contains the parsed route segments */
 interface RouteParams extends StringIndex<string|null> {}
-
 
 /** Parsed query parameters */
 interface QueryParams extends StringIndex<string> {}
 
+/** Used for parent and tail routes */
+interface Route {
+    prefix: string,
+    path: string,
+    routeParams: RouteParams
+}
 
 /** Options when calling the route.navigate(options) method */
 interface NavigateOptions {
