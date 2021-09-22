@@ -12,7 +12,7 @@ describe("Router", () => {
 
     describe("initialization", () => {
         afterEach(() => {
-            Router.root = "/";
+            Router._reset();
         });
     
         it("can set the root", () => {
@@ -43,6 +43,7 @@ describe("Router", () => {
             const handler = (event:Event) => {
                 handlerCalled = true;
             };
+            Router.init();
             window.addEventListener("location-changed", handler);
             Router.init();
             expect(handlerCalled).toBe(false);

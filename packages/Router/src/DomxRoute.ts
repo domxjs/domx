@@ -84,6 +84,11 @@ class DomxRoute extends LitElement {
         this.findParent();
     }
 
+    disconnectedCallback() {
+        super.disconnectedCallback();
+        hideElement(this);
+    }
+
     static styles = css`:host { display:none }`;
 
     render() {
@@ -283,32 +288,44 @@ const showHideElement = (routeEl:DomxRoute, routeState:RouteState) => {
         }
 
         // append to the DOM
-        if (routeEl.appendTo === "parent") {
-            routeEl.getRootNode().appendChild(el);
+        let root = routeEl.getRootNode();
+        root = root === document ? document.body : root;
+        if (routeEl.appendTo === "parent") {            
+            root.appendChild(el);
         } else if(routeEl.appendTo === "body") {
             document.body.appendChild(el);                
         } else {
-            (<Element>routeEl.getRootNode()).querySelector(routeEl.appendTo)?.appendChild(el);
+            (<Element>root).querySelector(routeEl.appendTo)?.appendChild(el);
         }
 
 
     } else if (ae &&  routeState.matches === false) {
-        const el = ae.element;
-        
-        // dispatch inactive event
-        const routeActiveEvent = new RouteActiveChangedEvent(
-            RouteActiveChangedEventType.Inactive, el, routeEl.activeSourceElement);
-        
-        routeEl.dispatchEvent(routeActiveEvent);            
-        routeEl.activeElement = null;
-        routeEl.activeSourceElement = null;
-
-        if (routeActiveEvent.isDefaultPrevented) {
-            return;
-        }
-
-        // remove from DOM
-        el.remove();
-        Logger.log(routeEl, "debug", "DomxRoute: removed element", el.tagName);
+        hideElement(routeEl);
     }
+};
+
+
+const hideElement = (routeEl:DomxRoute) => {
+    const ae = routeEl.activeElement;
+    if (!ae) {
+        return;
+    }
+
+    const el = ae.element;
+        
+    // dispatch inactive event
+    const routeActiveEvent = new RouteActiveChangedEvent(
+        RouteActiveChangedEventType.Inactive, el, routeEl.activeSourceElement);
+    
+    routeEl.dispatchEvent(routeActiveEvent);            
+    routeEl.activeElement = null;
+    routeEl.activeSourceElement = null;
+
+    if (routeActiveEvent.isDefaultPrevented) {
+        return;
+    }
+
+    // remove from DOM
+    el.remove();
+    Logger.log(routeEl, "debug", "DomxRoute: removed element", el.tagName);
 };

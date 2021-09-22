@@ -66,18 +66,17 @@ const getRouteMatch = (path:string, url:string):RouteMatch => {
 };
 
 
-var optionalParam = /\((.*?)\)/g;
-var namedParam    = /(\(\?)?:\w+/g;
-var splatParam    = /\*\w+/g;
-var escapeRegExp  = /[\-{}\[\]+?.,\\\^$|#\s]/g;
+const optionalParam = /\((.*?)\)/g;
+const namedParam    = /(\(\?)?:[\w-]+/g;
+const splatParam    = /\*[\w-]+/g;
+const escapeRegExp  = /[{}\[\]+?.,\\\^$|#\s]/g;
 
 const pathToRegExp = (path:string) => {
     path = path.replace(escapeRegExp, '\\$&')
         .replace(optionalParam, '(?:$1)?')
         .replace(namedParam, function(match, optional) {
             return optional ? match : '([^/?]+)';
-        })
-        .replace(splatParam, '([^?]*?)');
+        }).replace(splatParam, '([^?]*?)');
     return new RegExp('^' + path + '(?:\\?([\\s\\S]*))?$');
 };
 

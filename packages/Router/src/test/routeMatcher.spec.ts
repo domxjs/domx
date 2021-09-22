@@ -18,7 +18,7 @@ describe("routeMatcher", () => {
             Router.root = "/test";
             const matches = routeMatches("/docs", "/test/docs");
             expect(matches).toBe(true);
-            Router.root = "/";
+            Router._reset();
         });
         
 
@@ -40,10 +40,10 @@ describe("routeMatcher", () => {
             routeParams: {},
             tail: null
         }, { // 2
-            path: "/docs/:section",
+            path: "/docs/:section-id",
             url: "/docs/faq",
             matches: true,
-            routeParams: {section:"faq"},
+            routeParams: {"section-id":"faq"},
             tail: null
         }, { // 3
             path: "/docs/:section/:subsection",
@@ -51,9 +51,9 @@ describe("routeMatcher", () => {
             matches: true,
             routeParams: {section: "faq", subsection: "install"},
             tail: null
-        }, { // 4
-            path: "/docs/:name-:mode",
-            url: "/docs/dev-mode",
+        }, { // 4/
+            path: "/docs/d:name/:mode",
+            url: "/docs/ddev/mode",
             matches: true,
             routeParams: {name: "dev", mode: "mode"},
             tail: null
@@ -290,7 +290,7 @@ describe("routeMatcher", () => {
             expect(result.matches).toBe(currentTest.matches);
             expect(result.routeParams).toStrictEqual(currentTest.routeParams);
             expect(result.tail).toStrictEqual(currentTest.tail);
-            Router.root = "/";
+            Router._reset();
         });
         it("passes 19", () => {
             currentTest = tests[19];

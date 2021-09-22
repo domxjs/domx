@@ -86,7 +86,7 @@ class Router {
     private static _root = "/";
     static get root():string { return Router._root; }
     static set root(root:string) {
-        if (Router._root === "/" || root === "/") {
+        if (Router._root === "/") {
             Router._root = root;
         } else {
             throw new Error("Router.root has already been set.");
@@ -160,6 +160,12 @@ class Router {
         });
 
         urlsAreEqual(newUrl, currentUrl) || Router.replaceUrl(newUrl.href);
+    }
+
+    /** Used for tests */
+    static _reset() {
+        Router._root = "/";
+        Router._isInitialized = false;
     }
 }
 
