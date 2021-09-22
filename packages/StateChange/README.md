@@ -91,7 +91,8 @@ class UserListElement extends HTMLElement {
 When needing to do more than just setting the next state object, a `tap` function can be used to perform any logic, branching, or asynchronous operations.
 
 ```js
-import { EventMap, event } from "@domx/eventmap";
+import { EventMap } from "@domx/eventmap";
+import { event } from "@domx/eventmap/decorators";
 
 class UserListElement extends EventMap(HTMLElement){
     //...

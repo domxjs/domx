@@ -3,3 +3,5 @@
 /DomxLocation.*
 /DomxRouteData.*
 /DomxRoute.*
+/routeMatcher.*
+/middleware.*

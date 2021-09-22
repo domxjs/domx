@@ -1,4 +1,4 @@
-# DataElement &middot; [![GitHub license](https://img.shields.io/badge/license-MIT-blue.svg)](https://www.mit.edu/~amini/LICENSE.md) [![Build Status](https://travis-ci.com/domxjs/domx.svg?branch=packages/DataElement)](https://travis-ci.com/github/domxjs/domx) [![Lines](https://img.shields.io/badge/Coverage-99.53%25-brightgreen.svg)](https://app.travis-ci.com/github/domxjs/domx/branches) [![npm](https://img.shields.io/npm/v/@domx/dataelement)](https://www.npmjs.com/package/@domx/dataelement)
+# DataElement &middot; [![GitHub license](https://img.shields.io/badge/license-MIT-blue.svg)](https://www.mit.edu/~amini/LICENSE.md) [![Build Status](https://travis-ci.com/domxjs/domx.svg?branch=packages/DataElement)](https://travis-ci.com/github/domxjs/domx) [![Lines](https://img.shields.io/badge/Coverage-100%25-brightgreen.svg)](https://app.travis-ci.com/github/domxjs/domx/branches) [![npm](https://img.shields.io/npm/v/@domx/dataelement)](https://www.npmjs.com/package/@domx/dataelement)
 
 A `DataElement` base class with root state support.
 
@@ -104,7 +104,8 @@ for UI components to reference the `defaultState` for initialization.
 The `SessionData` element can be used in any UI component.
 
 ```js
-import { customElement, LitElement, html } from "@lit-element";
+import { LitElement, html } from "lit";
+import { customElement } from "lit/decorators";
 import { linkProp } from "@domx/linkProp";
 import { SessionData } from "./SessionData";
 
@@ -217,10 +218,11 @@ class UserData extends DataElement {
 
     @dataProperty()
     user = {
-        fullName: "unknown"
+        userName: "unknown",
+        fullName: "unknown",
     };
 
-    @event("user-updated")
+    @event("fullname-updated")
     userUpdated({detail:{fullName}}) {
         this.state = {
             ...this.state,
@@ -228,8 +230,19 @@ class UserData extends DataElement {
         };
         this.dispatchChange("user");
     }
+
+    @event("username-updated")
+    userUpdated({detail:{userName}}) {
+        this.dispatchChange("user", {
+            ...this.state,
+            userName
+        });
+    }
 }
 ```
+> Note: the `username-updated` event handler passes the state as a second parameter;
+when doing this, it does a quick JSON.stringify comparison between the existing
+and new state and only dispatches the changes if they differ.
 
 
 ## Setting a stateId Property
@@ -389,13 +402,15 @@ There is also a function available to apply Redux dev tool logging.
 Logs change events and if usining `StateChange` logs state snapshots
 with each `next` call.
 ```js
-import {applyDataElementRdtLogging} from "@domx/DataElement/applyDataElementRdtLogging";
+import {applyDataElementRdtLogging} from "@domx/DataElement/middleware";
 applyDataElementRdtLogging();
 ```
 #### **applyDataElementRdtLogging(options)**
 **options**
 - logChangeEvents - set to false if using `StateChange` and do not want the additional
 change event logged.
+- exclude - an array of strings that excludes any events/actions from being logged that start with the exclude string.
+> This can be used alongside `RootState.snapshot(name)` to create a named snapshot in Redux Dev Tools.
 
 ### Adding custom middleware
 ```js
