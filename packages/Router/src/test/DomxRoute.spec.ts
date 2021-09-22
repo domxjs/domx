@@ -306,7 +306,7 @@ describe("DomxRoute", () => {
             container.remove();
         });
 
-        it("navigates to the correct url when it has a parent route", async () => {
+        it("navigates to the correct url when it has a parent route with params", async () => {
             Router.pushUrl("/users/1234/profile")
             const container = getRouteContainer({
                 pattern:"/users/:user-id/*routeTail",

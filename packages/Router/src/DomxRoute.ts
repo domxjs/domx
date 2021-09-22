@@ -194,30 +194,34 @@ const navigate = (routeEl:DomxRoute, options:NavigateOptions)  => {
     let path = "";
     let el = routeEl as HTMLElement;
 
+
+    // need to walk parent elements patterns, prepending and removing
+    // splats until no parent; then prepend the parentRoute.prefix
+    while(el.parentElement) {
+        if (el.parentElement instanceof DomxRoute) {
+            let pattern = el.parentElement.pattern;
+            // remove splat
+            const splatIndex = pattern.indexOf("/*");
+            if (splatIndex > 0) {
+                pattern = pattern.substring(0, splatIndex);
+            }
+            path = `${pattern}${path}`;
+        }
+        el = el.parentElement;
+    }
     if (el instanceof DomxRoute && el.parentRoute) {
         path = `${el.parentRoute.prefix}${path}`;
-    } else {
-        // need to walk parent elements patterns, prepending and removing
-        // splats until no parent; then prepend the parentRoute.prefix
-        while(el.parentElement) {
-            if (el.parentElement instanceof DomxRoute) {
-                let pattern = el.parentElement.pattern;
-                // remove splat
-                const splatIndex = pattern.indexOf("/*");
-                if (splatIndex > 0) {
-                    pattern = pattern.substring(0, splatIndex);
-                }
-                path = `${pattern}${path}`;
-            }
-            el = el.parentElement;
-        }
-    }    
+    }
+      
     path = `${path}${routeEl.pattern}`;
 
     // remove parens
     path = path.replace(/\(/g, "").replace(/\)/g, "");
 
     // add routeParams
+    if (routeEl.parentRoute) {
+        path = replaceRouteParams(routeEl.parentRoute.routeParams, path);
+    }
     if (routeParams) {
         path = replaceRouteParams(routeParams, path);
     }
