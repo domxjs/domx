@@ -11,7 +11,7 @@ A full featured DOM based custom element router for client side routing.
 [Query Parameters](#query-parameters) \
 [Element Creation](#element-creation) \
 [Subroutes](#subroutes) \
-[Route.Navigate](#route.navigate) \
+[Route.navigate](#route.navigate) \
 [Route Events](#route-events) \
 [Router](#router) \
 [DomxRoute Public API](#domxroute-public-api) \
