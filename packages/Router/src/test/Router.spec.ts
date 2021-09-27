@@ -241,4 +241,22 @@ describe("Router", () => {
             expect(preventDefaultSpy).not.toHaveBeenCalled();
         });
     });
+
+    describe("route-not-found", () => {
+        afterEach(() => {
+            Router._reset();
+        });
+
+        it("dispatches a route-not-found event when no routes match", () => {
+            const anchor = fixture<HTMLAnchorElement>(html`<a href="/not/found/route"></a>`)
+            const event = new MouseEvent("click", { button: 0 });
+            jest.spyOn(event, "composedPath").mockImplementation(() => [anchor]);
+            let eventCalled = false;
+            const listener = (event:Event) => eventCalled = true;
+            window.addEventListener("route-not-found", listener);
+            document.body.dispatchEvent(event);
+            expect(eventCalled).toBe(true);
+            window.removeEventListener("route-not-found", listener);
+        });
+    })
 });

@@ -43,4 +43,9 @@ a {
   margin: 1rem 0;
   background-color: #2a374a;
 }
+blockquote {
+  border-left: .25em solid #4283db;
+  padding: 0 1rem;
+  margin-left: 0;
+}
 `;

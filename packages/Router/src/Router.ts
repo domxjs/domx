@@ -205,6 +205,7 @@ const routerOnBodyClick = (event:MouseEvent) => {
     const url = `${anchor.pathname}${anchor.search}`;
     if (!routesMatch(url)) {
         console.debug(`Router: no routes match \"${url}\"`);
+        window.dispatchEvent(new Event("route-not-found"))
         return;
     }
   
