@@ -2,7 +2,7 @@ import { LitElement, html, css } from "lit";
 import { customElement, property, query } from "lit/decorators.js";
 import { applyDataElementRdtLogging, applyEventMapLogging } from "@domx/dataelement/middleware";
 import { Route } from "@domx/router";
-import { DomxRoute, RouteActiveChangedEvent } from "@domx/router/DomxRoute";
+import { DomxRoute, RouteActiveChangedEvent } from "@domx/router/domx-route";
 import "./dx-pages";
 import { dxStyles } from "./dxStyles";
 

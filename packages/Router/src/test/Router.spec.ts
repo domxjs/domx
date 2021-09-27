@@ -1,6 +1,6 @@
 import { describe, it, expect, jest } from "@jest/globals";
 import { LocationChangedDetail, Router } from "../Router";
-import { DomxRouteData } from "../DomxRouteData";
+import { DomxRouteData } from "../domx-route-data";
 import { fixture, html } from "@domx/testutils";
 
 

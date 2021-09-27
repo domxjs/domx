@@ -5,7 +5,7 @@ import logoUrl from "./favicon.svg";
 import { Router } from "@domx/router";
 import { dxStyles } from "./dx-router-demo/dxStyles";
 import "./dx-router-demo/dx-router-demo";
-import "@domx/router/DomxRoute";
+import "@domx/router/domx-route";
 
 /**
  * 

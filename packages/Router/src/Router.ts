@@ -1,5 +1,5 @@
 import { RootState } from "@domx/dataelement/RootState";
-import { DomxRouteData } from "./DomxRouteData";
+import { DomxRouteData } from "./domx-route-data";
 import { routeMatches, getRouteMatch } from "./routeMatcher";
 export {
     Router,
