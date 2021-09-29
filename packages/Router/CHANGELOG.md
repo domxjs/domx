@@ -6,8 +6,9 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 
 ## [Unreleased]
-### Addded
+### Added
 - window event for not found routes
+- domx-route-not-found element
 
 ### Breaking Changes
 - renamed element class names to kebab case (mainly effects DomxRoute -> domx-route)
