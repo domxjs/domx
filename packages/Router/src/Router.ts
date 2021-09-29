@@ -1,5 +1,5 @@
 import { RootState } from "@domx/dataelement/RootState";
-import { DomxRouteData } from "./DomxRouteData";
+import { DomxRouteData } from "./domx-route-data";
 import { routeMatches, getRouteMatch } from "./routeMatcher";
 export {
     Router,
@@ -195,9 +195,7 @@ const routerOnBodyClick = (event:MouseEvent) => {
     }
 
     // don't handle outside origin
-    const location = window.location;
-    const origin = location.origin || location.protocol + '//' + location.host;
-    if (href.indexOf(origin) !== 0) {
+    if (href.indexOf(window.location.origin) !== 0) {
         return;
     }
   
@@ -205,7 +203,14 @@ const routerOnBodyClick = (event:MouseEvent) => {
     const url = `${anchor.pathname}${anchor.search}`;
     if (!routesMatch(url)) {
         console.debug(`Router: no routes match \"${url}\"`);
-        return;
+        const notFoundEvent = new CustomEvent("route-not-found", {
+            detail: {url}
+        });
+        notFoundEvent.preventDefault = () => { event.preventDefault(); };
+        window.dispatchEvent(notFoundEvent);
+        if (!event.defaultPrevented) {
+            return;
+        }
     }
   
     // handle the url

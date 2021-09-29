@@ -27,11 +27,11 @@
     "badges": "node ./src/scripts/badges.js",
     "publish:all": "npm publish --access public --workspaces",
     "prepare": "npm run build",
-    "test:coverage:single": "jest --coverage --coverage-directory=\"./packages/DataElement/.coverage\" --collectCoverageFrom=\"./packages/DataElement/**/!(*.d).ts\" \"./packages/DataElement\""
+    "test:package": "jest --coverage --coverage-directory=\"./packages/Router/.coverage\" --collectCoverageFrom=\"./packages/Router/**/!(*.d).ts\" \"./packages/Router\""
   },
   "dependencies": {
     "@domx/dataelement": "0.5.2",
-    "@domx/router": "0.1.2",
+    "@domx/router": "0.2.0",
     "@vanillawc/wc-markdown": "^1.6.10",
     "lit": "latest"
   },

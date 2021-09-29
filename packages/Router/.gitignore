@@ -1,7 +1,7 @@
 /index.*
 /Router.*
-/DomxLocation.*
-/DomxRouteData.*
-/DomxRoute.*
+/domx-location.*
+/domx-route*
 /routeMatcher.*
 /middleware.*
+/domxRoute.*
