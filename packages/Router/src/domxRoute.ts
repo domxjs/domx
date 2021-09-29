@@ -68,10 +68,6 @@ const appendElement = (route:{appendTo:string} & HTMLElement, el:HTMLElement) =>
  * @param properties {Object}
  */
 const setElementProperties = (el:any, properties:any) => {
-    if (!properties) {
-        return;
-    }
-
     Object.keys(properties).map(prop => {
         el[prop] = properties[prop];
     });

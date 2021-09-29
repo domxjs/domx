@@ -111,6 +111,7 @@ describe("Router", () => {
         it("triggers location-changed on replaceUrlParams", () => {
             let handlerCalled = false;
             let replaceState:boolean|undefined  = false;
+            Router.replaceUrlParams({remove: ""});
             const handler = ((event:CustomEvent) => {
                 const detail = event.detail as LocationChangedDetail;
                 handlerCalled = true;
@@ -252,7 +253,10 @@ describe("Router", () => {
             const event = new MouseEvent("click", { button: 0 });
             jest.spyOn(event, "composedPath").mockImplementation(() => [anchor]);
             let eventCalled = false;
-            const listener = (event:Event) => eventCalled = true;
+            const listener = (event:Event) => {
+                eventCalled = true;
+                event.preventDefault();
+            };
             window.addEventListener("route-not-found", listener);
             document.body.dispatchEvent(event);
             expect(eventCalled).toBe(true);

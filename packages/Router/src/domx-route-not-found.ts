@@ -18,8 +18,9 @@ export { DomxRouteNotFound }
     @property({type: String, attribute: "append-to"})
     appendTo:string = "parent";
 
-    private _location:RouteLocation|null = null;
+    get isActive() { return this._activeElement !== null; }
 
+    private _location:RouteLocation|null = null;
     private _activeElement:HTMLElement|null = null;
     private _isSubroute:boolean = false;
     private _routesToCheck!:Array<DomxRoute>;
@@ -32,9 +33,13 @@ export { DomxRouteNotFound }
         if (this._isSubroute && this.parentElement) {
             this._routesToCheck = Array.from(this.parentElement.querySelectorAll("domx-route"));
         } else {
-            this._routesToCheck = Array.from(
-                (this.getRootNode() as Element).querySelectorAll(":scope > domx-route")
-            );
+            // Select children DomxRoute elements
+            // Note :scope does not work in unit tests
+            // this._routesToCheck = Array.from(
+            //     (this.getRootNode() as Element).querySelectorAll(":scope > domx-route")
+            // );
+            this._routesToCheck = Array.from((this.getRootNode() as Element).children)
+                .filter(e => e.tagName === "DOMX-ROUTE") as Array<DomxRoute>;
         }
     }
 
@@ -68,14 +73,14 @@ export { DomxRouteNotFound }
                 this.deactivate();
     }
 
-    _activateIfRoutesDontMatch() {        
+    _activateIfRoutesDontMatch() {
         const match = this._routesToCheck.find(r => r.routeState.matches);
         match ? this.deactivate() : this.activate();
     }
 
     activate() {
         if (!this.element) {
-            throw new Error("An element is required.")
+            throw new Error("An element is required.");
         }
 
         const el = document.createElement(this.element);
@@ -85,6 +90,7 @@ export { DomxRouteNotFound }
 
     deactivate() {
         this._activeElement?.remove();
+        this._activeElement = null;
     }
  }
 
