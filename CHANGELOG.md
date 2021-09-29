@@ -5,11 +5,11 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
-## [Unreleased]
+## [0.20.9] 2021-09-29
 ### Updated
-- Router package 0.1.2
+- Router package 0.2.0
 - DataElement 0.5.2
-- StateChange 0.7.2p
+- StateChange 0.7.2
 
 
 ## [0.19.0] 2021-09-22

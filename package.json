@@ -31,7 +31,7 @@
   },
   "dependencies": {
     "@domx/dataelement": "0.5.2",
-    "@domx/router": "0.1.2",
+    "@domx/router": "0.2.0",
     "@vanillawc/wc-markdown": "^1.6.10",
     "lit": "latest"
   },
