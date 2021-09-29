@@ -2,11 +2,12 @@ import { LitElement, html, css } from "lit";
 import {customElement, property, query} from 'lit/decorators.js';
 import { QueryParams, Route, RouteParams, RouteState } from "./Router";
 import { Logger } from "@domx/middleware/Logger";
-import { DomxLocation } from "./DomxLocation";
-import { DomxRouteData } from "./DomxRouteData";
+import { DomxLocation } from "./domx-location";
+import { DomxRouteData } from "./domx-route-data";
 import { Router } from ".";
+import { monitorParentRoute, appendElement, setElementProperties } from "./domxRoute";
 // import again since DomxLocation is included for types
-import "./DomxLocation"; 
+import "./domx-location"; 
 export {
     DomxRoute,
     NavigateOptions,
@@ -79,13 +80,16 @@ class DomxRoute extends LitElement {
 
     routeState:RouteState = DomxRouteData.defaultState;
 
-    connectedCallback() {
+    private _removeParentMonitor:Function|null = null;
+
+    async connectedCallback() {
         super.connectedCallback();
-        this.findParent();
+        this._removeParentMonitor = monitorParentRoute(this, this._removeParentMonitor);
     }
 
     disconnectedCallback() {
         super.disconnectedCallback();
+        this._removeParentMonitor?.();
         hideElement(this);
     }
 
@@ -111,40 +115,9 @@ class DomxRoute extends LitElement {
         this.$routeData.location = this.$location.location;
     }
 
-    /**
-     * Checks to see if the parent element is a DomxRoute
-     * and associates its tail with this parentRoute.
-     */
-    private async findParent() {
-        const parentEl = this.parentElement;
-        if (parentEl && parentEl instanceof DomxRoute) {
-            await this.updateComplete;
-            this._removeTailListener && this._removeTailListener();
-            this._addTailListener(parentEl);
-        }
-    }
-
-    private _tailListener:EventListener|null = null;
-    private _removeTailListener:Function|null = null;
-    private _addTailListener(parentElement:DomxRoute) {
-        const el = this;
-        const updateParent = () => {
-            const { tail } = parentElement;
-            el.parentRoute = tail;
-            Logger.log(this, "debug", `DomxRoute: set parentRoute: ${el.element} ` +
-                `${tail ? `prefix: ${tail.prefix}, path: ${tail.path}` : `null`}`);
-        };
-        parentElement.addEventListener("tail-changed", updateParent);
-        this._tailListener = updateParent;
-        updateParent();
-        this._removeTailListener = () => {
-            el._tailListener = null;
-            parentElement.removeEventListener("tail-changed", updateParent);
-        }
-    }
-
     private routeStateChanged() {
         const routeState = this.$routeData.state;
+        this.routeState = routeState;
         if (!routeState) {
             return;
         }
@@ -177,15 +150,11 @@ class RouteActiveChangedEvent extends CustomEvent<any> {
 }
 
 
+
+
 const hasChanged = (obj1:any, obj2:any) => 
     JSON.stringify(obj1) !== JSON.stringify(obj2);
 
-
-const setElementProperties = (el:any, properties:any) => {
-    Object.keys(properties).map(prop => {
-        el[prop] = properties[prop];
-    });
-};
 
 
 const navigate = (routeEl:DomxRoute, options:NavigateOptions)  => {
@@ -299,15 +268,7 @@ const showHideElement = (routeEl:DomxRoute, routeState:RouteState) => {
         }
 
         // append to the DOM
-        let root = routeEl.getRootNode();
-        root = root === document ? document.body : root;
-        if (routeEl.appendTo === "parent") {            
-            root.appendChild(el);
-        } else if(routeEl.appendTo === "body") {
-            document.body.appendChild(el);                
-        } else {
-            (<Element>root).querySelector(routeEl.appendTo)?.appendChild(el);
-        }
+        appendElement(routeEl, el);
 
 
     } else if (ae &&  routeState.matches === false) {

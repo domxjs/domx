@@ -11,10 +11,11 @@ A full featured DOM based custom element router for client side routing.
 [Query Parameters](#query-parameters) \
 [Element Creation](#element-creation) \
 [Subroutes](#subroutes) \
-[Route.Navigate](#route.navigate) \
+[Route.navigate](#route.navigate) \
 [Route Events](#route-events) \
+[Not Found Routes](#not-found-routes) \
 [Router](#router) \
-[Public API](#public-api) \
+[DomxRoute Public API](#domxroute-public-api) \
 [TypeScript Interfaces](#typescript-interfaces) \
 [Redux Dev Tools](#redux-dev-tools)
 
@@ -378,6 +379,68 @@ class ExampleApp extends LitElement {
 }
 ```
 
+## Not Found Routes
+There is a `domx-route-not-found` element that can be used to capture when a url does not match any of the routes defined at the same level.
+
+There are only two attributes that can be set.
+- **element** - the name of the element to create
+- **append-to** - where to append the element to
+
+### Example
+```js
+import { LitElement, html } from "lit";
+import { customElement } from "lit/decorators";
+import "@domx/router/domx-route";
+import "@domx/router/domx-route-not-found";
+import "./example-page-1";
+import "./example-page-2";
+import "./example-page-1-2";
+import "./example-not-found-page";
+
+@customElement("example-app")
+class ExampleApp extends LitElement {
+    render() {
+        return html`
+            <nav>
+                <ul><a href="/page1"></a>
+                <ul><a href="/page2"></a>
+                <ul><a href="/page2/sub-page1"></a>
+            </nav>
+            <!-- not found if url is not /page1 or /page2  -->
+            <domx-route-not-found
+                element="example-not-found-page"
+                append-to="body"
+            ></domx-route-not-found>
+            <domx-route
+                pattern="/page1"
+                element="example-page-1"
+                append-to="#container"
+            ></domx-route>
+            <domx-route
+                pattern="/page2(/*routeTail)"
+                element="example-page-2"
+                append-to="#container">
+                <!-- 
+                not found if the parent matches
+                but the subroutes do not have a match
+                -->
+                <domx-route-not-found
+                    element="example-not-found-page"
+                    append-to="body"
+                ></domx-route-not-found>
+                <domx-route
+                    pattern="/sub-page1"
+                    element="example-page-1-2"
+                    append-to="#container"
+                ></domx-route>               
+            </domx-route>            
+            <main id="container"></main>
+        `;
+    }
+}
+```
+> Note: It does not matter what order the routes are defined in.
+
 
 ## Router
 The `Router` has static methods that can be useful for navigation and for setting a root path for all routes.
@@ -387,7 +450,7 @@ The `Router` has static methods that can be useful for navigation and for settin
 - **Router.root** - set the root path for all routes; this can only be set once and should start with a backslash, e.g. `Router.root = "/demo";`
 
 
-## Public API
+## DomxRoute Public API
 ### Attributes
 - **pattern** - the route pattern to match.
 - **element** - the element to create when the route matches

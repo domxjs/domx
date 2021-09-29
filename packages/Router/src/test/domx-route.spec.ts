@@ -4,8 +4,8 @@ import { LitElement } from "lit";
 import { customElement, property } from "lit/decorators";
 import { ifDefined } from "lit/directives/if-defined";
 import { QueryParams, Router } from "../Router";
-import { DomxRoute } from "../DomxRoute";
-import { DomxRouteData } from "../DomxRouteData";
+import { DomxRoute } from "../domx-route";
+import { DomxRouteData } from "../domx-route-data";
 
 
 describe("DomxRoute", () => {

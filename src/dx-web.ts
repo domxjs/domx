@@ -5,7 +5,7 @@ import logoUrl from "./favicon.svg";
 import { Router } from "@domx/router";
 import { dxStyles } from "./dx-router-demo/dxStyles";
 import "./dx-router-demo/dx-router-demo";
-import "@domx/router/DomxRoute";
+import "@domx/router/domx-route";
 
 /**
  * 
@@ -34,7 +34,7 @@ class DxReadme extends LitElement {
 
   render() {
     return html`
-      <a class="nav-link" href="/demo">Router Demo</a>
+      <a class="nav-link" href="/demo/page1">Router Demo</a>
       <img class="logo" src="${logoUrl}"/>
       <wc-markdown
         src="https://raw.githubusercontent.com/domxjs/domx/master/README.md"
