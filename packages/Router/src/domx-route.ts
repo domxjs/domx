@@ -117,6 +117,7 @@ class DomxRoute extends LitElement {
 
     private routeStateChanged() {
         const routeState = this.$routeData.state;
+        this.routeState = routeState;
         if (!routeState) {
             return;
         }

@@ -4,6 +4,7 @@ import { applyDataElementRdtLogging, applyEventMapLogging } from "@domx/dataelem
 import { Route } from "@domx/router";
 import { DomxRoute, RouteActiveChangedEvent } from "@domx/router/domx-route";
 import "@domx/router/domx-route-not-found";
+import "./dx-page-not-found";
 import "./dx-pages";
 import { dxStyles } from "./dxStyles";
 
@@ -33,16 +34,16 @@ export class DxRouterDemo extends LitElement {
         <a href="/demo/page1?a=b&c=some value" replace-state>page1?a=b&c=some value</a> | 
         <a href="/demo/page2">Page 2</a> |
         <a href="/demo/page2/testValue">page2/testValue</a> |
-        <a href="/demo/page2/page3">Page 3</a>
-        <a href="/demo/not/found/link">Not Found</a>
+        <a href="/demo/page2/page3">Page 3</a> |
+        <a href="/demo/not/found">Not Found</a>
       </div>
       <div style="padding:1rem 0;">
         <button @click="${this.testNavigate}">Test.navigate</button>
       </div>
       <domx-route-not-found
-        append-to="body"
-        element="dx-page-not-found"
-      ></domx-route-not-found>
+            append-to="body"
+            element="dx-page-not-found"
+        ></domx-route-not-found>
       <domx-route
         .parentRoute="${this.parentRoute}"
         pattern="/(page1)"
@@ -64,7 +65,7 @@ export class DxRouterDemo extends LitElement {
             id="subroute"
             pattern="/page3"
             element="dx-p4"
-          ></domx-route>
+          ></domx-route>          
       </domx-route>
       <domx-route
         .parentRoute="${this.parentRoute}"
@@ -94,50 +95,6 @@ export class DxRouterDemo extends LitElement {
   routeInactive(event:RouteActiveChangedEvent) {
     console.log(">>> route-inactive: /page2(/*routeTail):INACTIVE", event.detail);
   }
-}
-
-
-@customElement("dx-page-not-found")
-class PageNotFound extends LitElement {
-
-    static styles= [
-      dxStyles, 
-      css`
-        :host{
-          opacity: 70%;
-          display: block;
-          max-width: 100%;
-          margin: 0;
-          background: red;
-          color: white;
-          width: 100%;
-          position: absolute;
-          top: 0;
-          bottom: 0;
-          left: 0;
-          right: 0;
-        }
-      `
-    ];
-
-    pageName:string|null = null;
-
-    render() {
-      return html`
-        <h1>Page Not Found</h1>
-        <p>
-          The page you are looking for was not found.
-          ${this.pageName ? html`
-            <b>Page name: ${this.pageName}</b>
-          `: html``}
-          <button @click="${this.closeButtonClicked}">Close</button>
-        </p>
-      `;
-    }
-    closeButtonClicked() {
-      window.history.back();
-      // this.remove();
-    }
 }
 
 

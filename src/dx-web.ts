@@ -34,7 +34,7 @@ class DxReadme extends LitElement {
 
   render() {
     return html`
-      <a class="nav-link" href="/demo">Router Demo</a>
+      <a class="nav-link" href="/demo/page1">Router Demo</a>
       <img class="logo" src="${logoUrl}"/>
       <wc-markdown
         src="https://raw.githubusercontent.com/domxjs/domx/master/README.md"
