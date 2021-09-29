@@ -21,10 +21,11 @@ assignees: jhorback
 - [ ] Update package readme, changelog, and package version.
 - [ ] Update package dependencies with new versions
 - [ ] Update root readme, and changelog.
+- [ ] Confirm tests / build passing
 - [ ] Merge into master.
 
 ## Update master version
-- [ ] Confirm tests / build passing after push
+- [ ] Confirm tests / build passing after merger
 - [ ] Update package version.
 - [ ] Push git tags `git push origin --tags`.
 - [ ] Add release to git; add changelog notes for the specific release.
