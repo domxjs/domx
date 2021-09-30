@@ -32,7 +32,6 @@ interface RouteParams extends StringIndex<string|null> {}
 interface RouteLocation {
     root: string,
     url:string,
-    /** do I need the pathname here? yes separates the pahtname from query params */
     pathname: string,
     queryParams: QueryParams
 }
@@ -42,6 +41,7 @@ interface RouteState {
     routeId:string,
     url: string,
     parentRoute:Route|null,
+    routeTailParam:RouteParams,
     matches: boolean,
     tail:Route|null,
     routeParams:RouteParams,
@@ -69,6 +69,7 @@ interface LocationChangedDetail {
 interface RouteMatch {
     matches:boolean,
     routeParams:RouteParams,
+    routeTailParam: RouteParams,
     tail:Route|null
 }
   
