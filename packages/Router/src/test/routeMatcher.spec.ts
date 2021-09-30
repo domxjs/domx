@@ -32,84 +32,98 @@ describe("routeMatcher", () => {
             url: "/docs",
             matches: true,
             routeParams: {},
+            routeTailParam: {},
             tail: null
         }, { // 1
             path: "/docs/faq",
             url: "/docs/faq",
             matches: true,
             routeParams: {},
+            routeTailParam: {},
             tail: null
         }, { // 2
             path: "/docs/:section-id",
             url: "/docs/faq",
             matches: true,
             routeParams: {"section-id":"faq"},
+            routeTailParam: {},
             tail: null
         }, { // 3
             path: "/docs/:section/:subsection",
             url: "/docs/faq/install",
             matches: true,
             routeParams: {section: "faq", subsection: "install"},
+            routeTailParam: {},
             tail: null
         }, { // 4/
             path: "/docs/d:name/:mode",
             url: "/docs/ddev/mode",
             matches: true,
             routeParams: {name: "dev", mode: "mode"},
+            routeTailParam: {},
             tail: null
         }, { // 5
             path: "/search/:query/p:page",
             url: "/search/france/p2",
             matches: true,
             routeParams: {query: "france", page: "2"},
+            routeTailParam: {},
             tail: null
         }, { // 6
             path: "/docs(/)",
             url: "/docs",
             matches: true,
             routeParams: {},
+            routeTailParam: {},
             tail: null
         }, { // 7
             path: "/docs(/)",
             url: "/docs/",
             matches: true,
             routeParams: {},
+            routeTailParam: {},
             tail: null
         }, { // 8
             path: "/docs/:section(/:subsection)",
             url: "/docs/faq",
             matches: true,
             routeParams: {section: "faq", subsection: null},
+            routeTailParam: {},
             tail: null
         }, { // 9
             path: "/docs/:section(/:subsection)",
             url: "/docs/faq/install",
             matches: true,
             routeParams: {section: "faq", subsection: "install"},
+            routeTailParam: {},
             tail: null
         }, { // 10
             path: "/docs(/:section)(/:subsection)",
             url: "/docs",
             matches: true,
             routeParams: {section: null, subsection: null},
+            routeTailParam: {},
             tail: null
         }, { // 11
             path: "/docs(/:section)(/:subsection)",
             url: "/docs/faq",
             matches: true,
             routeParams: {section: "faq", subsection: null},
+            routeTailParam: {},
             tail: null
         }, { // 12
             path: "/docs(/:section)(/:subsection)",
             url: "/docs/faq/install",
             matches: true,
             routeParams: {section: "faq", subsection: "install"},
+            routeTailParam: {},
             tail: null
         }, { // 13
             path: "/docs/*routeTail",
             url: "/docs/route/tail",
             matches: true,
-            routeParams: {
+            routeParams: {},
+            routeTailParam: {
                 routeTail: "route/tail"
             },
             tail: null
@@ -118,7 +132,10 @@ describe("routeMatcher", () => {
             url: "/docs/faq/route/tail",
             matches: true,
             routeParams: {
-                section: "faq",
+                section: "faq"
+                
+            },
+            routeTailParam: {
                 routeTail: "route/tail"
             },
             tail: null
@@ -128,7 +145,9 @@ describe("routeMatcher", () => {
             matches: true,
             routeParams: {
                 section: "faq",
-                subsection: "install",
+                subsection: "install"                
+            },
+            routeTailParam: {
                 routeTail: "route/tail"
             },
             tail: null
@@ -138,7 +157,9 @@ describe("routeMatcher", () => {
             matches: true,
             routeParams: {
                 section: "faq",
-                subsection: "install",
+                subsection: "install"                
+            },
+            routeTailParam: {
                 routeTail: "route/tail"
             },
             tail: {
@@ -146,8 +167,7 @@ describe("routeMatcher", () => {
                 path: "/route/tail",
                 routeParams: {
                     section: "faq",
-                    subsection: "install",
-                    routeTail: "route/tail"
+                    subsection: "install"
                 }
             }
         },  { // 17
@@ -156,7 +176,9 @@ describe("routeMatcher", () => {
             matches: true,
             routeParams: {
                 section: "faq",
-                subsection: "install",
+                subsection: "install"                
+            },
+            routeTailParam: {
                 routeTail: "route/tail"
             },
             tail: {
@@ -164,8 +186,7 @@ describe("routeMatcher", () => {
                 path: "/route/tail",
                 routeParams: {
                     section: "faq",
-                    subsection: "install",
-                    routeTail: "route/tail"
+                    subsection: "install"
                 }
             }
         }, { // 18
@@ -173,12 +194,14 @@ describe("routeMatcher", () => {
             url: "/test/docs",
             matches: true,
             routeParams: {},
+            routeTailParam: {},
             tail: null
         }, { // 19
             path: "/does/not/match",
             url: "/test/docs",
             matches: false,
             routeParams: {},
+            routeTailParam: {},
             tail: null
         }];
 
@@ -188,102 +211,120 @@ describe("routeMatcher", () => {
             const result = getRouteMatch(currentTest.path, currentTest.url);
             expect(result.matches).toBe(currentTest.matches);
             expect(result.routeParams).toStrictEqual(currentTest.routeParams);
+            expect(result.routeTailParam).toStrictEqual(currentTest.routeTailParam);
         });
         it("passes 1", () => {
             currentTest = tests[1];
             const result = getRouteMatch(currentTest.path, currentTest.url);
             expect(result.matches).toBe(currentTest.matches);
             expect(result.routeParams).toStrictEqual(currentTest.routeParams);
+            expect(result.routeTailParam).toStrictEqual(currentTest.routeTailParam);
         });
         it("passes 2", () => {
             currentTest = tests[2];
             const result = getRouteMatch(currentTest.path, currentTest.url);
             expect(result.matches).toBe(currentTest.matches);
             expect(result.routeParams).toStrictEqual(currentTest.routeParams);
+            expect(result.routeTailParam).toStrictEqual(currentTest.routeTailParam);
         });
         it("passes 3", () => {
             currentTest = tests[3];
             const result = getRouteMatch(currentTest.path, currentTest.url);
             expect(result.matches).toBe(currentTest.matches);
             expect(result.routeParams).toStrictEqual(currentTest.routeParams);
+            expect(result.routeTailParam).toStrictEqual(currentTest.routeTailParam);
         });
         it("passes 4", () => {
             currentTest = tests[4];
             const result = getRouteMatch(currentTest.path, currentTest.url);
             expect(result.matches).toBe(currentTest.matches);
             expect(result.routeParams).toStrictEqual(currentTest.routeParams);
+            expect(result.routeTailParam).toStrictEqual(currentTest.routeTailParam);
         });
         it("passes 5", () => {
             currentTest = tests[5];
             const result = getRouteMatch(currentTest.path, currentTest.url);
             expect(result.matches).toBe(currentTest.matches);
             expect(result.routeParams).toStrictEqual(currentTest.routeParams);
+            expect(result.routeTailParam).toStrictEqual(currentTest.routeTailParam);
         });
         it("passes 6", () => {
             currentTest = tests[6];
             const result = getRouteMatch(currentTest.path, currentTest.url);
             expect(result.matches).toBe(currentTest.matches);
             expect(result.routeParams).toStrictEqual(currentTest.routeParams);
+            expect(result.routeTailParam).toStrictEqual(currentTest.routeTailParam);
         });
         it("passes 7", () => {
             currentTest = tests[7];
             const result = getRouteMatch(currentTest.path, currentTest.url);
             expect(result.matches).toBe(currentTest.matches);
             expect(result.routeParams).toStrictEqual(currentTest.routeParams);
+            expect(result.routeTailParam).toStrictEqual(currentTest.routeTailParam);
         });
         it("passes 8", () => {
             currentTest = tests[8];
             const result = getRouteMatch(currentTest.path, currentTest.url);
             expect(result.matches).toBe(currentTest.matches);
             expect(result.routeParams).toStrictEqual(currentTest.routeParams);
+            expect(result.routeTailParam).toStrictEqual(currentTest.routeTailParam);
         });
         it("passes 9", () => {
             currentTest = tests[9];
             const result = getRouteMatch(currentTest.path, currentTest.url);
             expect(result.matches).toBe(currentTest.matches);
             expect(result.routeParams).toStrictEqual(currentTest.routeParams);
+            expect(result.routeTailParam).toStrictEqual(currentTest.routeTailParam);
         });
         it("passes 10", () => {
             currentTest = tests[10];
             const result = getRouteMatch(currentTest.path, currentTest.url);
             expect(result.matches).toBe(currentTest.matches);
             expect(result.routeParams).toStrictEqual(currentTest.routeParams);
+            expect(result.routeTailParam).toStrictEqual(currentTest.routeTailParam);
         });
         it("passes 11", () => {
             currentTest = tests[11];
             const result = getRouteMatch(currentTest.path, currentTest.url);
             expect(result.matches).toBe(currentTest.matches);
             expect(result.routeParams).toStrictEqual(currentTest.routeParams);
+            expect(result.routeTailParam).toStrictEqual(currentTest.routeTailParam);
         });
         it("passes 12", () => {
             currentTest = tests[12];
             const result = getRouteMatch(currentTest.path, currentTest.url);
             expect(result.matches).toBe(currentTest.matches);
             expect(result.routeParams).toStrictEqual(currentTest.routeParams);
+            expect(result.routeTailParam).toStrictEqual(currentTest.routeTailParam);
         });
         it("passes 13", () => {
             currentTest = tests[13];
             const result = getRouteMatch(currentTest.path, currentTest.url);
             expect(result.matches).toBe(currentTest.matches);
             expect(result.routeParams).toStrictEqual(currentTest.routeParams);
+            expect(result.routeTailParam).toStrictEqual(currentTest.routeTailParam);
         });
         it("passes 14", () => {
             currentTest = tests[14];
             const result = getRouteMatch(currentTest.path, currentTest.url);
             expect(result.matches).toBe(currentTest.matches);
             expect(result.routeParams).toStrictEqual(currentTest.routeParams);
+            expect(result.routeTailParam).toStrictEqual(currentTest.routeTailParam);
+            expect(result.routeTailParam).toStrictEqual(currentTest.routeTailParam);
         });
         it("passes 15", () => {
             currentTest = tests[15];
             const result = getRouteMatch(currentTest.path, currentTest.url);
             expect(result.matches).toBe(currentTest.matches);
             expect(result.routeParams).toStrictEqual(currentTest.routeParams);
+            expect(result.routeTailParam).toStrictEqual(currentTest.routeTailParam);
         });
         it("passes 16", () => {
             currentTest = tests[16];
             const result = getRouteMatch(currentTest.path, currentTest.url);
             expect(result.matches).toBe(currentTest.matches);
             expect(result.routeParams).toStrictEqual(currentTest.routeParams);
+            expect(result.routeTailParam).toStrictEqual(currentTest.routeTailParam);
             expect(result.tail).toStrictEqual(currentTest.tail);
         });
         it("passes 17", () => {
@@ -291,6 +332,7 @@ describe("routeMatcher", () => {
             const result = getRouteMatch(currentTest.path, currentTest.url);
             expect(result.matches).toBe(currentTest.matches);
             expect(result.routeParams).toStrictEqual(currentTest.routeParams);
+            expect(result.routeTailParam).toStrictEqual(currentTest.routeTailParam);
             expect(result.tail).toStrictEqual(currentTest.tail);
         });
         it("passes 18", () => {
@@ -299,6 +341,7 @@ describe("routeMatcher", () => {
             const result = getRouteMatch(currentTest.path, currentTest.url);
             expect(result.matches).toBe(currentTest.matches);
             expect(result.routeParams).toStrictEqual(currentTest.routeParams);
+            expect(result.routeTailParam).toStrictEqual(currentTest.routeTailParam);
             expect(result.tail).toStrictEqual(currentTest.tail);
             Router._reset();
         });
@@ -307,6 +350,7 @@ describe("routeMatcher", () => {
             const result = getRouteMatch(currentTest.path, currentTest.url);
             expect(result.matches).toBe(currentTest.matches);
             expect(result.routeParams).toStrictEqual(currentTest.routeParams);
+            expect(result.routeTailParam).toStrictEqual(currentTest.routeTailParam);
             expect(result.tail).toStrictEqual(currentTest.tail);
         });
     });
@@ -317,5 +361,6 @@ interface TestInput {
     url: string,
     matches: boolean,
     routeParams: RouteParams,
+    routeTailParam: RouteParams,
     tail:Route|null
 }

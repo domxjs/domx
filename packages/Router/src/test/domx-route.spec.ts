@@ -149,7 +149,7 @@ describe("DomxRoute", () => {
             container.remove();
         });
 
-        it("removes updates the parent route when parent route tail changes", async () => {
+        it("updates the parent route when parent route tail changes", async () => {
             Router.replaceUrl("/users/profile");
             const container = getRouteContainer({
                 pattern:"/users/*routeTail",
@@ -160,16 +160,18 @@ describe("DomxRoute", () => {
             Router.replaceUrl("/users/profile/worked");
             await container.updateComplete;
             await subRoute.updateComplete;
-            const el = (container as any).shadowRoot.querySelectorAll("test-el")[1];
+            let el = (container as any).shadowRoot.querySelectorAll("test-el")[1];
             expect(el.tagName).toBe("TEST-EL");
             expect(el.getAttribute("test")).toBe("worked");
             Router.replaceUrl("/users/profile/worked-again");
             await container.updateComplete;
             await subRoute.updateComplete;
+            el = (container as any).shadowRoot.querySelectorAll("test-el")[1];
             expect(el.getAttribute("test")).toBe("worked-again");
             Router.replaceUrl("/users/profile/new");
             await container.updateComplete;
             await subRoute.updateComplete;
+            el = (container as any).shadowRoot.querySelectorAll("test-el")[1];
             expect(el.getAttribute("test")).toBe("new");
             container.remove();            
         });
@@ -267,6 +269,7 @@ describe("DomxRoute", () => {
             expect(window.location.pathname).toBe("/");
             route.navigate();
             expect(window.location.pathname).toBe("/test");
+            route.remove();
         });
 
         it("navigates to the correct url with queryParams", () => {
@@ -277,6 +280,7 @@ describe("DomxRoute", () => {
             });
             expect(window.location.pathname).toBe("/test");
             expect(window.location.search).toBe("?test=worked");
+            route.remove();
         });
 
         it("navigates to the correct url with route params", () => {
@@ -286,12 +290,14 @@ describe("DomxRoute", () => {
                 routeParams: {test:"worked"}
             });
             expect(window.location.pathname).toBe("/test/worked");
+            route.remove();
         });
 
         it("throws an error if route params are not specified", () => {
             const route = getRoute({pattern:"/test/:test"});
             expect(window.location.pathname).toBe("/");
             expect(() => route.navigate()).toThrow();
+            route.remove();
         });
 
         it("navigates to the correct url when it has a parent route", async () => {
@@ -320,6 +326,59 @@ describe("DomxRoute", () => {
             subRoute.navigate({routeParams: {test: "worked"}});
             expect(window.location.pathname).toBe("/users/1234/profile/worked");
             container.remove();
+        });
+
+    });
+
+    describe("cache", () => {
+        afterEach(() => {
+            Router._reset();
+            window.history.replaceState({}, "", "/");
+            document.body.innerHTML = "";
+        });
+
+        it("does not allow cache-count to go below 1", () => {
+            const r = new DomxRoute();
+            expect(r.cacheCount).toBe(1);
+            r.cacheCount = 10;
+            expect(r.cacheCount).toBe(10);
+            r.cacheCount = 0;
+            expect(r.cacheCount).toBe(1);
+            r.cacheCount = -1;
+            expect(r.cacheCount).toBe(1);
+        });
+
+        it("caches elements as expected", async () => {
+            const route = getRoute({pattern:"/:user-id"});
+            route.cacheCount = 3;
+            let el = document.querySelector("test-el") as TestEl;
+            expect(el).toBeNull();
+            Router.replaceUrl("/1");
+            await route.updateComplete;
+            el = document.querySelector("test-el") as TestEl;
+            expect(el.getAttribute("user-id")).toBe("1");
+            expect(el.userId).toBe(1);
+            expect(route.cachedElements.length).toBe(1);
+            //
+            Router.replaceUrl("/2");
+            await route.updateComplete;
+            const el2 = document.querySelector("test-el") as TestEl;
+            expect(route.cachedElements.length).toBe(2);
+            //
+            Router.replaceUrl("/3");
+            await route.updateComplete;
+            expect(route.cachedElements.length).toBe(3);
+            //
+            Router.replaceUrl("/4");
+            await route.updateComplete;
+            expect(route.cachedElements.length).toBe(3);
+            //
+            Router.replaceUrl("/2");
+            await route.updateComplete;
+            expect(el).not.toBe(el2);
+            el = document.querySelector("test-el") as TestEl;
+            expect(el).toBe(el2);
+            route.remove();
         });
 
     });

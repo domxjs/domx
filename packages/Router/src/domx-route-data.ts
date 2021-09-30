@@ -10,6 +10,7 @@ class DomxRouteData extends DataElement {
         url: "",
         parentRoute: null,
         matches: false,
+        routeTailParam: {},
         routeParams: {},
         queryParams: {},
         tail: null
@@ -65,11 +66,12 @@ class DomxRouteData extends DataElement {
      */
     locationChanged() {
         const location = this.__location as RouteLocation;
-        const {matches, routeParams: routeData, tail} = Router.matchRoute(this, location.url);
+        const {matches, routeParams: routeData, routeTailParam, tail} = Router.matchRoute(this, location.url);
         this.dispatchChange("state", {
             routeId: this.routeId as string,
             url: location.url,
             parentRoute: this.parentRoute,
+            routeTailParam,
             matches,
             routeParams: routeData,            
             queryParams: location.queryParams,
