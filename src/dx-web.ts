@@ -1,5 +1,5 @@
 import { LitElement, html, css } from "lit";
-import { customElement } from "lit/decorators.js";
+import { customElement, query } from "lit/decorators.js";
 import "@vanillawc/wc-markdown";
 import logoUrl from "./favicon.svg";
 import { Router } from "@domx/router";
@@ -32,15 +32,29 @@ export class DxWeb extends LitElement {
 class DxReadme extends LitElement {
   static styles = DxWeb.styles;
 
+  @query("wc-markdown")
+  $markdown:HTMLElement;
+
+  readmeSrc = "https://raw.githubusercontent.com/domxjs/domx/master/README.md";
+
+  connectedCallback() {
+    super.connectedCallback();
+    this.updateMarkdownSrc();    
+  }
+
   render() {
     return html`
       <a class="nav-link" href="/demo/page1">Router Demo</a>
       <img class="logo" src="${logoUrl}"/>
-      <wc-markdown
-        src="https://raw.githubusercontent.com/domxjs/domx/master/README.md"
-      ></wc-markdown>
+      <wc-markdown src="${this.readmeSrc}"></wc-markdown>
     `;
   }
+
+  // the wc-markdown element needs to refresh after re-inserting into the DOM
+  updateMarkdownSrc() {
+    (this.$markdown as any)?.setSrc(this.readmeSrc);
+  }
+
 }
 
 
