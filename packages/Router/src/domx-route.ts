@@ -5,7 +5,7 @@ import { Logger } from "@domx/middleware/Logger";
 import { DomxLocation } from "./domx-location";
 import { DomxRouteData } from "./domx-route-data";
 import { Router } from ".";
-import { monitorParentRoute, appendElement, setElementProperties } from "./domxRoute";
+import { monitorParentRoute, appendElement } from "./domxRoute";
 // import again since DomxLocation is included for types
 import "./domx-location"; 
 export {
@@ -19,13 +19,6 @@ interface NavigateOptions {
     replaceState?:boolean,
     routeParams?: RouteParams,
     queryParams?:QueryParams
-}
-
-interface CachedElement {
-    element:HTMLElement,
-    routeParams:RouteParams,
-    queryParams:QueryParams,
-    parentRoute:Route|null
 }
 
 @customElement("domx-route")
@@ -51,11 +44,10 @@ class DomxRoute extends LitElement {
     @property({attribute: "append-to"})
     appendTo:string = "parent"; // parent, body, or shadow query
 
-    @property({type:Boolean})
-    cache:boolean = false;
-
     @property({type:Number, attribute:"cache-count"})
-    cacheCount:number = 10;
+    get cacheCount():number { return this._cacheCount; }
+    set cacheCount(value) { this._cacheCount = value < 1 ? 1 : value; }
+    _cacheCount = 1;
 
     /**
      * Navigates to this route.
@@ -67,8 +59,8 @@ class DomxRoute extends LitElement {
         navigate(this as DomxRoute, options)
     }
 
-    cachedElements:{[key:string]:CachedElement} = {};
-    activeElement:CachedElement|null = null;    
+    cachedElements:Array<CachedRouteElement> = [];
+    activeElement:CachedRouteElement|null = null;    
     activeSourceElement:EventTarget|null|undefined = null;
     lastSourceElement:EventTarget|null|undefined = undefined;
 
@@ -90,7 +82,7 @@ class DomxRoute extends LitElement {
     disconnectedCallback() {
         super.disconnectedCallback();
         this._removeParentMonitor?.();
-        hideElement(this);
+        removeActiveElement(this);
     }
 
     static styles = css`:host { display:none }`;
@@ -118,11 +110,10 @@ class DomxRoute extends LitElement {
     private routeStateChanged() {
         const routeState = this.$routeData.state;
         this.routeState = routeState;
-        if (!routeState) {
-            return;
-        }
-        this.tail = routeState.tail;
-        showHideElement(this, routeState);
+        if (routeState) {
+            this.tail = routeState.tail;
+            updateActiveElement(this, routeState);
+        }        
     }
 }
 
@@ -148,13 +139,6 @@ class RouteActiveChangedEvent extends CustomEvent<any> {
         this._defaultPrevented = true;
     }
 }
-
-
-
-
-const hasChanged = (obj1:any, obj2:any) => 
-    JSON.stringify(obj1) !== JSON.stringify(obj2);
-
 
 
 const navigate = (routeEl:DomxRoute, options:NavigateOptions)  => {
@@ -216,33 +200,86 @@ const navigate = (routeEl:DomxRoute, options:NavigateOptions)  => {
 const replaceRouteParams = (routeParams:RouteParams, path:string):string => {
     Object.keys(routeParams as object).forEach(name => {
         path = path.replace(`:${name}`, routeParams[name] as string);
-    });
+    });    
     return path;
 };
 
 
-const showHideElement = (routeEl:DomxRoute, routeState:RouteState) => {   
+
+class CachedRouteElement {
+    constructor(element:HTMLElement, routeState:RouteState) {
+        this.element = element;
+        this.routeState = routeState;
+    }
+
+    /** shallow compares routeParams */
+    matches(routeState:RouteState):boolean {
+        const obj1 = routeState.routeParams;
+        const obj2 = this.routeState.routeParams;
+        return Object.keys(obj1).length === Object.keys(obj2).length &&
+            Object.keys(obj1).every(key => 
+                obj2.hasOwnProperty(key) && obj1[key] === obj2[key]);
+    }
+
+    element:HTMLElement;
+    routeState:RouteState;
+}
+
+
+
+const updateActiveElement = (routeEl:DomxRoute, routeState:RouteState) => { 
     const ae = routeEl.activeElement;
-    if ((!ae && routeState.matches) ||
-        (ae && routeState.matches && (
-            hasChanged(ae.routeParams, routeState.routeParams) ||
-            hasChanged(ae.parentRoute, routeState.tail) ||
-            hasChanged(ae.queryParams, routeState.queryParams)
-        ))
-    ){
-        // get/create the element
-        const el = ae ? ae.element :
-            document.createElement(routeEl.element || "div");
+    const matchesCurrent = routeState.matches;
+
+    if (!ae && matchesCurrent) {
+        activateElementInCacheOrCreate(routeEl, routeState);
+
+    } else if (ae && matchesCurrent) {
+
+        // only update the queryParams if base url matches
+        if (ae.matches(routeState)) {
+            setElementProperties(ae.element, {
+                queryParams: routeState.queryParams
+            });
+            addRouteParamAttributes(ae.element, routeState.routeTailParam);
+
+        // cache active element and get/create new one
+        } else {
+            removeActiveElement(routeEl);
+            activateElementInCacheOrCreate(routeEl, routeState);
+
+        }        
+    } else if (ae && !matchesCurrent) {
+        removeActiveElement(routeEl);
+    }
+};
+
+
+const activateElementInCacheOrCreate = (routeEl:DomxRoute, routeState:RouteState) => {
+    let ae:CachedRouteElement;
+
+    // use element if in cache
+    const cachedIndex = routeEl.cachedElements.findIndex(ce => ce.matches(routeState));
+    if (cachedIndex > -1) {
+        // remove and return the cached item
+        ae = routeEl.cachedElements.splice(cachedIndex, 1)[0];
         
-        Logger.log(routeEl, "debug", `DomxRoute: ${routeEl.activeElement ?
-            "appending cached element" : "appending new element"}`, el.tagName);
+        // update the query params
+        setElementProperties(ae.element, {
+            queryParams: routeState.queryParams
+        });
+
+    } else {
+
+        // create the element
+        const el = document.createElement(routeEl.element || "div");
 
         // add routeParams as attributes
         if (routeEl.parentRoute) {
             addRouteParamAttributes(el, routeEl.parentRoute.routeParams);
         }
         addRouteParamAttributes(el, routeState.routeParams);
-       
+        addRouteParamAttributes(el, routeState.routeTailParam);
 
         // set queryParams and parentRoute as properties
         setElementProperties(el, {
@@ -251,32 +288,15 @@ const showHideElement = (routeEl:DomxRoute, routeState:RouteState) => {
         });
 
         // record activeElement
-        routeEl.activeElement = {
-            element: el,
-            routeParams: routeState.routeParams,
-            queryParams: routeState.queryParams,
-            parentRoute: routeState.tail
-        };
-        routeEl.activeSourceElement = routeEl.lastSourceElement;
-
-        // dispatch the active event
-        const routeActiveEvent = new RouteActiveChangedEvent(
-            RouteActiveChangedEventType.Active, el, routeEl.activeSourceElement);
-        routeEl.dispatchEvent(routeActiveEvent);
-        if (routeActiveEvent.defaultPrevented) {
-            return;
-        }
-
-        // append to the DOM
-        appendElement(routeEl, el);
-
-
-    } else if (ae &&  routeState.matches === false) {
-        hideElement(routeEl);
+        ae = new CachedRouteElement(el, routeState);
     }
+
+    routeEl.activeElement = ae;
+    appendAndCacheActiveElement(routeEl);
 };
 
 
+/** Adds route params as attributes to the HTML element */
 const addRouteParamAttributes = (el:HTMLElement, routeParams:RouteParams) => {
     Object.keys(routeParams).map(name => {
         const val = routeParams[name];
@@ -284,8 +304,50 @@ const addRouteParamAttributes = (el:HTMLElement, routeParams:RouteParams) => {
     });
 };
 
+/** Sets properties on the element. */
+ const setElementProperties = (el:any, properties:any) => {
+    Object.keys(properties).map(prop => {
+        el[prop] = properties[prop];
+    });
+};
 
-const hideElement = (routeEl:DomxRoute) => {
+
+
+/**
+ * Dispatches the route active event and appends
+ * the element to the DOM
+ */
+const appendAndCacheActiveElement = (routeEl: DomxRoute) => {
+    const ae = routeEl.activeElement!;
+
+    // add to top of cache and remove last item if needed
+    routeEl.cachedElements.unshift(ae);
+    if (routeEl.cacheCount < routeEl.cachedElements.length) {
+        routeEl.cachedElements.pop();
+    }
+
+    // dispatch the active event
+    const el = ae.element;
+    Logger.log(routeEl, "debug", "DomxRoute: appending element:", el.tagName);
+    routeEl.activeSourceElement = routeEl.lastSourceElement;
+    const routeActiveEvent = new RouteActiveChangedEvent(
+        RouteActiveChangedEventType.Active, el, routeEl.activeSourceElement);
+    routeEl.dispatchEvent(routeActiveEvent);
+    if (routeActiveEvent.defaultPrevented) {
+        return;
+    }
+
+    // append to the DOM
+    appendElement(routeEl, el);
+};
+
+
+
+/**
+ * Dispatches the route inactive event 
+ * and removes the element from the DOM.
+ */
+const removeActiveElement = (routeEl:DomxRoute) => {
     const ae = routeEl.activeElement;
     if (!ae) {
         return;

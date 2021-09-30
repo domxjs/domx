@@ -26,6 +26,7 @@ const getRouteMatch = (path:string, url:string):RouteMatch => {
         return {
             matches,
             routeParams: {},
+            routeTailParam: {},
             tail: routeTail
         };
     }
@@ -44,14 +45,17 @@ const getRouteMatch = (path:string, url:string):RouteMatch => {
     
     let routeTailPath = "";
     let routeTailPrefix = "";
+    const routeTailParam:RouteParams = {};
     const routeParams = names.reduce((routeParams, name, i) => {
         if (name !== null) {
             if (name.substring(0, 1) === "*") {
                 const value = values[i];
                 routeTailPath = value ? `/${(value as string) || ""}` : "";
                 routeTailPrefix = value ? url.substring(0, url.indexOf(routeTailPath)) : url;
+                routeTailParam[name.substring(1, name.length)] = values[i];
+            } else {
+                routeParams[name.substring(1, name.length)] = values[i];
             }
-            routeParams[name.substring(1, name.length)] = values[i];
         }
         return routeParams;
     }, {} as RouteParams);
@@ -67,6 +71,7 @@ const getRouteMatch = (path:string, url:string):RouteMatch => {
     return {
         matches,
         routeParams: routeParams,
+        routeTailParam,
         tail: routeTail
     };
 };

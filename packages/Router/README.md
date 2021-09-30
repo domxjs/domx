@@ -1,4 +1,4 @@
-# Router &middot; [![GitHub license](https://img.shields.io/badge/license-MIT-blue.svg)](https://www.mit.edu/~amini/LICENSE.md) [![Build Status](https://travis-ci.com/domxjs/domx.svg?branch=packages/Router)](https://travis-ci.com/github/domxjs/domx) [![Lines](https://img.shields.io/badge/Coverage-99.21%25-brightgreen.svg)](https://app.travis-ci.com/github/domxjs/domx/branches) [![npm](https://img.shields.io/npm/v/@domx/router)](https://www.npmjs.com/package/@domx/router)
+# Router &middot; [![GitHub license](https://img.shields.io/badge/license-MIT-blue.svg)](https://www.mit.edu/~amini/LICENSE.md) [![Build Status](https://travis-ci.com/domxjs/domx.svg?branch=packages/Router)](https://travis-ci.com/github/domxjs/domx) [![Lines](https://img.shields.io/badge/Coverage-99.51%25-brightgreen.svg)](https://app.travis-ci.com/github/domxjs/domx/branches) [![npm](https://img.shields.io/npm/v/@domx/router)](https://www.npmjs.com/package/@domx/router)
 
 
 A full featured DOM based custom element router for client side routing.
@@ -6,11 +6,12 @@ A full featured DOM based custom element router for client side routing.
 
 [Description](#description) \
 [Installation](#installation) \
-[Basic Usage](#basic-usage) \
+[Basic Example](#basic-example) \
 [Route Patterns](#route-patterns) \
 [Query Parameters](#query-parameters) \
 [Element Creation](#element-creation) \
 [Subroutes](#subroutes) \
+[Element Caching](#element-caching) \
 [Route.navigate](#route.navigate) \
 [Route Events](#route-events) \
 [Not Found Routes](#not-found-routes) \
@@ -276,6 +277,32 @@ class UserPage extends LitElement {
 > The `parentRoute` property of the `user-page` was added by the route in the `ExampleApp`.
 This will prepend the matching part of the parent route to the pattern of the subroute.
 
+## Element Caching
+The **cache-count** attribute on the route element can be set to the number of elements to keep in memory
+per route. This is useful for various use cases including working down a list of items. The default
+**cache-count** is 1.
+
+```js
+import { LitElement, html } from "lit";
+import { customElement } from "lit/decorators";
+import "@domx/router/domx-route";
+import "./user-page";
+
+@customElement("example-app")
+class ExampleApp extends LitElement {
+    render() {
+        return html`            
+            <domx-route
+                pattern="/users/:user-id"
+                element="user-page"
+                cache-count="10"
+            ></domx-route>
+        `;
+    }
+}
+```
+> In this example, for each user navigated to, the route will cache 10 user-page elements
+keeping the most recently viewed elements on the top of the cache.
 
 
 ## Route.navigate
@@ -455,6 +482,7 @@ The `Router` has static methods that can be useful for navigation and for settin
 - **pattern** - the route pattern to match.
 - **element** - the element to create when the route matches
 - **append-to** - where the element should be appended to when the route matches; can be "body", "parent" (the default), or a DOM query selector.
+- **cache-count** - the number of elements to cache per route (default is 1)
 
 ### Properties
 - **parentRoute** - a parent route object used for subrouting.
