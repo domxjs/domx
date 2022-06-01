@@ -36,7 +36,7 @@
     "lit": "latest"
   },
   "devDependencies": {
-    "@types/jest": "27.5.0",
+    "@types/jest": "27.5.2",
     "istanbul-badges-readme": "1.8.1",
     "jest": "27.5.1",
     "ts-jest": "27.1.4",
