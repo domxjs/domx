@@ -37,7 +37,7 @@
   },
   "devDependencies": {
     "@types/jest": "27.5.2",
-    "istanbul-badges-readme": "1.8.1",
+    "istanbul-badges-readme": "1.8.2",
     "jest": "27.5.1",
     "ts-jest": "27.1.4",
     "ts-lit-plugin": "^1.0.5",
