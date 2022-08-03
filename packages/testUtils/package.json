@@ -23,6 +23,6 @@
     "clean": "tsc --build --clean"
   },
   "dependencies": {
-    "lit": "latest"
+    "lit": "2.2.8"
   }
 }
