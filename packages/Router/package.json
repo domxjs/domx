@@ -25,7 +25,7 @@
   "dependencies": {
     "@domx/dataelement": "0.5.2",
     "@domx/middleware": "0.2.9",
-    "lit": "latest"
+    "lit": "2.2.8"
   },
   "devDependencies": {
     "@domx/testutils": "0.2.1"

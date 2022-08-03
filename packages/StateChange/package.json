@@ -20,7 +20,7 @@
   "types": "StateChange.d.ts",
   "dependencies": {
     "@domx/middleware": "0.2.9",
-    "immer": "^9.0.5"
+    "immer": "9.0.15"
   },
   "devDependencies": {
     "@domx/testutils": "0.2.1"
