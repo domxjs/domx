@@ -105,7 +105,7 @@ The `SessionData` element can be used in any UI component.
 
 ```js
 import { LitElement, html } from "lit";
-import { customElement } from "lit/decorators";
+import { customElement } from "lit/decorators.js";
 import { linkProp } from "@domx/linkProp";
 import { SessionData } from "./SessionData";
 

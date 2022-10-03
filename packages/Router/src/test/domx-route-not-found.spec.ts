@@ -1,6 +1,6 @@
 import { describe, it, expect, jest } from "@jest/globals";
 import { LitElement, html } from "lit";
-import { customElement, query } from "lit/decorators";
+import { customElement, query } from "lit/decorators.js";
 import { fixture } from "@domx/testutils";
 import { Router } from "../Router";
 import "../domx-route";

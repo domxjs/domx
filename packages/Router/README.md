@@ -53,7 +53,7 @@ See: [Route Events](#route-events).
 
 ```js
 import { LitElement, html } from "lit";
-import { customElement } from "lit/decorators";
+import { customElement } from "lit/decorators.js";
 import "@domx/router/domx-route";
 import "./example-page-1";
 import "./example-page-2";
@@ -163,7 +163,7 @@ in sync with the current URLs search parameters as long as the route matches.
 > Given the url: `/search/users?userName=joe&status=active`
 ```js
 import { LitElement, html } from "lit";
-import { customElement } from "lit/decorators";
+import { customElement } from "lit/decorators.js";
 
 @customElement("user-search")
 class UserSearch extends LitElement {
@@ -204,7 +204,7 @@ There are two ways to create subroutes:
 ### Using the same DOM tree
 ```js
 import { LitElement, html } from "lit";
-import { customElement } from "lit/decorators";
+import { customElement } from "lit/decorators.js";
 import "@domx/router/domx-route";
 
 @customElement("example-app")
@@ -234,7 +234,7 @@ Subrouting can also be accomplished in separate elements by setting the `parentR
 
 ```js
 import { LitElement, html } from "lit";
-import { customElement } from "lit/decorators";
+import { customElement } from "lit/decorators.js";
 import "@domx/router/domx-route";
 import "./user-page";
 import "./users-profile";
@@ -284,7 +284,7 @@ per route. This is useful for various use cases including working down a list of
 
 ```js
 import { LitElement, html } from "lit";
-import { customElement } from "lit/decorators";
+import { customElement } from "lit/decorators.js";
 import "@domx/router/domx-route";
 import "./user-page";
 
@@ -313,7 +313,7 @@ call `navigate` on the route itself.
 
 ```js
 import { LitElement, html } from "lit";
-import { customElement, query } from "lit/decorators";
+import { customElement, query } from "lit/decorators.js";
 import "@domx/router/domx-route";
 import "./user-page"
 
@@ -363,7 +363,7 @@ The active event is also a great place to lazy load other custom elements requir
 ### Example
 ```js
 import { LitElement, html } from "lit";
-import { customElement, query } from "lit/decorators";
+import { customElement, query } from "lit/decorators.js";
 import "@domx/router/domx-route";
 
 
@@ -416,7 +416,7 @@ There are only two attributes that can be set.
 ### Example
 ```js
 import { LitElement, html } from "lit";
-import { customElement } from "lit/decorators";
+import { customElement } from "lit/decorators.js";
 import "@domx/router/domx-route";
 import "@domx/router/domx-route-not-found";
 import "./example-page-1";

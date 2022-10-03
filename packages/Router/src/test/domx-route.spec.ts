@@ -1,8 +1,8 @@
 import { describe, it, expect, jest } from "@jest/globals";
 import {fixture, html} from "@domx/testutils";
 import { LitElement } from "lit";
-import { customElement, property } from "lit/decorators";
-import { ifDefined } from "lit/directives/if-defined";
+import { customElement, property } from "lit/decorators.js";
+import { ifDefined } from "lit/directives/if-defined.js";
 import { QueryParams, Router } from "../Router";
 import { DomxRoute } from "../domx-route";
 import { DomxRouteData } from "../domx-route-data";
