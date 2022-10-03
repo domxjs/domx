@@ -11,7 +11,7 @@
 [Full example](#full-example) \
 [Advanced usage](#advanced-usage)
 
-## Installation
+
 ## Installation
 ```sh
 npm install @domx/statechange
@@ -271,24 +271,28 @@ const defaultState = {
     users: []
 };
 
+class FetchUsersEvent extends Event {
+    static eventType = "fetch-users";
+    userType:string;
+    constructor(userType:string) {
+        super(FetchUsersEvent.eventType);
+        this.userType = userType;
+    }
+}
 
 class UserListElement extends EventMap(HTMLElement) {
-
-    // an 'event factory' method for UI elements to use
-    static fetchUsersEvent = userType => 
-        new CustomEvent("fetch-users", {detail: {userType}});
 
     // set the default state
     state = defaultState;
 
     // a UI event that indicates users of a specific
     // userType should be fetched
-    @event("fetch-users")
-    fetchUsers({detail: {userType}}) {
+    @event(FetchUsersEvent.eventType)
+    fetchUsers(event: FetchUsersEvent) {
         // use StateChange to set the userType
         // and request the users
         StateChange.of(this)
-            .next(setUserType(userType))
+            .next(setUserType(event.userType))
             .tap(requestUsers)
             .dispatch();
     }
@@ -419,7 +423,7 @@ There are a series of static `StateChange` methods that enable function composit
 * `StateChange.nextWith(stateChange)(fn)` - A lifting function that calls next
 * `StateChange.tapWith(stateChange)(fn)` -  A lifting function that calls tap
 * `StateChange.dispatch(stateChange)` - A chainable call to dispatch
-* `StateChange.dispatch(event)(stateChange)` - A chainable call to dispatchEvent
+* `StateChange.dispatchEvent(stateChange)` - A chainable call to dispatchEvent
 * `StateChange.next(fn)(stateChange)` - A chainable call to next
 * `StateChange.tap(fn)(stateChange)` - A chainable call to tap
 * `StateChange.getState(stateChange)` - Returns the current state

@@ -42,7 +42,7 @@ class StateChange {
   /** A chainable call to dispatch */
   static dispatch = (stateChange: StateChange) => stateChange.dispatch();
   /** A chainable call to dispatchEvent */
-  static dispatchEvent = (event:CustomEvent) => (stateChange: StateChange) => stateChange.dispatchEvent(event);
+  static dispatchEvent = (event:Event) => (stateChange: StateChange) => stateChange.dispatchEvent(event);
   /** A chainable call to next */
   static next = (fn:Function) => (stateChange: StateChange) => stateChange.next(fn);
   /** A chainable call to tap */
@@ -162,10 +162,10 @@ class StateChange {
 
   /**
    * A proxy to the HTML element dispatchEvent method.
-   * @param {CustomEvent} event The event to dispatch
+   * @param {Event} event The event to dispatch
    * @returns {StateChange}
    */
-  dispatchEvent(event: CustomEvent) {
+  dispatchEvent(event: Event) {
     const {el} = this.meta;
     el.dispatchEvent(event);
     return this.continue(this);
