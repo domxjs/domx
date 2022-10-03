@@ -39,7 +39,7 @@
     "@types/jest": "27.5.2",
     "istanbul-badges-readme": "1.8.2",
     "jest": "27.5.1",
-    "jest-environment-jsdom": "^27.5.1",
+    "jest-environment-jsdom": "27.5.1",
     "ts-jest": "27.1.5",
     "ts-lit-plugin": "1.2.1",
     "ts-node": "10.9.1",
