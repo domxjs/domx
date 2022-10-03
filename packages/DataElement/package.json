@@ -1,0 +1,43 @@
+{
+  "name": "@domx/dataelement",
+  "type": "module",
+  "version": "0.5.2",
+  "license": "MIT",
+  "author": "John Horback",
+  "description": "DataElement base class with root state support",
+  "keywords": [
+    "Custom Elements",
+    "state management",
+    "redux toolkit",
+    "react",
+    "context api",
+    "recoil",
+    "uddf",
+    "LitElement",
+    "lit-html",
+    "lit",
+    "reducers",
+    "functional",
+    "Immer"
+  ],
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/domxjs/domx.git",
+    "directory": "packages/DataElement"
+  },
+  "homepage": "https://github.com/domxjs/domx/blob/master/packages/DataElement/README.md",
+  "main": "index.js",
+  "types": "index.d.ts",
+  "scripts": {
+    "build": "tsc --build",
+    "clean": "tsc --build --clean"
+  },
+  "dependencies": {
+    "@domx/eventmap": "0.7.1",
+    "@domx/statechange": "0.7.2",
+    "@domx/middleware": "0.2.9"
+  },
+  "devDependencies": {
+    "@domx/testutils": "0.2.1"
+  }
+}

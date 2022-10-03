@@ -14,7 +14,15 @@ There is a branch and travis matrix for each package to report build statuses fo
 ## Creating a package
 - [ ] Create new package branch to work off of
 - [ ] Create package folder
-- [ ] Copy necessary settings to both the package.json and tsconfig.json files. 
+- [ ] Create necessary files and copy relevant settings from another package.
+  - .gitignore
+  - .npmignore
+  - CHANGELOG.md
+  - README.md
+  - package.json
+  - tsconfig.json
+  - src folder
+- [ ] Update the root tsconfig.json references
 - [ ] Update the travis-ci matrix in the .travis.yml file
 - [ ] Add the package to the root readme.md
 - [ ] Check in branch and confirm build is running

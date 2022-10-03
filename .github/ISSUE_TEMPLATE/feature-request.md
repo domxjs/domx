@@ -32,7 +32,11 @@ Why are we doing this? What use cases does it support? What is the expected outc
 
 ### Acceptance Criteria
 [acceptance-criteria]: #acceptance-criteria
- - [ ] List of acceptance criteria.
+ - [ ] List acceptance criteria
+
+### Development Tasks
+- [ ] Add tests
+- [ ] Update documentation
 
 ## Guide-level explanation
 [guide-level-explanation]: #guide-level-explanation
