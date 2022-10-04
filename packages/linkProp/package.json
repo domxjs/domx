@@ -20,8 +20,5 @@
   "scripts": {
     "build": "tsc --build",
     "clean": "tsc --build --clean"
-  },
-  "devDependencies": {
-    "lit": "1.0.0"
   }
 }
