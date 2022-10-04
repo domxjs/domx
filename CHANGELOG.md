@@ -5,7 +5,7 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
-## [Unreleased]
+## [0.22.0] 2022-10-04
 ## Updated
 - statechange package 1.0.0
 - testutils package 1.0.0
@@ -13,6 +13,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - functional package 1.0.0
 - middleware package 1.0.0
 - eventmap package 1.0.0
+- router package 1.0.0
+- dataelement package 1.0.0
 
 ## [0.21.0] 2021-09-30
 ### Updated
