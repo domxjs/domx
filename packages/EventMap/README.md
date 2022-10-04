@@ -1,11 +1,20 @@
-# EventMap &middot; [![Build Status](https://travis-ci.com/domxjs/domx.svg?branch=packages/EventMap)](https://travis-ci.com/domxjs/domx)
+# EventMap &middot; [![GitHub license](https://img.shields.io/badge/license-MIT-blue.svg)](https://www.mit.edu/~amini/LICENSE.md) [![Build Status](https://travis-ci.com/domxjs/domx.svg?branch=packages/EventMap)](https://travis-ci.com/github/domxjs/domx) [![Lines](https://img.shields.io/badge/Coverage-100%25-brightgreen.svg?style=flat)](https://app.travis-ci.com/github/domxjs/domx/branches) [![npm](https://img.shields.io/npm/v/@domx/eventmap)](https://www.npmjs.com/package/@domx/eventmap)
+
 
 A CustomElement class mixin which supports attaching and detaching DOM events declaratively.
 
+## Installation
+```sh
+npm install @domx/eventmap
+```
+
+## Usage
 There are two ways to use the mixin. Using decorators or by adding static properties to the class.
 
-## Using Decorators
+### Using Decorators
 ```js
+import { eventsListenAt, events } from "@domx/eventmap/decorators";
+
 @eventsListenAt("parent")
 class MyCass extends EventMap(HTMLElement) {
 
@@ -22,7 +31,7 @@ class MyCass extends EventMap(HTMLElement) {
   }
 }
 ```
-### `@eventsListenAt(target, options?)` decorator
+#### `@eventsListenAt(target, options?)` decorator
 The `eventsListenAt` decorator can be used on a class to define where to add event listeners by default.
 
 **Possible target values** 
@@ -34,7 +43,7 @@ The `eventsListenAt` decorator can be used on a class to define where to add eve
  - stopPropagation - default is true; set to false to allow event propagation.
  - stopImmediatePropagation - set to true to call `stopImmidiatePropagation` on all events.
 
-### `@event(name, options?)` decorator
+#### `@event(name, options?)` decorator
 Add the `event` decorator on methods to handle the event.
 
 **options**
@@ -42,7 +51,7 @@ Add the `event` decorator on methods to handle the event.
 - stopPropagation - overrides the defulat `stopPropagation` property for this event.
 - stopImmediatePropagation - overrides the defulat `stopImmediatePropagation` property for this event.
 
-## Using Static Properties
+### Using Static Properties
 There are four static properties that can be set on a class to
 define how events should be handled.
 - eventsListenAt - sets the defaults for all events

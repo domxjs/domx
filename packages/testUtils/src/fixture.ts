@@ -1,4 +1,4 @@
-import {html, render, TemplateResult} from "lit-html";
+import {html, render, TemplateResult} from "lit";
 export { fixture, html, FixtureElement};
 
 interface FixtureElement extends HTMLElement {
@@ -13,6 +13,6 @@ function fixture<T>(html:TemplateResult): FixtureElement & T {
   render(html, fixture);
   const el = fixture.firstElementChild as FixtureElement & T;
 
-  el.restore = () => fixture.remove()
+  el.restore = () => {el.remove(); fixture.remove();}
   return el;
 };

@@ -1,5 +1,12 @@
 import { describe, it, expect } from "@jest/globals";
-import { html, fixture, TestStateChange,TestStateProp1, TestStateProp2, TestStateProp3 } from "./testHelpers";
+import {
+  html,
+  fixture,
+  TestStateChange,
+  TestStateProp1,
+  TestStateProp2,
+  TestStateProp3
+} from "./testHelpers";
 
 
 describe("StateChange", () => {

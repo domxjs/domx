@@ -3,6 +3,6 @@ node_modules
 dist
 types
 *.local
-coverage
+.coverage
 .vscode
 *.tsbuildinfo
