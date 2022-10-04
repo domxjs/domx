@@ -2,9 +2,6 @@
 
 A `DataElement` base class with root state support.
 
-> This is a pre-release.
-> Features are complete and testing is being performed in different proejcts.
-
 
 [Description](#description) \
 [Highlights](#highlights) \
@@ -34,7 +31,7 @@ See: [domxjs.com](https://domxjs.com/data-elements) for more information.
 
 ## Highlights
 - Works with Redux Dev Tools.
-- Can configure any (and multiple) properties to be the `state` property.
+- Can configure any (and multiple) properties to be a `state` property.
 - Can use/configure a `stateId` property to track state for instance data.
 - Works with (but does not require) the [StateChange](https://github.com/domxjs/domx/tree/master/packages/StateChange) monad for `functional` JavaScript patterns (e.g. `reducers`)
   - `StateChange` also works with [Immer](https://github.com/immerjs/immer) which
@@ -85,20 +82,20 @@ export class SessionData extends DataElement {
 
     // event comes from the EventMap package
     @event(UserLoggedInEvent.eventType)
-    userLoggedIn({detail:{userName, fullName}}) {
+    userLoggedIn(event:UserLoggedInEvent) {
         this.state = {
             ...this.state,
-            loggedInUserName: userName,
-            loggedInUsersFullName: fullName
+            loggedInUserName: event.userName,
+            loggedInUsersFullName: event.fullName
         };
-        this.dispatchEvent(new CustomEvent("state-changed"));
+        this.dispatchEvent(new Event("state-changed"));
     }
 }
 ```
-> Subclassing the Event class, The `UserLoggedInEvent` acts 
+> By subclassing the Event class, The `UserLoggedInEvent` acts 
 as a great way to document what events a data element can handle.
 This is similar to action creators in Redux. They can be defined
-directly on the DataElement (or in a separate file
+in the same file as the DataElement (or in a separate file
 if that works better for you) and used by UI components
 to trigger events.
 
@@ -167,6 +164,8 @@ see [Setting a stateId Property](#setting-a-stateid-property).
 
 ### Without a Decorator
 ```js
+import { customDataElements, DataElement } from "@domx/dataelement";
+
 class UserData extends DataElement {
    static eventsListenAt = "window";
    static stateIdProperty = "state"; // this is the default;
@@ -204,6 +203,8 @@ change event as `"session-data-changed"`.
 ### Using the Static Property
 A static property can also be used to define the data properties.
 ```js
+import { DataElement } from "@domx/dataelement";
+
 class UserData extends DataElement {
     static dataProperties = {
         user: {}, // user-changed is the implied change event
@@ -350,7 +351,7 @@ See [Using Custom Elements](https://developer.mozilla.org/en-US/docs/Web/Web_Com
 
 ## Using Immer
 Working with immutable state can cause extra work to make sure all of the changes are propagated
-correctly so that they can be identified and correctly updated by view components.
+correctly so that they can be identified and correctly updated by UI components.
 
 [Immer](https://github.com/immerjs/immer) is a great library that can remove the need to
 perform much of that overhead.
@@ -434,7 +435,7 @@ const updateFullName = fullName => state => {
 There is also a function available to apply Redux dev tool logging.
 
 ### Redux Dev Tool Logging
-Logs change events and if usining `StateChange` logs state snapshots
+Logs change events, and if using `StateChange`, logs state snapshots
 with each `next` call.
 ```js
 import {applyDataElementRdtLogging} from "@domx/DataElement/middleware";
