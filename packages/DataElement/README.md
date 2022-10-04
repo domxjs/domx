@@ -22,18 +22,13 @@ A `DataElement` base class with root state support.
 The `DataElement` base class provides for a Flux/Redux style unidirectional data flow state management
 pattern using DOM events and custom elements.
 
-By utilizing the DOM and custom elements the footprint is small and 
+By utilizing the DOM and custom elements, the footprint is small and 
 performance is fast since communication happens through
 DOM events and not a JavaScript library.
 
 It works well with `LitElement` since that also uses custom elements,
 but since it is a custom element itself, it will work with any (or no)
 library/framework.
-
-Using DataElements does not have the boilerplate of Redux and is more like
-using the [React context api](https://reactjs.org/docs/context.html).
-It also provides for the dynamic state creation abilities of 
-[recoil](https://recoiljs.org/).
 
 See: [domxjs.com](https://domxjs.com/data-elements) for more information.
 
@@ -61,6 +56,22 @@ This is a contrived example showing default usage of a DataElement.
 import { DataElement } from "@domx/dataelement";
 import { customDataElement, event } from "@domx/dataelement/decorators";
 
+
+export class UserLoggedInEvent extends Event {
+    static eventType = "user-logged-in";
+    userName:string;
+    fullName:string;
+    constructor(userName:string, fullName:string) {
+        super(UserLoggedInEvent.eventType, {
+            bubbles: true,
+            composed: true
+        });
+        this.userName = userName;
+        this.fullName = fullName;
+    }
+}
+
+
 @customDataElement("session-data", {
     eventsListenAt: "window"
 });
@@ -72,15 +83,8 @@ export class SessionData extends DataElement {
 
     state = SessionData.defaultState;
 
-    // event creator
-    static userLoggedInEvent = (userName, fullName) => 
-        new CustomEvent("user-logged-in", {
-            bubbles: true,
-            composed: true,
-            detail: {userName, fullName}
-        });
-
-    @event("user-logged-in")
+    // event comes from the EventMap package
+    @event(UserLoggedInEvent.eventType)
     userLoggedIn({detail:{userName, fullName}}) {
         this.state = {
             ...this.state,
@@ -91,15 +95,15 @@ export class SessionData extends DataElement {
     }
 }
 ```
-> The static `userLoggedInEvent` is a good pattern to use
-to expose what events a DataElement can handle. This is
-similar to action creators in Redux. They can be defined
+> Subclassing the Event class, The `UserLoggedInEvent` acts 
+as a great way to document what events a data element can handle.
+This is similar to action creators in Redux. They can be defined
 directly on the DataElement (or in a separate file
 if that works better for you) and used by UI components
 to trigger events.
 
-> The same goes for the static `defaultState` property. This allows
-for UI components to reference the `defaultState` for initialization.
+> The static `defaultState` property allows UI components
+to reference the `defaultState` for initialization.
 
 ### UI Component
 The `SessionData` element can be used in any UI component.
@@ -107,8 +111,8 @@ The `SessionData` element can be used in any UI component.
 ```js
 import { LitElement, html } from "lit";
 import { customElement } from "lit/decorators.js";
-import { linkProp } from "@domx/linkProp";
-import { SessionData } from "./SessionData";
+import { linkProp } from "@domx/dataelement";
+import { SessionData, UserLoggedInEvent } from "./SessionData";
 
 class LoggedInUser extends LitElement {
     state = SessionData.defaultState;
@@ -129,16 +133,21 @@ class LoggedInUser extends LitElement {
     }
     
     updateUserClicked(event) {
-        this.dispatchEvent(SessionData.userLoggedInEvent("juser", "Joe User"));
+        this.dispatchEvent(new UserLoggedInEvent("juser", "Joe User"));
     }
 }
 ```
+> linkProp is a helper method to propagate changes from a data element to its
+parent UI element. See [linkProp](https://github.com/domxjs/domx/tree/master/packages/linkProp).
 
 ## Registering a DataElement
 There are two ways to register a DataElement.
 
 ### Using a Decorator
 ```js
+import { DataElement } from "@domx/dataelement";
+import { customDataElement } from "@domx/dataelement/decorators";
+
 @customDataElement("user-data")
 class UserData extends DataElement {
     // ...
@@ -175,6 +184,9 @@ properties to be a data property.
 Data properties can be defined using a decorator or by using static properties.
 ### Using a Decorator
 ```js
+import { DataElement } from "@domx/dataelement";
+import { dataProperty } from "@domx/dataelement/decorators";
+
 class UserData extends DataElement {
     @dataProperty()
     user = {};
@@ -209,11 +221,14 @@ for declarative event changes.
 
 After making changes to a data property, a change event will need to be triggered on the data element.
 
-This can be done by calling `this.dispatchEvent(new CustomEvent("state-change"))` where `state-change`
+This can be done by calling `this.dispatchEvent(new Event("state-change"))` where `state-change`
 is the name of the change event. Or for convenience, you can call the `dispatchChange()` method.
 
 **dispatchChange(prop = "state")**
 ```js
+import { DataElement } from "@domx/dataelement";
+import { customDataElement, dataProperty, event } from "@domx/dataelement/decorators";
+
 @customDataElement("user-data")
 class UserData extends DataElement {
 
@@ -242,7 +257,7 @@ class UserData extends DataElement {
 }
 ```
 > Note: the `username-updated` event handler passes the state as a second parameter;
-when doing this, it does a quick JSON.stringify comparison between the existing
+when doing this, it does a quick comparison between the existing
 and new state and only dispatches the changes if they differ.
 
 
@@ -257,8 +272,14 @@ The default stateIdProperty is "stateId". If this property has a value then the 
 will be stored in its own slot in the root state tree.
 
 ### Using the decorator
+
 ```js
-@customElement("user-data", { stateIdProperty: "userId"})
+import { DataElement } from "@domx/dataelement";
+import { customDataElement } from "@domx/dataelement/decorators";
+
+@customDataElement("user-data", {
+    stateIdProperty: "userId"
+})
 class UserData extends DataElement {
     userId = null;
     //...
@@ -267,6 +288,8 @@ class UserData extends DataElement {
 
 ### Using the static property
 ```js
+import { customDataElements, DataElement } from "@domx/dataelement";
+
 class UserData extends DataElement {
     static stateIdProperty = "userId";
 
@@ -277,17 +300,25 @@ customDataElements.define("user-data", UserData);
 ```
 
 ### Handling stateId Change
-> Attribute changes should be driven by another DataElements state,
-otherwise state could get out of sync with Redux Dev Tool logging.
+Most of the time, it is recommended that each instance has its own 
+data element. For example, if the user is navigating a list of items,
+for each item that is open, it would have its own UI element and data
+element.
+
+However, re-using the same data element for different instances is possible.
+But there is a little extra work to be done to keep the state in sync.
+
+This can be done by calling `refreshState()` on the DataElement.
 
 In some cases, the stateId may be fed by a DOM attribute.
 If that attribute changes, or internally the `stateId` property changes,
 then the internal state will need to be refreshed.
 
-This can be done by calling `refreshState()` on the DataElement.
-
 #### Example
 ```js
+import { DataElement } from "@domx/dataelement";
+import { customDataElement, dataProperty } from "@domx/dataelement/decorators";
+
 @customDataElement("user-data", {stateIdProperty: "userId"})
 class UserData extends DataElement {
     
@@ -348,7 +379,7 @@ class UserData extends DataElement {
 }
 ```
 > This example is very simple but, in many cases, changing multiple parts
-of the state object and adding to or removing items from Arrays
+of the state object and adding to, or removing items from Arrays
 can be greatly simplified by using Immer.
 
 ## Using StateChange
@@ -407,6 +438,7 @@ Logs change events and if usining `StateChange` logs state snapshots
 with each `next` call.
 ```js
 import {applyDataElementRdtLogging} from "@domx/DataElement/middleware";
+
 applyDataElementRdtLogging();
 ```
 #### **applyDataElementRdtLogging(options)**
