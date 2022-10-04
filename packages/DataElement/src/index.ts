@@ -5,3 +5,9 @@ export {
 export { 
     StateChange
 } from "@domx/statechange";
+export {
+    linkProp,
+    linkSiblingProp,
+    linkChecked,
+    linkVal
+} from "@domx/linkprop";
