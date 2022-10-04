@@ -9,6 +9,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ## Updated
 - StateChange package 1.0.0
 - testUtils package 1.0.0
+- linkProp package 1.0.0
 
 ## [0.21.0] 2021-09-30
 ### Updated
