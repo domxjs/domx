@@ -1,34 +1,64 @@
-import { html, TemplateResult, render } from "lit-html";
 import { StateChange } from "../StateChange";
-export { html, fixture };
+export { html, fixture } from "@domx/testutils";
 
-interface FixtureElement extends HTMLElement {
-    restore: Function,
-    state: any,
-    testPipeTap: Function,
-    testFunction: Function,
-    testPipeNext: Function,
-    testSimple: Function,
-    testError: Function,
-    testTapError: Function,
-    testDispatchEvent: Function
-};
-  
-  function fixture(html:TemplateResult): FixtureElement {
-    let fixture = document.createElement("div");
-    fixture.setAttribute("fixture", "");
-    document.body.appendChild(fixture);
-  
-    render(html, fixture);
-    const el = fixture.firstElementChild as FixtureElement;
-  
-    // set the remove method to remove the fixture
-    el.restore = () => fixture.remove()
-    return el;
+
+export class TestStateProp1 extends HTMLElement {
+  user = {
+    userName: "joeuser"
+  };
+  changeName(userName: string) {
+    StateChange.of(this, {
+      property: "user",
+      changeEvent: "user-state-changed"
+    }).next((state:any) => ({
+        ...state,
+        userName
+      }))
+      .dispatch();
   }
+}
+customElements.define("test-state-prop1", TestStateProp1);
+
+export class TestStateProp2 extends HTMLElement {
+  user = {
+    userName: "joeuser"
+  };
+  changeName(userName: string) {
+    StateChange.of(this, "user")
+      .next((state:any) => ({
+        ...state,
+        userName
+      }))
+      .dispatch();
+  }
+}
+customElements.define("test-state-prop2", TestStateProp2);
+
+
+export class TestStateProp3 extends HTMLElement {
+  static dataProperties = {
+    user: {
+      changeEvent: "user-change-event"
+    }
+  }
+
+  user = {
+    userName: "joeuser"
+  };
+
+  changeName(userName: string) {
+    StateChange.of(this, "user")
+      .next((state:any) => ({
+        ...state,
+        userName
+      }))
+      .dispatch();
+  }
+}
+customElements.define("test-state-prop3", TestStateProp3);
+
   
-  
-class TestStateChange extends HTMLElement {
+export class TestStateChange extends HTMLElement {
     state = {
       foo: false,
       bar: false
@@ -37,7 +67,7 @@ class TestStateChange extends HTMLElement {
     testSimple() {
       StateChange.of(this)
         .next(setFooTrue)
-        .next(setBarTrue)
+        .next(setBar(true))
         .dispatch();
     }
   
@@ -81,45 +111,65 @@ class TestStateChange extends HTMLElement {
           composed: true
         }));
     }
+
+    testImmer() {
+      StateChange.of(this)
+        .next(changeStateWithMutations)
+    }
 }
 customElements.define("test-state-change", TestStateChange);
   
   
   
 const setFooTrue = (state:any) => {
-    return {
-      ...state,
-      foo: true
-    };
-  }
+  return {
+    ...state,
+    foo: true
+  };
+};
   
-  const setBarTrue = (state:any) => {
-    return {
-      ...state,
-      bar: true
+const setBarTrue = (state:any) => {
+  return {
+    ...state,
+    bar: true
+  };
+};
+
+
+// for testing inner function name
+const setBar = (bar:boolean) =>
+    function setBar(state:any) {
+      return {
+        ...state,
+        bar
+      };
     };
-  }
   
-  const asyncTest = async (stateChange:StateChange) => {
-    await setTimeout(()=> {}, 10);
+const asyncTest = async (stateChange:StateChange) => {
+    await setTimeout(()=> {});
     stateChange
       .next(setFooTrue)
       .next(setBarTrue)
       .dispatch();
   };
   
-  const setFooTrueWithTap = (stateChange:StateChange) => 
+const setFooTrueWithTap = (stateChange:StateChange) => 
     stateChange.next(setFooTrue);
   
-  const setBarTrueWithTap = (stateChange:StateChange) => 
+const setBarTrueWithTap = (stateChange:StateChange) => 
     stateChange.next(setBarTrue);
   
-  const causeError = (state:any) => {
+const causeError = (state:any) => {
     throw new Error("test error")
   };
 
 
-  const tapError = (stateChange:StateChange) =>
+const tapError = (stateChange:StateChange) =>
     stateChange.next(causeError);
   
+
+const changeStateWithMutations = (state:any) => {
+  state.bar = true;
+  state.newArray = [1];
+};
 
