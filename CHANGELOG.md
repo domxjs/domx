@@ -12,6 +12,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - linkprop package 1.0.0
 - functional package 1.0.0
 - middleware package 1.0.0
+- eventmap package 1.0.0
 
 ## [0.21.0] 2021-09-30
 ### Updated
