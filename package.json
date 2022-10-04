@@ -1,7 +1,7 @@
 {
   "name": "domx",
   "type": "module",
-  "version": "0.22.0",
+  "version": "1.0.0",
   "license": "MIT",
   "author": "John Horback",
   "description": "A mono repo containing packages with common web application script utilities.",
