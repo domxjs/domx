@@ -8,7 +8,9 @@
     "Custom Elements",
     "FLUX",
     "Functional",
-    "Monad"
+    "Monad",
+    "Redux",
+    "State Change"
   ],
   "repository": {
     "type": "git",
