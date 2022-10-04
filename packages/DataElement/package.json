@@ -1,7 +1,7 @@
 {
   "name": "@domx/dataelement",
   "type": "module",
-  "version": "0.5.2",
+  "version": "1.0.0",
   "license": "MIT",
   "author": "John Horback",
   "description": "DataElement base class with root state support",
@@ -33,11 +33,12 @@
     "clean": "tsc --build --clean"
   },
   "dependencies": {
-    "@domx/eventmap": "0.7.1",
+    "@domx/eventmap": "1.0.0",
     "@domx/statechange": "1.0.0",
-    "@domx/middleware": "0.2.9"
+    "@domx/middleware": "1.0.0",
+    "@domx/linkprop": "1.0.0"
   },
   "devDependencies": {
-    "@domx/testutils": "0.2.1"
+    "@domx/testutils": "1.0.0"
   }
 }
