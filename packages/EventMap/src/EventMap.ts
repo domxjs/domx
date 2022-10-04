@@ -1,10 +1,13 @@
-import { Middleware } from "@harbor/middleware/Middleware";
+import { Middleware } from "@domx/middleware/Middleware";
+import "./decorators";
 export {
   EventMap,
-  eventsListenAt,
-  event,
+  EventMapEvent,
   EventMapListenAt,
-  EventMapHandlerInfo
+  EventMapHandlerInfo,
+  ProcessedEventMapDefinition,
+  EventMapPropagation,
+  EventMapMixin
 };
 
 
@@ -15,9 +18,10 @@ export {
  interface EventMapMixin {
   prototype: Object,
   eventsListenAt? : EventMapListenAt,
+  eventsStopPropagation?: boolean,
+  eventsStopImmediatePropagation?: boolean,
   events?: EventMapDefinition
 }
-
 
 /**
  * The available settings for the default
@@ -30,6 +34,17 @@ export {
   Window = "window"
 }
 
+interface EventMapPropagation {
+  stopPropagation?: boolean,
+  stopImmediatePropagation?: boolean
+}
+
+/**
+ * Interface for the event decorator
+ */
+interface EventMapEvent extends EventMapPropagation {
+  listenAt: EventMapListenAt|string
+}
 
 /**
  * The strucutre of the static events 
@@ -44,7 +59,7 @@ interface EventMapDefinition {
   [key: string]: string | EventMapDefinitionItem
 }
 
-interface EventMapDefinitionItem {
+interface EventMapDefinitionItem extends EventMapPropagation {
   /** The object to set the event listener on */
   listenAt: EventMapListenAt,
   /** The name of the event handler method */
@@ -55,7 +70,7 @@ interface ProcessedEventMapDefinition {
   [key: string]: ProcessedEventMapDefinitionItem
 }
 
-interface ProcessedEventMapDefinitionItem  {
+interface ProcessedEventMapDefinitionItem extends EventMapPropagation  {
   listenAt: EventMapListenAt | Node | Window,
   handler: string | EventListener
 }
@@ -103,6 +118,9 @@ const middleware = new Middleware();
  * @param {HTMLElement} superclass 
  */
  function EventMap<TBase extends HTMLElementType>(Base: TBase) {
+
+  // @ts-ignore TS2339 dynamically setting static property
+  Base.eventsStopPropagation = Base.eventsStopPropagation === undefined ? true :  Base.eventsStopPropagation;
   return class EventMap extends Base {
 
     __eventMapProcessed? : boolean;
@@ -135,7 +153,7 @@ const middleware = new Middleware();
       }
 
       Object.keys(events).forEach((key) => {
-        const detail = events[key] as ProcessedEventMapDefinitionItem;
+        const detail = events[key];
 
         // @ts-ignore TS2538 dynamic access of method
         const eventHandler = this[detail.handler] as Function;
@@ -148,7 +166,7 @@ const middleware = new Middleware();
           throw new Error(`EventMap could not set up a listener at ${detail.listenAt}`);
         }
 
-        const handler = getHandler({listenAt, element: this, eventName:key, eventHandler});
+        const handler = getHandler({listenAt, element: this, eventName:key, eventHandler, detail});
 
         /* @ts-ignore TS2488 setting dynamic property */
         this.__eventMapHandlers[key] = {
@@ -201,12 +219,8 @@ const getAllEvents = (ctor: EventMapMixin): ProcessedEventMapDefinition | null =
 
   while (ctor.prototype) {
     if (ctor.events) {            
-      const listenAt = ctor.eventsListenAt || EventMapListenAt.Self;
       const events = Object.keys(ctor.events).reduce((events, eventName: string) => {                
-        const handlerOrDef = ctor.events ? ctor.events[eventName] : "";
-        events[eventName] = typeof handlerOrDef === "string" ?
-          { listenAt, handler: handlerOrDef} :
-          handlerOrDef;                                 
+        events[eventName] = getEventMapDefinitionItem(ctor, ctor.events?.[eventName] || "");
         return events;
       }, {} as ProcessedEventMapDefinition);
       eventMaps.unshift(events);
@@ -215,6 +229,21 @@ const getAllEvents = (ctor: EventMapMixin): ProcessedEventMapDefinition | null =
   }
 
   return eventMaps.length > 0 ? Object.assign({}, ...eventMaps) : null;
+};
+
+
+const getEventMapDefinitionItem = (ctor:EventMapMixin, def:EventMapDefinitionItem|string) 
+  :EventMapDefinitionItem => {
+    const di = typeof def === "string" ? {handler:def} as EventMapDefinitionItem : def;
+    return {
+      ...di,
+      listenAt: di.listenAt === undefined ?
+        ctor.eventsListenAt || EventMapListenAt.Self : di.listenAt,
+      stopPropagation: di.stopPropagation === undefined ?
+        ctor.eventsStopPropagation : di.stopPropagation,
+      stopImmediatePropagation: di.stopImmediatePropagation === undefined ?
+        ctor.eventsStopImmediatePropagation : di.stopImmediatePropagation,
+    };
 };
 
 
@@ -239,7 +268,8 @@ const getListenAt = ({listenAt, element}:ListenAtInfo) => listenAt === EventMapL
 
 interface HandlerInfo extends ListenAtInfo {
   eventName: string,
-  eventHandler: Function
+  eventHandler: Function,
+  detail: ProcessedEventMapDefinitionItem
 }
 
 /**
@@ -247,8 +277,9 @@ interface HandlerInfo extends ListenAtInfo {
  * @param handlerInfo {HandlerInfo}
  * @returns EventListener
  */
-const getHandler = ({listenAt, element, eventName, eventHandler}:HandlerInfo):EventListener => {
+const getHandler = ({listenAt, element, eventName, eventHandler, detail}:HandlerInfo):EventListener => {
   const handler: EventListener = (event: Event) => {
+
     const listenAtName = listenAt.constructor.name === "ShadowRoot" ?
       // @ts-ignore TS2339 - provided check for ShadowRoot
       listenAt.host.constructor.name : listenAt.constructor.name;
@@ -264,35 +295,14 @@ const getHandler = ({listenAt, element, eventName, eventHandler}:HandlerInfo):Ev
     };
 
     middleware.mapThenExecute(handlerInfo, () => {
-      event.stopPropagation();
-      eventHandler.call(this, event);
+      detail.stopImmediatePropagation === true ?
+        event.stopImmediatePropagation() :
+        detail.stopPropagation === true ?
+          event.stopPropagation() : false;
+
+      eventHandler.call(element, event);
     }, [event, eventHandler]);
   };
 
   return handler;
 }
-
-
-/**
- * A method decorator to define an event handler.
- * @param {String} eventName 
- * @param {EventMapListenAt?} options an object to define the listenAt property
- */
-const event = (eventName: string, {listenAt}:{listenAt?:EventMapListenAt|string} = {}) =>
-  (prototype: any, handler: string) => {
-    const {events = {}} = prototype.constructor;
-    listenAt ? events[eventName] = { listenAt, handler} :
-      events[eventName] = handler;
-    prototype.constructor.events = events;
-  };
-
-
-/**
- * A class decorator to define the default
- * eventsListenAt static property.
- * @param {EventMapListenAt} listenAt
- */
-const eventsListenAt = (listenAt: EventMapListenAt | string) =>
-  (ctor: EventMapMixin) => {
-    ctor.eventsListenAt = listenAt as EventMapListenAt;
-  };

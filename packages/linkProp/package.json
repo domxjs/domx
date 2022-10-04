@@ -1,9 +1,20 @@
 {
-  "name": "@harbor/linkprop",
+  "name": "@domx/linkprop",
   "type": "module",
-  "version": "0.2.0",
+  "version": "0.3.1",
   "license": "MIT",
   "author": "John Horback",
+  "description": "Contains methods for linking properties of dom elements.",
+  "keywords": [
+    "Custom Elements",
+    "binding"
+  ],
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/domxjs/domx.git",
+    "directory": "packages/linkProp"
+  },
+  "homepage": "https://github.com/domxjs/domx/blob/master/packages/linkProp/README.md",
   "main": "linkProp.js",
   "types": "linkProp.d.ts",
   "scripts": {
@@ -11,7 +22,6 @@
     "clean": "tsc --build --clean"
   },
   "devDependencies": {
-    "lit-html": "1.4.1"
+    "lit": "2.3.1"
   }
 }
-

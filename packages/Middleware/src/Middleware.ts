@@ -1,4 +1,4 @@
-import { compose } from "@harbor/functional/lib/compose";
+import { compose } from "@domx/functional/lib/compose";
 export { Middleware }
 
 

@@ -12,6 +12,9 @@ branches:
   - packages/Middleware
   - packages/linkProp
   - packages/StateChange
+  - packages/testUtils
+  - packages/DataElement
+  - packages/Router
 cache:
   directories:
   - node_modules
@@ -22,7 +25,7 @@ install:
 
 matrix:
   include:
-  - name: harbor/utils
+  - name: domx
     env: PACKAGE_LOCATION=.
     if: branch = master
   - name: functional
@@ -40,6 +43,15 @@ matrix:
   - name: StateChange
     env: PACKAGE_LOCATION=packages/StateChange
     if: branch = packages/StateChange
+  - name: testUtils
+    env: PACKAGE_LOCATION=packages/testUtils
+    if: branch = packages/testUtils
+  - name: DataElement
+    env: PACKAGE_LOCATION=packages/DataElement
+    if: branch = packages/DataElement
+  - name: Router
+    env: PACKAGE_LOCATION=packages/Router
+    if: branch = packages/Router
 
 script:
   - npm run clean

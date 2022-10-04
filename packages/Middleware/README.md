@@ -1,10 +1,11 @@
-# Middleware &middot; [![Build Status](https://travis-ci.com/jhorback/harbor-utils.svg?branch=packages/Middleware)](https://travis-ci.com/jhorback/harbor-utils)
+# Middleware &middot; [![GitHub license](https://img.shields.io/badge/license-MIT-blue.svg)](https://www.mit.edu/~amini/LICENSE.md) [![Build Status](https://travis-ci.com/domxjs/domx.svg?branch=packages/Middleware)](https://travis-ci.com/github/domxjs/domx) [![Lines](https://img.shields.io/badge/Coverage-100%25-brightgreen.svg?style=flat)](https://app.travis-ci.com/github/domxjs/domx/branches) [![npm](https://img.shields.io/npm/v/@domx/middleware)](https://www.npmjs.com/package/@domx/middleware)
+
 
 Contains low level patterns for middleware and HTMLElement mixin logging.
 
 ## Installation
 ```sh
-npm install @harbor/middleware
+npm install @domx/middleware
 ```
 
 
@@ -29,7 +30,7 @@ arguments and return the `next` functions return value.
 #### Full Example
 `TestMiddleware.ts`
 ```js
-import {Middleware} from "@harbor/middleware";
+import {Middleware} from "@domx/middleware";
 export {TestMiddleware, useMiddleware};
 
 interface MwContext {
@@ -80,7 +81,7 @@ const middlewareFunction = mappedArgument => next => passedArgument => {
   return next(passedArgument);
 };
 ```
-Use `mapThenExecute` to run this middleware function signature.
+> Use `mapThenExecute` to run this middleware function signature.
 ```js
 const mw = new Middleware();
 mw.use(middlewareFunction);

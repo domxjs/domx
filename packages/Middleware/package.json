@@ -1,9 +1,21 @@
 {
-  "name": "@harbor/middleware",
+  "name": "@domx/middleware",
   "type": "module",
-  "version": "0.2.2",
+  "version": "0.2.9",
   "license": "MIT",
   "author": "John Horback",
+  "description": "Contains low level patterns for middleware and HTMLElement mixin logging.",
+  "keywords": [
+    "Custom Elements",
+    "Logging",
+    "Middleware"
+  ],
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/domxjs/domx.git",
+    "directory": "packages/Middleware"
+  },
+  "homepage": "https://github.com/domxjs/domx/blob/master/packages/Middleware/README.md",
   "main": "index.js",
   "types": "index.d.ts",
   "scripts": {
@@ -11,6 +23,6 @@
     "clean": "tsc --build --clean"
   },
   "dependencies": {
-    "@harbor/functional": "0.2.0"
+    "@domx/functional": "0.2.7"
   }
 }

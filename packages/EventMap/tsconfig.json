@@ -1,5 +1,5 @@
 {
-  // @harbor/eventmap
+  // @domx/eventmap
   "composite": true,
   "extends": "../../tsconfig.json",
   "compilerOptions": {    
