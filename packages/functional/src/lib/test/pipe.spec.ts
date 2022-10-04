@@ -27,4 +27,14 @@ describe("pipe", () => {
         
         expect(returnValue).toBe(9);
     });
+
+    it("can use any argument types", () => {
+        const returnValue = pipe<any>(
+            text => parseInt(text),
+            num => num + 1,
+            num => String(num) + " - it worked"
+        )("1")
+
+        expect(returnValue).toBe("2 - it worked");
+    });
 });
