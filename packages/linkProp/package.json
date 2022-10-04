@@ -22,6 +22,6 @@
     "clean": "tsc --build --clean"
   },
   "devDependencies": {
-    "lit": "1.0.0"
+    "lit": "1.0.1"
   }
 }
