@@ -89,4 +89,18 @@ describe("RootState", () => {
             expect(RootState.get("test-state.state.123")).toBe(null);
         });
     });
+
+    describe("snapshot", () => {
+        it("dispatches a window event", () => {
+            let detail:any = null;
+            const listener = ((event:CustomEvent) => {
+                detail = event.detail;
+            }) as EventListener;
+            window.addEventListener("rootstate-snapshot", listener);
+            RootState.snapshot("test-snapshot");
+            expect(detail.name).toBe("test-snapshot");
+            expect(detail.state).toBeDefined();
+            window.removeEventListener("rootstate-snapshot", listener);
+        });
+    });
 });

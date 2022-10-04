@@ -1,11 +1,17 @@
+import { resolve } from 'path';
 import { defineConfig } from 'vite'
 
 // https://vitejs.dev/config/
 export default defineConfig({
   build: {
     lib: {
-      entry: 'src/pm-web.ts',
+      entry: 'src/dx-web.ts',
       formats: ['es']
+    },
+    rollupOptions: {
+      input: {
+        main: resolve(__dirname, 'index.html')
+      }
     }
   }
-})
+});

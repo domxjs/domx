@@ -1,7 +1,8 @@
 import { describe, it, expect } from "@jest/globals";
-import { html, render } from "lit-html";
+import { html, render } from "lit";
 import { applyEventMapLogging } from "./applyEventMapLogging";
-import {EventMap, event} from "./EventMap";
+import {EventMap} from "./EventMap";
+import {event} from "./decorators";
 
 
 describe("applyEventMapLogging", () => {

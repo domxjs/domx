@@ -2,25 +2,38 @@
   // domx
   "compilerOptions": {
     "strict": true,
-    "target": "ESNext",
-    "module": "ESNext",
+    "target": "ES6",
+    "module": "ES2020",
     "moduleResolution": "node",
     "composite": true,
     "sourceMap": true,
+    "inlineSourceMap": false,
+    "inlineSources": true,
     "declaration": true,
     "declarationMap": true,
     "emitDeclarationOnly": false,
-    "allowJs": true,
-    "esModuleInterop": true,
-    "allowSyntheticDefaultImports": true,
     "noEmitOnError": true,
-
-    "experimentalDecorators": true,
     "forceConsistentCasingInFileNames": true,
     "noUnusedLocals": false,
     "noUnusedParameters": false,
     "noImplicitReturns": true,
     "noFallthroughCasesInSwitch": true,
+    "noImplicitAny": true,
+    "noImplicitThis": true,
+    "allowJs": true,
+    "esModuleInterop": true,
+    "allowSyntheticDefaultImports": true,
+    "experimentalDecorators": true,
+    // new standard for class fields using Object.define
+    // will cause problems with initial values and for TS/lit
+    "useDefineForClassFields": false,
+    "plugins": [
+      // adds type checking and code completion to lit-html
+      {
+        "name": "ts-lit-plugin",
+        "strict": true
+      }
+    ]
   },
 
   "files": [],
@@ -31,6 +44,7 @@
     { "path": "./packages/EventMap" },
     { "path": "./packages/StateChange" },
     { "path": "./packages/testUtils" },
-    { "path": "./packages/DataElement" }
+    { "path": "./packages/DataElement" },
+    { "path": "./packages/Router" }
   ]
 }

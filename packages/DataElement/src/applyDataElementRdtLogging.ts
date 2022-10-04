@@ -15,22 +15,26 @@ export { applyDataElementRdtLogging }
  * do not want the duplicate state entry.
  * @param options {RdtLoggingOptions}
  */
-const applyDataElementRdtLogging = (options:RdtLoggingOptions = {logChangeEvents:true}) => {
+const applyDataElementRdtLogging = (options:RdtLoggingOptions = {logChangeEvents:true, exclude:[]}) => {
     if (isApplied || hasDevTools() === false) {
         return;
     }
 
     isApplied = true;
-    logChangeEvents = options.logChangeEvents;
+    logChangeEvents = options.logChangeEvents ? true : false;
+    excludeActions = options.exclude ? excludeActions.concat(options.exclude) : excludeActions;
     DataElement.applyMiddlware(connectedCallback, disconnectedCallback);
     StateChange.applyNextMiddleware(stateChangeNext);
+    window.addEventListener("rootstate-snapshot", sendSnapshot as EventListener);
 };
 
 let isApplied = false;
 let logChangeEvents = true;
+let excludeActions:Array<string> = ["domx-"];
 
 interface RdtLoggingOptions {
-    logChangeEvents: boolean
+    logChangeEvents?: boolean,
+    exclude?: Array<string>
 }
 
 /** 
@@ -46,6 +50,10 @@ interface ConnectedDataElement {
     element: DataElement,
     property: string,
     changeEvent: string
+};
+
+const sendSnapshot = (event:CustomEvent) => {
+    getDevToolsInstance().send(event.detail.name, event.detail.state);
 };
 
 const connectedElements:ConnectedElements = {};
@@ -81,8 +89,10 @@ const connectedCallback = (metaData:DataElementMetaData) => (next:Function) => (
 const sendStateToDevTools = (el:DataElement, propertyName:string, statePath:string, changeEvent:string) => {
     // @ts-ignore TS7053 getting indexed property
     const nextState = el[propertyName] as object;
-    const action = `${(el.constructor as DataElementCtor).__elementName}@${changeEvent}`; 
-    getDevToolsInstance().send(action, RootState.draft(statePath, nextState));
+    const action = `${(el.constructor as DataElementCtor).__elementName}@${changeEvent}`;
+    if (!excludeActions.find(a => action.indexOf(a) === 0)) {
+        getDevToolsInstance().send(action, RootState.draft(statePath, nextState));
+    }
 };
 
 const disconnectedCallback = (metaData:DataElementMetaData) => (next:Function) => () => {

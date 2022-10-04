@@ -1,4 +1,5 @@
-# Functional &middot; [![Build Status](https://travis-ci.com/domxjs/domx.svg?branch=packages/functional)](https://travis-ci.com/domxjs/domx)
+# functional &middot; [![GitHub license](https://img.shields.io/badge/license-MIT-blue.svg)](https://www.mit.edu/~amini/LICENSE.md) [![Build Status](https://travis-ci.com/domxjs/domx.svg?branch=packages/functional)](https://travis-ci.com/github/domxjs/domx) [![Lines](https://img.shields.io/badge/Coverage-100%25-brightgreen.svg?style=flat)](https://app.travis-ci.com/github/domxjs/domx/branches) [![npm](https://img.shields.io/npm/v/@domx/functional)](https://www.npmjs.com/package/@domx/functional)
+
 
 Contains methods for functional JavaScript patterns.
 

@@ -1,4 +1,5 @@
-# EventMap &middot; [![Build Status](https://travis-ci.com/domxjs/domx.svg?branch=packages/EventMap)](https://travis-ci.com/domxjs/domx)
+# EventMap &middot; [![GitHub license](https://img.shields.io/badge/license-MIT-blue.svg)](https://www.mit.edu/~amini/LICENSE.md) [![Build Status](https://travis-ci.com/domxjs/domx.svg?branch=packages/EventMap)](https://travis-ci.com/github/domxjs/domx) [![Lines](https://img.shields.io/badge/Coverage-100%25-brightgreen.svg?style=flat)](https://app.travis-ci.com/github/domxjs/domx/branches) [![npm](https://img.shields.io/npm/v/@domx/eventmap)](https://www.npmjs.com/package/@domx/eventmap)
+
 
 A CustomElement class mixin which supports attaching and detaching DOM events declaratively.
 
@@ -12,7 +13,7 @@ There are two ways to use the mixin. Using decorators or by adding static proper
 
 ### Using Decorators
 ```js
-import { eventsListenAt, events } from "@domx/eventmap";
+import { eventsListenAt, events } from "@domx/eventmap/decorators";
 
 @eventsListenAt("parent")
 class MyCass extends EventMap(HTMLElement) {

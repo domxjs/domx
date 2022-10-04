@@ -5,6 +5,44 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [Unreleased]
+## Updated
+- statechange package 1.0.0
+- testutils package 1.0.0
+- linkprop package 1.0.0
+- functional package 1.0.0
+- middleware package 1.0.0
+- eventmap package 1.0.0
+- router package 1.0.0
+
+## [0.21.0] 2021-09-30
+### Updated
+- Router package 0.3.0
+
+## [0.20.0] 2021-09-29
+### Updated
+- Router package 0.2.0
+- DataElement 0.5.2
+- StateChange 0.7.2
+
+
+## [0.19.0] 2021-09-22
+### Added
+- Router package 0.1.1
+### Updated
+ - Event Map 0.7.1
+ - DataElement 0.5.1
+ - StateChange 0.7.1
+ - linkProp 0.3.1
+ - testUtils 0.2.1
+ - Middleware 0.2.9
+ - functional 0.2.7
+
+
+## [0.18.0] - 2021-09-10
+### Updated
+- badge inclusion and test coverage scripts
+- All packages patch version for documentation update
 
 ## [0.17.0] - 2021-09-09
 ### Updated

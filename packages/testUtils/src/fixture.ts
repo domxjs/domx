@@ -1,4 +1,4 @@
-import {html, render, TemplateResult} from "lit-html";
+import {html, render, TemplateResult} from "lit";
 export { fixture, html, FixtureElement};
 
 interface FixtureElement extends HTMLElement {

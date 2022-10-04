@@ -1,13 +1,7 @@
 export {
     customDataElements,
-    customDataElement,
-    DataElement,
-    dataProperty,
-    event
+    DataElement
 } from "./DataElement";
 export { 
     StateChange
 } from "@domx/statechange";
-export {
-    applyImmerToStateChange
-} from "@domx/statechange/applyImmerToStateChange";
