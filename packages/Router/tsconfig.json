@@ -1,0 +1,20 @@
+{
+  // @domx/middleware
+  "composite": true,
+  "extends": "../../tsconfig.json",  
+  "compilerOptions": {
+    "tsBuildInfoFile": "./tsconfig.Router.tsbuildinfo",
+    "outDir": "./",
+    "rootDir": "./src",
+  },
+  "include": [
+    "./src/**/*"
+  ],
+  "exclude": [
+    "./src/**/*.spec.ts"
+  ],
+  "references": [
+    { "path": "../DataElement" },
+    { "path": "../testUtils" }
+  ]
+}

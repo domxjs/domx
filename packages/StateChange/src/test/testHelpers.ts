@@ -1,35 +1,64 @@
-import { html, TemplateResult, render } from "lit-html";
 import { StateChange } from "../StateChange";
-export { html, fixture };
+export { html, fixture } from "@domx/testutils";
 
-interface FixtureElement extends HTMLElement {
-    restore: Function,
-    state: any,
-    testPipeTap: Function,
-    testFunction: Function,
-    testPipeNext: Function,
-    testSimple: Function,
-    testError: Function,
-    testTapError: Function,
-    testDispatchEvent: Function,
-    testImmer: Function
-};
-  
-  function fixture(html:TemplateResult): FixtureElement {
-    let fixture = document.createElement("div");
-    fixture.setAttribute("fixture", "");
-    document.body.appendChild(fixture);
-  
-    render(html, fixture);
-    const el = fixture.firstElementChild as FixtureElement;
-  
-    // set the remove method to remove the fixture
-    el.restore = () => fixture.remove()
-    return el;
+
+export class TestStateProp1 extends HTMLElement {
+  user = {
+    userName: "joeuser"
+  };
+  changeName(userName: string) {
+    StateChange.of(this, {
+      property: "user",
+      changeEvent: "user-state-changed"
+    }).next((state:any) => ({
+        ...state,
+        userName
+      }))
+      .dispatch();
   }
+}
+customElements.define("test-state-prop1", TestStateProp1);
+
+export class TestStateProp2 extends HTMLElement {
+  user = {
+    userName: "joeuser"
+  };
+  changeName(userName: string) {
+    StateChange.of(this, "user")
+      .next((state:any) => ({
+        ...state,
+        userName
+      }))
+      .dispatch();
+  }
+}
+customElements.define("test-state-prop2", TestStateProp2);
+
+
+export class TestStateProp3 extends HTMLElement {
+  static dataProperties = {
+    user: {
+      changeEvent: "user-change-event"
+    }
+  }
+
+  user = {
+    userName: "joeuser"
+  };
+
+  changeName(userName: string) {
+    StateChange.of(this, "user")
+      .next((state:any) => ({
+        ...state,
+        userName
+      }))
+      .dispatch();
+  }
+}
+customElements.define("test-state-prop3", TestStateProp3);
+
   
-  
-class TestStateChange extends HTMLElement {
+export class TestStateChange extends HTMLElement {
     state = {
       foo: false,
       bar: false

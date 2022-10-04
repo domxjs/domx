@@ -17,10 +17,11 @@ const applyStateChangeConsoleLogging = ({collapsed}:{collapsed:boolean} = {colla
     isApplied = true;
 
     StateChange.applyNextMiddleware((stateChange:StateChange)  => (next:Function) => (state:any) =>{
-        const {el, className, nextName, tapName} = stateChange.meta;
+        const {el, className, nextName, tapName, property} = stateChange.meta;
+        const stateName = property === "state" ? "state" : `state:${property}`;
         Logger.log(el, collapsed ? "groupCollapsed" : "group", `> STATECHANGE.next: ${className}.${tapName ? `${tapName}(${nextName})` : `${nextName}()`}`);
         const result = next(state);
-        Logger.log(el, "info", `> STATECHANGE next state:`, result);
+        Logger.log(el, "info", `> STATECHANGE next ${stateName}:`, result);
         Logger.log(el, "groupEnd");
         return result;
     });

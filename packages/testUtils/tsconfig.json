@@ -1,0 +1,16 @@
+{
+  // @domx/testUtils
+  "composite": true,
+  "extends": "../../tsconfig.json",  
+  "compilerOptions": {
+    "tsBuildInfoFile": "./tsconfig.testUtils.tsbuildinfo",
+    "outDir": "./",
+    "rootDir": "./src",
+  },
+  "include": [
+    "./src/**/*"
+  ],
+  "exclude": [
+    "./src/**/*.spec.ts"
+  ]
+}

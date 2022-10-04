@@ -35,7 +35,8 @@ let isApplied = false;
  */
 const logToDevTools = (stateChange:StateChange, next:Function, result:any) => 
     !(stateChange.meta.el as any).__UPDATING_FROM_RDT &&
-        getDevToolsInstance(stateChange).send(getFnName(stateChange.meta), result);
+        getDevToolsInstance(stateChange).send(getFnName(stateChange.meta), 
+        {[stateChange.meta.property]: result});
 
 
 const getFnName = ({className, tapName, nextName}:StateChangeMetaData) => 
@@ -79,7 +80,7 @@ const setupDevToolsInstance = (stateChange: StateChange):DevToolsInstance => {
     const scMeta = stateChange.meta;
     const el = scMeta.el as any;
     const dt = getDevTools().connect({name:el.constructor.name});
-    dt.init(stateChange.getState());
+    dt.init({[scMeta.property]:stateChange.getState()});
     dt.subscribe((data:DevToolsEventData) => {
         if (isInit(data)) {
             return;
@@ -88,7 +89,7 @@ const setupDevToolsInstance = (stateChange: StateChange):DevToolsInstance => {
         if (canHandleUpdate(data)) {
             el.__UPDATING_FROM_RDT = true;
             StateChange.of(el, scMeta)
-                .next(() => JSON.parse(data.state))
+                .next(() => JSON.parse(data.state)[scMeta.property])
                 .dispatch();
             delete el.__UPDATING_FROM_RDT;
         } else {

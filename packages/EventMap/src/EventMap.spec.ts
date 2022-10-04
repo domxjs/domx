@@ -1,7 +1,8 @@
 
 import { describe, it, expect } from "@jest/globals";
-import { html, TemplateResult, render } from "lit-html";
-import { EventMap, EventMapHandlerInfo, eventsListenAt, event } from "./EventMap";
+import { html, fixture, FixtureElement } from "@domx/testutils";
+import { EventMap, EventMapHandlerInfo } from "./EventMap";
+import { eventsListenAt, event } from "./decorators";
 
 
 const test1Html = html`
@@ -21,22 +22,6 @@ const defaultListenAtHtml = html`
 
 let __firedEvents: any = {};
 
-interface RestorableElement extends HTMLElement {
-    restore: Function
-};
-
-function fixture(html:TemplateResult): RestorableElement {
-  let fixture = document.createElement("div");
-  fixture.setAttribute("fixture", "");
-  document.body.appendChild(fixture);
-
-  render(html, fixture);
-  const el = fixture.firstElementChild as RestorableElement;
-
-  // set the remove method to remove the fixture
-  el.restore = () => fixture.remove()
-  return el;
-}
 
 
 describe("EventMap", function () {
@@ -86,11 +71,11 @@ describe("EventMap", function () {
   });
 
   describe("Events", function () {
-    var frag:RestorableElement, child:Element, event:CustomEvent;
+    var frag:FixtureElement, child:Element, event:CustomEvent;
 
     beforeEach(function () {
       frag = fixture(test1Html);
-      child = frag.querySelector("#child") as RestorableElement;
+      child = frag.querySelector("#child") as FixtureElement;
       event = new CustomEvent('event-to-trigger', { bubbles: true, composed: true });      
     });
 
@@ -134,7 +119,7 @@ describe("EventMap", function () {
   });
 
   describe("Events at parent", function () {
-    var frag:RestorableElement, child:Element, event:CustomEvent;
+    var frag:FixtureElement, child:Element, event:CustomEvent;
 
     beforeEach(function () {
       frag = fixture(test1Html);
@@ -169,7 +154,7 @@ describe("EventMap", function () {
   });
 
   describe("Events at window", function () {
-    var frag:RestorableElement, event:CustomEvent;
+    var frag:FixtureElement, event:CustomEvent;
 
     beforeEach(function () {
       frag = fixture(test1Html);
@@ -193,7 +178,7 @@ describe("EventMap", function () {
   });
 
   describe("Mixed in events", () => {
-    let el:RestorableElement;
+    let el:FixtureElement;
 
     beforeEach(() => {
       el = fixture(html`<element-with-mixed-in-events></element-with-mixed-in-events>`);
@@ -220,7 +205,7 @@ describe("EventMap", function () {
   });
 
   describe("eventsListenAt", () => {
-    let frag:RestorableElement;
+    let frag:FixtureElement;
 
     beforeEach(() => {
       frag = fixture(defaultListenAtHtml);
@@ -300,7 +285,7 @@ describe("EventMap", function () {
         });
   
         const frag = fixture(test1Html);
-        const child = frag.querySelector("#child") as RestorableElement;
+        const child = frag.querySelector("#child") as FixtureElement;
         const event = new CustomEvent('event-to-trigger', { bubbles: true, composed: true });      
         expect(__firedEvents._toTrigger).toBeUndefined();
         child.dispatchEvent(event);

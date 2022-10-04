@@ -1,11 +1,20 @@
-# EventMap &middot; [![Build Status](https://travis-ci.com/domxjs/domx.svg?branch=packages/EventMap)](https://travis-ci.com/domxjs/domx)
+# EventMap &middot; [![GitHub license](https://img.shields.io/badge/license-MIT-blue.svg)](https://www.mit.edu/~amini/LICENSE.md) [![Build Status](https://travis-ci.com/domxjs/domx.svg?branch=packages/EventMap)](https://travis-ci.com/github/domxjs/domx) [![Lines](https://img.shields.io/badge/Coverage-100%25-brightgreen.svg?style=flat)](https://app.travis-ci.com/github/domxjs/domx/branches) [![npm](https://img.shields.io/npm/v/@domx/eventmap)](https://www.npmjs.com/package/@domx/eventmap)
+
 
 A CustomElement class mixin which supports attaching and detaching DOM events declaratively.
 
+## Installation
+```sh
+npm install @domx/eventmap
+```
+
+## Usage
 There are two ways to use the mixin. Using decorators or by adding static properties to the class.
 
-## Using Decorators
+### Using Decorators
 ```js
+import { eventsListenAt, events } from "@domx/eventmap/decorators";
+
 @eventsListenAt("parent")
 class MyCass extends EventMap(HTMLElement) {
 
@@ -22,33 +31,47 @@ class MyCass extends EventMap(HTMLElement) {
   }
 }
 ```
-### `@eventsListenAt` decorator
+#### `@eventsListenAt(target, options?)` decorator
 The `eventsListenAt` decorator can be used on a class to define where to add event listeners by default.
 
-**Possible values** 
+**Possible target values** 
 - self (the default behavior)
 - parent
 - window
 
-### `@event` decorator
+**options**
+ - stopPropagation - default is true; set to false to allow event propagation.
+ - stopImmediatePropagation - set to true to call `stopImmidiatePropagation` on all events.
+
+#### `@event(name, options?)` decorator
 Add the `event` decorator on methods to handle the event.
 
-The decorator takes a second argument to override the default `listenAt` property.
+**options**
+- listenAt - overrides the defulat `listenAt` property for this event.
+- stopPropagation - overrides the defulat `stopPropagation` property for this event.
+- stopImmediatePropagation - overrides the defulat `stopImmediatePropagation` property for this event.
 
-
-
-## Using Static Properties
-The following example is identical in behavior to the above example using decorators.
+### Using Static Properties
+There are four static properties that can be set on a class to
+define how events should be handled.
+- eventsListenAt - sets the defaults for all events
+- eventsStopPropagation - sets the default for all events
+- eventsStopImmediatePropagation - sets the default for all events
+- events - defines the event mapping from event name to handler and options
 ```js
 class MyCass extends EventMap(HTMLElement) {
 
   static eventsListenAt = "window";
+  static eventsStopPropagation = true;
+  static eventsStopImmediatePropagation = false;
 
   static events = {
     "event-to-handle-at-parent": "_someHandler",
     "event-to-handle-at-window": {
       listenAt: "window",
-      handler: "_anotherHandler"
+      handler: "_anotherHandler",
+      stopPropagation: true,
+      stopImmediatePropagation: false
     }
   };
 
@@ -89,13 +112,7 @@ EventMap.applyMiddleware(handlerInfo => next => () => {
 
 
 ## Notes on Behavior
-
 ### Multiple event maps
 If any mixin or class uses the EventMap, all subclass and mixin event maps will be merged.
 
 The event maps higher in the chain will take precident.
-
-
-### Event Propagation
-When an event handler is matched, __stopPropagation()__
-is called on the event before passing it to the handler.

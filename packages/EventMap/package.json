@@ -1,6 +1,6 @@
 {
   "name": "@domx/eventmap",
-  "version": "0.5.0",
+  "version": "0.7.1",
   "license": "MIT",
   "author": "John Horback",
   "description": "A CustomElement class mixin for declarative DOM event handling.",
@@ -17,7 +17,10 @@
   "main": "EventMap.js",
   "types": "EventMap.d.ts",
   "dependencies": {
-    "@domx/middleware": "0.2.7"
+    "@domx/middleware": "0.2.9"
+  },
+  "devDependencies": {
+    "@domx/testutils": "0.2.1"
   },
   "scripts": {
     "build": "tsc",
