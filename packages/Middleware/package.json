@@ -4,7 +4,7 @@
   "version": "1.0.0",
   "license": "MIT",
   "author": "John Horback",
-  "description": "Contains low level patterns for middleware and HTMLElement mixin logging.",
+  "description": "Contains low level patterns for middleware and HTMLElement mixin logging",
   "keywords": [
     "Custom Elements",
     "Logging",

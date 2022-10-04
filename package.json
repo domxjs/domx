@@ -1,7 +1,7 @@
 {
   "name": "domx",
   "type": "module",
-  "version": "0.21.0",
+  "version": "0.22.0",
   "license": "MIT",
   "author": "John Horback",
   "description": "A mono repo containing packages with common web application script utilities.",
@@ -33,7 +33,7 @@
     "@domx/dataelement": "1.0.0",
     "@domx/router": "1.0.0",
     "@vanillawc/wc-markdown": "^1.6.10",
-    "lit": "latest"
+    "lit": "2.3.1"
   },
   "devDependencies": {
     "@types/jest": "29.1.1",

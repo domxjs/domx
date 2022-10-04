@@ -4,7 +4,7 @@
   "version": "1.0.0",
   "license": "MIT",
   "author": "John Horback",
-  "description": "Contains methods for linking properties of dom elements.",
+  "description": "Contains methods for linking properties of dom elements",
   "keywords": [
     "Custom Elements",
     "binding"
@@ -20,8 +20,5 @@
   "scripts": {
     "build": "tsc --build",
     "clean": "tsc --build --clean"
-  },
-  "devDependencies": {
-    "lit": "1.0.0"
   }
 }

@@ -4,7 +4,7 @@
   "version": "1.0.0",
   "license": "MIT",
   "author": "John Horback",
-  "description": "DataElement base class with root state support",
+  "description": "A DataElement base class for handling data state changes",
   "keywords": [
     "Custom Elements",
     "state management",
@@ -12,6 +12,7 @@
     "react",
     "context api",
     "recoil",
+    "redux",
     "uddf",
     "LitElement",
     "lit-html",

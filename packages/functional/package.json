@@ -4,7 +4,7 @@
   "version": "1.0.0",
   "license": "MIT",
   "author": "John Horback",
-  "description": "Contains methods for functional JavaScript patterns.",
+  "description": "Contains methods for functional JavaScript patterns",
   "keywords": [
     "Functional",
     "compose",

@@ -4,7 +4,7 @@
   "version": "1.0.0",
   "license": "MIT",
   "author": "John Horback",
-  "description": "A DOM based custom element router for client side routing.",
+  "description": "A DOM based custom element router for client side routing",
   "keywords": [
     "Custom Elements",
     "Router",
