@@ -2,12 +2,17 @@ import { EventMapListenAt } from "@domx/eventmap";
 import { customDataElements, DataElement, DataElementCtor } from "./DataElement";
 export { customDataElement, dataProperty }
 export { event } from "@domx/eventmap/decorators";
+export { EventMapListenAt }
 
 
 interface CustomDataElementOptions {
     /** Sets which property is to be used as the stateId; default: stateId */
     stateIdProperty?: string,
-    /** Sets the default event listener element for events; default: "self" */
+    /**
+     * Sets the default event listener element for events;
+     * can be "self", "parent", or "window";
+     * default: "self"
+     */
     eventsListenAt?: EventMapListenAt|string
 }
 

@@ -58,7 +58,8 @@ npm install @domx/dataelement
 This is a contrived example showing default usage of a DataElement.
 
 ```js
-import { customDataElement, DataElement, event } from "@domx/dataelement";
+import { DataElement } from "@domx/dataelement";
+import { customDataElement, event } from "@domx/dataelement/decorators";
 
 @customDataElement("session-data", {
     eventsListenAt: "window"
@@ -324,7 +325,8 @@ correctly so that they can be identified and correctly updated by view component
 perform much of that overhead.
 ### Example
 ```js
-import {customDataElement, event} from "@domx/dataelement";
+import { DataElement } from "@domx/dataelement";
+import { customDataElement, event } from "@domx/dataelement/decorators";
 import { produce } from "immer";
 
 @customDataElement("user-data")
@@ -366,7 +368,9 @@ for more information.
 `StateChange` is included as an DataElement export.
 ### Example
 ```js
-import {customDataElement, event, StateChange, applyImmerToStateChange} from "@domx/dataelement";
+import { StateChange } from "@domx/dataelement";
+import { applyImmerToStateChange } from "@domx/dataelement/middleware";
+import { customDataElement, event } from "@domx/dataelement/decorators";
 
 // this can be called just once for the entire application,
 // so it can be added in a root page.

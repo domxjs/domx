@@ -1,7 +1,7 @@
 {
   "name": "@domx/testutils",
   "type": "module",
-  "version": "0.2.1",
+  "version": "1.0.0",
   "license": "MIT",
   "author": "John Horback",
   "description": "Common testing utility scripts",

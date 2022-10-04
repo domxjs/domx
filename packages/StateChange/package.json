@@ -19,11 +19,11 @@
   "main": "StateChange.js",
   "types": "StateChange.d.ts",
   "dependencies": {
-    "@domx/middleware": "0.2.9",
+    "@domx/middleware": "1.0.0",
     "immer": "9.0.15"
   },
   "devDependencies": {
-    "@domx/testutils": "0.2.1"
+    "@domx/testutils": "1.0.0"
   },
   "scripts": {
     "build": "tsc",
