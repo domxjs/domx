@@ -67,7 +67,7 @@ class DomxRouteData extends DataElement {
     locationChanged() {
         const location = this.__location as RouteLocation;
         const {matches, routeParams: routeData, routeTailParam, tail} = Router.matchRoute(this, location.url);
-        this.dispatchChange("state", {
+        this.state = {
             routeId: this.routeId as string,
             url: location.url,
             parentRoute: this.parentRoute,
@@ -76,7 +76,8 @@ class DomxRouteData extends DataElement {
             routeParams: routeData,            
             queryParams: location.queryParams,
             tail
-        });
+        };
+        this.dispatchChange("state");
     }
 
     connectedCallback() {

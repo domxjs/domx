@@ -1,5 +1,6 @@
 import { QueryParams } from "@domx/router/Router";
 import { Route } from "@domx/Router";
+import "@domx/router/domx-route";
 import { LitElement, html, css } from "lit";
 import { customElement, property } from "lit/decorators.js";
 
@@ -7,6 +8,9 @@ const dxStyles = css`
 em, .loud {
   background-color: #cfc776;
   color: black;
+}
+a {
+  color: white;
 }
 `;
 
@@ -79,3 +83,30 @@ export class DxP4 extends LitElement {
   }
 }
 
+
+@customElement('dx-p5')
+export class DxP5 extends LitElement {
+  static styles = dxStyles;
+
+  render() {
+    return html`
+      <h1>Page 5</h1>
+      
+      <div>
+        <a href="/demo/page5/page1">Page 1</a> | 
+        <a href="/demo/page5/page2">Page 2</a>
+      </div>
+      <p>
+        Testing internal routes (navigate back test)
+      </p>
+      <domx-route
+        pattern="/demo/page5/page1"
+        element="dx-p1"
+      ></domx-route>
+      <domx-route
+        pattern="/demo/page5/page2"
+        element="dx-p2"
+      ></domx-route>
+    `;
+  }
+}

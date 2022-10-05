@@ -11,7 +11,7 @@ assignees: jhorback
 - [ ] Name; v0.0.0
 
 ## Development
-- [ ] Checkout package branch.
+- [ ] Create new feature branch.
 - [ ] Merge master into branch.
 - [ ] Develop and commit to branch until feature completion.
 
@@ -23,6 +23,7 @@ assignees: jhorback
 - [ ] Update root readme, and changelog.
 - [ ] Confirm tests / build passing
 - [ ] Merge into master.
+- [ ] Merge into package branch (for test reporting)
 
 ## Update master version
 - [ ] Confirm tests / build passing after merger
