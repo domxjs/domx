@@ -3,6 +3,7 @@ import { customElement, property, query } from "lit/decorators.js";
 import { applyDataElementRdtLogging, applyEventMapLogging } from "@domx/dataelement/middleware";
 import { Route } from "@domx/router";
 import { DomxRoute, RouteActiveChangedEvent } from "@domx/router/domx-route";
+import "@domx/router/domx-route";
 import "@domx/router/domx-route-not-found";
 import "./dx-page-not-found";
 import "./dx-pages";
@@ -35,6 +36,7 @@ export class DxRouterDemo extends LitElement {
         <a href="/demo/page2">Page 2</a> |
         <a href="/demo/page2/testValue">page2/testValue</a> |
         <a href="/demo/page2/page3">Page 3</a> |
+        <a href="/demo/page5">Page 5</a> |
         <a href="/demo/not/found">Not Found</a>
       </div>
       <div style="padding:1rem 0;">
@@ -48,6 +50,11 @@ export class DxRouterDemo extends LitElement {
         .parentRoute="${this.parentRoute}"
         pattern="/(page1)"
         element="dx-p1"
+      ></domx-route>
+      <domx-route
+        .parentRoute="${this.parentRoute}"
+        pattern="/page5(/*routeTail)"
+        element="dx-p5"
       ></domx-route>
       <domx-route
         .parentRoute="${this.parentRoute}"
