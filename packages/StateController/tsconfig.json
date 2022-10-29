@@ -1,0 +1,18 @@
+{
+  // @domx/DataElement
+  "composite": true,
+  "extends": "../../tsconfig.json",  
+  "compilerOptions": {
+    "tsBuildInfoFile": "./tsconfig.StateControler.tsbuildinfo",
+    "outDir": "./",
+    "rootDir": "./src",
+  },
+  "include": [
+    "./src/**/*"
+  ],
+  "exclude": [
+    "./src/**/*.spec.ts"
+  ],
+  "references": [
+  ]
+}

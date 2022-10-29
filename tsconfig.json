@@ -35,7 +35,6 @@
       }
     ]
   },
-
   "files": [],
   "references": [
     { "path": "./packages/functional" },
@@ -45,6 +44,7 @@
     { "path": "./packages/StateChange" },
     { "path": "./packages/testUtils" },
     { "path": "./packages/DataElement" },
-    { "path": "./packages/Router" }
+    { "path": "./packages/Router" },
+    { "path": "./packages/StateController" }
   ]
 }
