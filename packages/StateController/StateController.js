@@ -1,8 +1,11 @@
-class RootStateChangeEvent extends Event {
-    constructor(event, rootState) {
+export class RootStateChangeEvent extends Event {
+    constructor(event, rootState, controller, statePath, state) {
         super(RootStateChangeEvent.eventType);
         this.event = event;
-        this.rootState = rootState;
+        this.rootState = Object.assign({}, rootState);
+        this.controller = controller;
+        this.statePath = statePath;
+        this.state = Object.assign({}, state);
     }
 }
 RootStateChangeEvent.eventType = "rootstate-change";
@@ -16,7 +19,7 @@ class StatePathChangeEvent extends Event {
     }
 }
 const rootState = {};
-class RootState {
+export class RootState {
     static addStateChangeEventListener(statePath, listener, signal) {
         this.bus.addEventListener(statePath, listener, { signal });
         const count = this.listenerCounts[statePath];
@@ -30,6 +33,12 @@ class RootState {
             }
         });
     }
+    static addRootStateChangeEventListener(listener, signal) {
+        this.bus.addEventListener(RootStateChangeEvent.eventType, listener, { signal });
+        signal && signal.addEventListener("abort", () => {
+            const test = "this should be called";
+        });
+    }
     static get(name) {
         const value = rootState[name];
         return value === undefined ? null : value;
@@ -37,15 +46,17 @@ class RootState {
     static change(controller, event, statePath, state) {
         rootState[statePath] = state;
         this.bus.dispatchEvent(new StatePathChangeEvent(controller, statePath, state));
-        this.bus.dispatchEvent(new RootStateChangeEvent(event, rootState));
+        this.bus.dispatchEvent(new RootStateChangeEvent(event, rootState, controller, statePath, state));
         return true;
     }
+    static get current() { return rootState; }
+    ;
 }
 RootState.bus = new EventTarget();
 RootState.listenerCounts = {};
 const stateControllerIndexedProxyHandler = {
     get: (target, property) => target[property],
-    set: (target, property, value) => target[property] = value && true
+    set: (target, property, value) => target[property] = value
 };
 export class StateController {
     constructor(host) {
@@ -63,7 +74,7 @@ export class StateController {
         this.stateProperties.push(name);
     }
     hostConnected() {
-        this.stateProperties.forEach(this.initState);
+        this.stateProperties.forEach(name => this.initState(name));
     }
     requestUpdate(event) {
         this.stateProperties.forEach(name => RootState.change(this, event, this.getStateName(name), this[name]));

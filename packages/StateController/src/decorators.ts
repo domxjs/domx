@@ -23,7 +23,6 @@ const eventDecorator = (eventTarget:EventTarget, eventClass:EventClass, controll
         apply: (hostConnected, thisArg, args) => {
             eventTarget.addEventListener(eventClass.eventType, async (event:Event) => {
                 await controller[propertyKey](event);
-                controller.requestUpdate(event);
             }, {
                 signal: controller.abortController.signal
             } as EventListenerOptions);
