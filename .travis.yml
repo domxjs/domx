@@ -52,6 +52,9 @@ matrix:
   - name: Router
     env: PACKAGE_LOCATION=packages/Router
     if: branch = packages/Router
+  - name: StateController
+    env: PACKAGE_LOCATION=packages/StateController
+    if: branch = packages/StateController
 
 script:
   - npm run clean

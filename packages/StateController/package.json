@@ -1,0 +1,43 @@
+{
+  "name": "@domx/statecontroller",
+  "type": "module",
+  "version": "0.1.0",
+  "license": "MIT",
+  "author": "John Horback",
+  "description": "A StateController base class for handling data state changes on a LitElement",
+  "keywords": [
+    "Custom Elements",
+    "ReactiveController",
+    "ReactiveControllerHost",
+    "state management",
+    "redux toolkit",
+    "react",
+    "context api",
+    "recoil",
+    "redux",
+    "uddf",
+    "LitElement",
+    "lit-html",
+    "lit",
+    "reducers",
+    "functional",
+    "Immer"
+  ],
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/domxjs/domx.git",
+    "directory": "packages/StateController"
+  },
+  "homepage": "https://github.com/domxjs/domx/blob/master/packages/StateController/README.md",
+  "main": "index.js",
+  "types": "index.d.ts",
+  "scripts": {
+    "build": "tsc --build",
+    "clean": "tsc --build --clean"
+  },
+  "dependencies": {
+  },
+  "devDependencies": {
+    "@domx/testutils": "1.0.0"
+  }
+}
