@@ -27,7 +27,7 @@
     "badges": "node ./src/scripts/badges.js",
     "publish:all": "npm publish --access public --workspaces",
     "prepare": "npm run build",
-    "test:package": "jest --coverage --coverage-directory=\"./packages/Router/.coverage\" --collectCoverageFrom=\"./packages/Router/**/!(*.d).ts\" \"./packages/Router\""
+    "test:package": "jest --coverage --coverage-directory=\"./packages/StateController/.coverage\" --collectCoverageFrom=\"./packages/StateController/**/!(*.d).ts\" \"./packages/StateController\""
   },
   "dependencies": {
     "@domx/dataelement": "1.0.0",

@@ -1,4 +1,4 @@
-import { DataElement,  } from "@domx/dataelement";
+import { DataElement } from "@domx/dataelement";
 import { customDataElement, dataProperty, event } from "@domx/dataelement/decorators";
 import { Router } from ".";
 import { RouteLocation, LocationChangedDetail, QueryParams } from "./Router";
