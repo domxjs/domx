@@ -7,7 +7,7 @@ import { fixture } from "@domx/testutils/fixture";
 
 describe("StateController", () => {
     describe("state properties", () => {
-        it("can define an element", () => {
+        it("can be instantiated on an element", () => {
             const el = fixture<TestElement1>(html`<test-element-1></test-element-1>`);
             expect(el.testState instanceof StateController).toBe(true);
             el.restore();
@@ -27,9 +27,14 @@ describe("StateController", () => {
             el.restore();
         });
 
+        it("sets the initial state when stateId is coming from an attribute", () => {
+            const el = fixture<TestElement1>(html`<test-element-1 uid="test2-uid"></test-element-1>`);
+            expect(RootState.current['TestStateController1.test2-uid.state']).toMatchObject({ foo: "bar"})
+            el.restore();
+        });
+
         it("sets the initial state without a stateId", () => {
             const el = fixture<TestElement2>(html`<test-element-2></test-element-2>`);
-            console.log(RootState.current);
             expect(RootState.current['TestStateController2.state']).toMatchObject({ foo: "bar"});
             el.restore();
         });
@@ -92,93 +97,88 @@ describe("StateController", () => {
             el.restore();
         });
 
-        describe("RootState", () => {
-            it("removes state when element is removed", () => {
-                const el = fixture<TestElement1>(html`<test-element-1></test-element-1>`);
-                el.testState.state = { foo: "baz"};
-                el.testState.requestUpdate("test");
-                expect(RootState.current['TestStateController1.test1-uid.state']).toMatchObject({ foo: "baz"});
-                el.parentElement?.removeChild(el);
-                expect(RootState.current['TestStateController1.test1-uid.state']).toBeUndefined();
-                el.restore();
-            });
-    
-            it("removes state when elements are removed", () => {
-                const el = fixture<TestElement1>(html`<test-element-1></test-element-1>`);
-                el.testState.state = { foo: "baz"};
-                el.testState.requestUpdate("test");
-                expect(RootState.current['TestStateController1.test1-uid.state']).toMatchObject({ foo: "baz"});
-                const el2 = document.createElement("test-element-1") as TestElement1;
-                el.parentElement?.appendChild(el2);
-                expect(RootState.current['TestStateController1.test1-uid.state']).toMatchObject({ foo: "baz"});
-                el.parentElement?.removeChild(el2);
-                expect(RootState.current['TestStateController1.test1-uid.state']).toMatchObject({ foo: "baz"});
-                el.parentElement?.removeChild(el);
-                expect(RootState.current['TestStateController1.test1-uid.state']).toBeUndefined();
-                el.restore();
-            });
-
-            it("dispatches root state change events", () => {
-                let state = {};
-                const abort = new AbortController();
-                RootState.addRootStateChangeEventListener(event => {
-                    state = event.rootState;
-                }, abort.signal);
-                const el = fixture<TestElement1>(html`<test-element-1></test-element-1>`);
-                expect(state).toMatchObject({
-                    "TestStateController1.test1-uid.state": { foo: "bar"}
-                })
-                abort.abort();
-                el.restore();
-            });
-            it("matches when items are removed", () => {
-                let state = {};
-                const abort = new AbortController();
-                RootState.addRootStateChangeEventListener(event => {
-                    state = event.rootState;
-                }, abort.signal);
-                const el = fixture<TestElement1>(html`<test-element-1></test-element-1>`);
-                expect(state).toMatchObject({
-                    "TestStateController1.test1-uid.state": { foo: "bar"}
-                });
-                el.restore();
-                expect(state).toMatchObject({});
-                abort.abort();
-            });
-
-            it("matches when items are removed", () => {
-                let state = {};
-                const abort = new AbortController();
-                RootState.addRootStateChangeEventListener(event => {
-                    state = event.rootState;
-                }, abort.signal);
-                const el = fixture<TestElement1>(html`<test-element-1></test-element-1>`);
-                expect(state).toMatchObject({
-                    "TestStateController1.test1-uid.state": { foo: "bar"}
-                });
-                el.testState.state = { foo: "baz"};
-                el.testState.requestUpdate("test");
-                expect(state).toMatchObject({
-                    "TestStateController1.test1-uid.state": { foo: "baz"}
-                });
-                abort.abort();
-                el.testState.state = { foo: "ban"};
-                el.testState.requestUpdate("test");
-                expect(state).toMatchObject({
-                    "TestStateController1.test1-uid.state": { foo: "baz"}
-                });
-                el.restore();
-            });
-        });
+        
 
     });
 
+    describe("RootState", () => {
+        it("removes state when element is removed", () => {
+            const el = fixture<TestElement1>(html`<test-element-1></test-element-1>`);
+            el.testState.state = { foo: "baz"};
+            el.testState.requestUpdate("test");
+            expect(RootState.current['TestStateController1.test1-uid.state']).toMatchObject({ foo: "baz"});
+            el.parentElement?.removeChild(el);
+            expect(RootState.current['TestStateController1.test1-uid.state']).toBeUndefined();
+            el.restore();
+        });
 
-/*
-jch - finish tests
-decorators.spec.ts
-test - when the UI sets the state when connected (initialization of state from UI)
-*/
+        it("removes state when elements are removed", () => {
+            const el = fixture<TestElement1>(html`<test-element-1></test-element-1>`);
+            el.testState.state = { foo: "baz"};
+            el.testState.requestUpdate("test");
+            expect(RootState.current['TestStateController1.test1-uid.state']).toMatchObject({ foo: "baz"});
+            const el2 = document.createElement("test-element-1") as TestElement1;
+            el.parentElement?.appendChild(el2);
+            expect(RootState.current['TestStateController1.test1-uid.state']).toMatchObject({ foo: "baz"});
+            el.parentElement?.removeChild(el2);
+            expect(RootState.current['TestStateController1.test1-uid.state']).toMatchObject({ foo: "baz"});
+            el.parentElement?.removeChild(el);
+            expect(RootState.current['TestStateController1.test1-uid.state']).toBeUndefined();
+            el.restore();
+        });
+
+        it("dispatches root state change events", () => {
+            let state = {};
+            const abort = new AbortController();
+            RootState.addRootStateChangeEventListener(event => {
+                state = event.rootState;
+            }, abort.signal);
+            const el = fixture<TestElement1>(html`<test-element-1></test-element-1>`);
+            expect(state).toMatchObject({
+                "TestStateController1.test1-uid.state": { foo: "bar"}
+            })
+            abort.abort();
+            el.restore();
+        });
+        it("matches when items are removed", () => {
+            let state = {};
+            const abort = new AbortController();
+            RootState.addRootStateChangeEventListener(event => {
+                state = event.rootState;
+            }, abort.signal);
+            const el = fixture<TestElement1>(html`<test-element-1></test-element-1>`);
+            expect(state).toMatchObject({
+                "TestStateController1.test1-uid.state": { foo: "bar"}
+            });
+            el.restore();
+            expect(state).toMatchObject({});
+            abort.abort();
+        });
+
+        it("matches when items are removed", () => {
+            let state = {};
+            const abort = new AbortController();
+            RootState.addRootStateChangeEventListener(event => {
+                state = event.rootState;
+            }, abort.signal);
+            const el = fixture<TestElement1>(html`<test-element-1></test-element-1>`);
+            expect(state).toMatchObject({
+                "TestStateController1.test1-uid.state": { foo: "bar"}
+            });
+            el.testState.state = { foo: "baz"};
+            el.testState.requestUpdate("test");
+            expect(state).toMatchObject({
+                "TestStateController1.test1-uid.state": { foo: "baz"}
+            });
+            abort.abort();
+            el.testState.state = { foo: "ban"};
+            el.testState.requestUpdate("test");
+            expect(state).toMatchObject({
+                "TestStateController1.test1-uid.state": { foo: "baz"}
+            });
+            el.restore();
+        });
+    });
     
 });
 
@@ -205,7 +205,6 @@ class TestStateController2 extends StateController {
 class TestStateController1 extends StateController {
     static defaultState:ITestControllerStateData = { foo: "bar"};
 
-    //@trackState()
     state:ITestControllerStateData = TestStateController1.defaultState;
 
     constructor(host:LitElement & {stateId:string}) {
@@ -213,7 +212,6 @@ class TestStateController1 extends StateController {
         this.trackState("state");
     }
 
-    //@windowEvent(TestEvent)
     someEvent(event:TestEvent) {
         this.state.foo = "baz";
     }
@@ -223,7 +221,7 @@ class TestStateController1 extends StateController {
         // use immer on state!
         // does immer work with async stuff?
         // can do an await and change properties
-        // Produce.of(this, "state")
+        // Produce.of<ITestControllerStateData>(this, "state")
         //      .next(doStuff)
         //      .requestUpdate(event) // would show same event at two different locations
         //                               how do draw the connection between those? May be fine

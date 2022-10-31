@@ -64,9 +64,6 @@ export class RootState {
         this.bus.addEventListener(RootStateChangeEvent.eventType,
             listener as EventListener,
             {signal} as AddEventListenerOptions);
-        signal && signal.addEventListener("abort", () => {
-            const test = "this should be called";
-        });
     }
 
     static get<T>(name:string):T|null {
@@ -101,14 +98,17 @@ export class StateController implements ReactiveController {
         this.host.stateId : null };
 
     constructor(host: LitElement) {
-        (this.host = host).addController(this);
+        this.host = host;
+        this.stateProperties = this.stateProperties || [];
+        this.abortController = new AbortController();
+        this.host.addController(this);
         return new Proxy(this, stateControllerIndexedProxyHandler);
     }
 
     host: LitElement & {stateId?:string};
 
-    stateProperties:Array<string> = [];
-    abortController:AbortController = new AbortController();
+    stateProperties!:Array<string>;
+    abortController:AbortController;
 
     trackState(name:string):void {
         this.stateProperties.push(name);
