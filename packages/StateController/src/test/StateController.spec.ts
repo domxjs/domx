@@ -210,27 +210,6 @@ class TestStateController1 extends StateController {
         super(host);
         this.trackState("state");
     }
-
-    someEvent(event:TestEvent) {
-        this.state.foo = "baz";
-    }
-
-    //@hostEvent(TestEvent)
-    async someEvent2(event:TestEvent) {
-        // use immer on state!
-        // does immer work with async stuff?
-        // can do an await and change properties
-        // Produce.of<ITestControllerStateData>(this, "state")
-        //      .next(doStuff)
-        //      .requestUpdate(event) // would show same event at two different locations
-        //                               how do draw the connection between those? May be fine
-        //      .next(doAsyncStuff)
-        //      .next()
-        // 
-        // this.state = await produce(this.state, doAsyncStuff)
-        this.state.foo = "baz";
-        this.requestUpdate(event);
-    }
 }
 
 
@@ -247,8 +226,7 @@ class TestElement1 extends LitElement {
     @property({type: String})
     uid!:string;
 
-    //@controller(TestStateController, () => this.uid)
-    testState = new TestStateController1(this);
+    testState:TestStateController1 = new TestStateController1(this);
 
     constructor() {
         super();

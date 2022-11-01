@@ -37,8 +37,11 @@ type StateChangeEventListener = (event:StatePathChangeEvent) => void;
 type RootStateChangeEventListener = (event:RootStateChangeEvent) => void;
 
 
-const rootState:RootStateContainer = {};
+let rootState:RootStateContainer = {};
 
+/**
+ * Class used to track root state changes
+ */
 export class RootState {
 
     private static bus = new EventTarget();
@@ -76,6 +79,12 @@ export class RootState {
         this.bus.dispatchEvent(new StatePathChangeEvent(controller, statePath, state));
         this.bus.dispatchEvent(new RootStateChangeEvent(event, rootState, controller, statePath, state));
         return true;
+    }
+
+    static push(state:RootStateContainer) {
+        rootState = state;
+        Object.keys(state).forEach(key =>
+            this.bus.dispatchEvent(new StatePathChangeEvent(null, key, rootState[key])));
     }
 
     static get current():RootStateContainer { return rootState; };
