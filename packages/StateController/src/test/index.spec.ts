@@ -5,7 +5,7 @@ import {
     windowEvent,
     trackState,
     Product,
-    applyRdtLogging
+    connectRdtLogger
 } from "../index";
 
 describe("DataElement index", () => {
@@ -15,6 +15,6 @@ describe("DataElement index", () => {
         expect(windowEvent).toBeDefined();
         expect(trackState).toBeDefined();
         expect(Product).toBeDefined();
-        expect(applyRdtLogging).toBeDefined();
+        expect(connectRdtLogger).toBeDefined();
     });
 });

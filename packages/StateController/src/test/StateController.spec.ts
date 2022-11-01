@@ -139,6 +139,7 @@ describe("StateController", () => {
             abort.abort();
             el.restore();
         });
+
         it("matches when items are removed", () => {
             let state = {};
             const abort = new AbortController();
@@ -175,6 +176,16 @@ describe("StateController", () => {
             expect(state).toMatchObject({
                 "TestStateController1.test1-uid.state": { foo: "baz"}
             });
+            el.restore();
+        });
+
+        it("can push changes", () => {
+            const el = fixture<TestElement1>(html`<test-element-1 uid="test2-uid"></test-element-1>`);
+            expect(RootState.current["TestStateController1.test2-uid.state"]).toMatchObject({ foo: "bar"});
+            RootState.push({
+                "TestStateController1.test2-uid.state": { foo: "baz" }
+            });
+            expect(RootState.current["TestStateController1.test2-uid.state"]).toMatchObject({ foo: "baz"});
             el.restore();
         });
     });

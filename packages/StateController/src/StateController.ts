@@ -103,9 +103,13 @@ const stateControllerIndexedProxyHandler:ProxyHandler<StateController> = {
 export class StateController implements ReactiveController {
     [name:string]: any;
 
+    /** Returns the stateId property from the host element if defined */
     get stateId():string|null { return this.host.stateId !== undefined ? 
         this.host.stateId : null };
 
+    /**
+     * Initializes the StateController
+     */
     constructor(host: LitElement) {
         this.host = host;
         this.stateProperties = this.stateProperties || [];
@@ -114,23 +118,32 @@ export class StateController implements ReactiveController {
         return new Proxy(this, stateControllerIndexedProxyHandler);
     }
 
+    /** The element that the controller is attached to */
     host: LitElement & {stateId?:string};
 
+    /** An array of state property names */
     stateProperties!:Array<string>;
+
+    /** Used to signal when the host has been disconnected */
     abortController:AbortController;
 
+    /** Adds a state property name to track; can also use the @{link trackState} decorator */
     trackState(name:string):void {
         this.stateProperties.push(name);
     }
 
-    hostConnected() {
-        this.stateProperties.forEach(name => this.initState(name));
-    }
-
+    /**
+     * Notifies the root state of the change and calls requestUpdate on the host.
+     * @param event The event responsible for the update
+     */
     requestUpdate(event:Event|string) {
         this.stateProperties.forEach(name =>
             RootState.change(this, event, this.getStateName(name), this[name]));
         this.host.requestUpdate();
+    }
+
+    hostConnected() {
+        this.stateProperties.forEach(name => this.initState(name));
     }
 
     hostDisconnected() {

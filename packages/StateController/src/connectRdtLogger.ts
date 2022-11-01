@@ -1,5 +1,5 @@
 import { RootState, RootStateChangeEvent } from "./StateController";
-export { applyRdtLogging }
+export { connectRdtLogger }
 
 /*
  * Redux Dev Tools
@@ -18,28 +18,51 @@ let _rdtLogger:RdtLogger|null|undefined = undefined;
  * to the root state and any connected controllers
  * @param name the name of the dev tools instance
  */
-const applyRdtLogging = (name?:string):void => {
-
+const connectRdtLogger = (name?:string):RdtLogger|null => {
     // singleton; return if defined
-    if (_rdtLogger !== undefined) {
-        return;
-    }
-
-    // set the logger to null if no extension is installed
-    // otherwise create the logger
-    _rdtLogger = !window.__REDUX_DEVTOOLS_EXTENSION__ ? null :
-        new RdtLogger(window.__REDUX_DEVTOOLS_EXTENSION__, name);
+    _rdtLogger = _rdtLogger !== undefined ? _rdtLogger :
+        // set the logger to null if no extension is installed
+        !window.__REDUX_DEVTOOLS_EXTENSION__ ? null :
+            // otherwise create the logger
+            new RdtLogger(window.__REDUX_DEVTOOLS_EXTENSION__, name).connect();
+    return _rdtLogger;
 };
 
 
 class RdtLogger {
-    rdtExtension:DevToolsExtension;
-    rdt:DevToolsInstance;
+    private name?:string;
+    private isConnected:boolean;
+    private rdtExtension:DevToolsExtension;
+    private rdt:DevToolsInstance|null;
+    private abortController:AbortController;
 
     constructor(rdtExtension:DevToolsExtension, name?:string, ) {
+        this.name = name;
+        this.isConnected = false;
+        this.abortController = new AbortController();
         this.rdtExtension = rdtExtension;
-        this.rdt = this.connectToDevTools(name);
+        this.rdt = null;
+    }
+
+    connect() {
+        if (this.isConnected) {
+            return this;
+        }
+
+        this.rdt = this.connectToDevTools(this.name);
         this.listenForRootstateChanges();
+        this.isConnected = true;
+        return this;
+    }
+
+    disconnect() {
+        if (this.isConnected === false) {
+            return;
+        }
+        
+        this.rdt?.unsubscribe();
+        this.abortController.abort();
+        _rdtLogger = undefined;
     }
 
     /**
@@ -55,7 +78,9 @@ class RdtLogger {
 
     private listenForRootstateChanges() {
         RootState.addRootStateChangeEventListener((event:RootStateChangeEvent) =>
-            this.rdt.send(this.getDevToolsActionFromEvent(event.event), event.rootState));
+            this.rdt?.send(this.getDevToolsActionFromEvent(event.event), event.rootState)), {
+                signal: this.abortController.signal
+            };
     }
 
     private getDevToolsActionFromEvent(event:Event|string):DevToolsAction {
@@ -78,7 +103,7 @@ class RdtLogger {
         if (this.canHandleUpdate(data)) {
             RootState.push(data.state);
         } else {
-            this.rdt.error(`DataElement RDT logging does not support payload type: ${data.type}:${data.payload.type}`);
+            this.rdt?.error(`DataElement RDT logging does not support payload type: ${data.type}:${data.payload.type}`);
         }
     }
 
@@ -98,13 +123,13 @@ class RdtLogger {
 
 
  
-interface DevToolsExtension {
+export interface DevToolsExtension {
     /** Creates a new dev tools extension instance. */
     connect({name}:{name?:string}):DevToolsInstance
 }
 
 
-interface DevToolsInstance {
+export interface DevToolsInstance {
     /** Sends the initial state to the monitor. */
     init(state:any): void,
     /** 
