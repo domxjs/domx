@@ -21,8 +21,7 @@
   "main": "StateChange.js",
   "types": "StateChange.d.ts",
   "dependencies": {
-    "@domx/middleware": "1.0.0",
-    "immer": "9.0.15"
+    "@domx/middleware": "1.0.0"
   },
   "devDependencies": {
     "@domx/testutils": "1.0.0"

@@ -1,7 +1,6 @@
 import { html, LitElement } from "lit";
 import { customElement, property } from "lit/decorators.js";
 import { StateController, RootState } from "../StateController";
-import { windowEvent, hostEvent } from "../decorators";
 import { fixture } from "@domx/testutils/fixture";
 
 

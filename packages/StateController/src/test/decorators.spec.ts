@@ -92,16 +92,16 @@ class TestStateController1 extends StateController {
     static defaultState:ITestControllerStateData = { foo: "bar"};
 
     @trackState()
-    state:ITestControllerStateData = {...TestStateController1.defaultState};
+    state:ITestControllerStateData = TestStateController1.defaultState;
 
     @windowEvent(TestWindowEvent)
     testWindowEvent(event:TestWindowEvent) {
-        this.state.foo = event.testValue;
+        this.state = { foo: event.testValue };
     }
 
     @hostEvent(TestHostEvent)
     testHostEvent(event:TestHostEvent) {
-        this.state.foo = event.testValue;
+        this.state = { foo: event.testValue };
     }
 }
 

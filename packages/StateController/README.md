@@ -2,3 +2,7 @@
 
 A `StateController` base class for handling data state changes on a LitElement
 
+
+**Documentation Notes**
+
+For dispatchHostEvent - can put a blurb in about using that to force all async events to go through the controller

@@ -5,7 +5,8 @@ import {
     RootStateChangeEvent,
     hostEvent,
     windowEvent,
-    trackState    
+    trackState,
+    Product
 } from "../index";
 
 describe("DataElement index", () => {
@@ -16,5 +17,6 @@ describe("DataElement index", () => {
         expect(hostEvent).toBeDefined();
         expect(windowEvent).toBeDefined();
         expect(trackState).toBeDefined();
+        expect(Product).toBeDefined();
     });
 });
