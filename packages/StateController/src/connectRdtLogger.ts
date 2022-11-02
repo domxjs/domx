@@ -34,7 +34,7 @@ export class RdtLogger {
     isConnected:boolean;
     private name?:string;
     private rdtExtension:DevToolsExtension;
-    private rdt:DevToolsInstance|null;
+    private rdt!:DevToolsInstance;
     private abortController:AbortController;
 
     constructor(rdtExtension:DevToolsExtension, name?:string, ) {
@@ -42,7 +42,6 @@ export class RdtLogger {
         this.isConnected = false;
         this.abortController = new AbortController();
         this.rdtExtension = rdtExtension;
-        this.rdt = null;
     }
 
     connect() {
@@ -61,7 +60,7 @@ export class RdtLogger {
             return;
         }
         
-        this.rdt?.unsubscribe();
+        this.rdt.unsubscribe();
         this.abortController.abort();
         this.isConnected = false;
         _rdtLogger = undefined;
@@ -80,7 +79,7 @@ export class RdtLogger {
 
     private listenForRootstateChanges() {
         RootState.addRootStateChangeEventListener((event:RootStateChangeEvent) =>
-            this.rdt?.send(this.getDevToolsActionFromEvent(event.event), event.rootState)), {
+            this.rdt.send(this.getDevToolsActionFromEvent(event.event), event.rootState)), {
                 signal: this.abortController.signal
             };
     }
@@ -105,7 +104,7 @@ export class RdtLogger {
         if (this.canHandleUpdate(data)) {            
             RootState.push(JSON.parse(data.state));
         } else {
-            this.rdt?.error(`DataElement RDT logging does not support payload type: ${data.type}:${data.payload.type}`);
+            this.rdt.error(`DataElement RDT logging does not support payload type: ${data.type}:${data.payload.type}`);
         }
     }
 
