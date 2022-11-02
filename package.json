@@ -22,6 +22,7 @@
     "build": "tsc --build && vite build && npm outdated --workspaces",
     "clean": "tsc --build --clean",
     "test": "tsc --build && jest",
+    "test:no-cache": "tsc --build && jest --no-cache",
     "test:watch": "tsc --build && jest --watch",
     "test:coverage": "tsc --build && jest --coverage --collectCoverageFrom=\"./packages/**/!(*.d).ts\"",
     "badges": "node ./src/scripts/badges.js",
@@ -32,6 +33,7 @@
   "dependencies": {
     "@domx/dataelement": "1.0.0",
     "@domx/router": "1.0.1",
+    "@domx/statecontroller": "0.1.0",
     "@vanillawc/wc-markdown": "^1.6.10",
     "immer": "9.0.15",
     "lit": "2.3.1"

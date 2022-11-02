@@ -2,4 +2,4 @@
 /index.*
 /Product.*
 /StateController.*
-/rdtLogging.*
+/connectRdtLogger.*

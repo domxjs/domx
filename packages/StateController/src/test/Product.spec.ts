@@ -214,7 +214,7 @@ class TestStateController1 extends StateController {
     @hostEvent(TestNextEvent)
     testNext(event:TestNextEvent) {
         Product.of<ITestState>(this, "state")
-            .next(setFooTrue)
+            .next(setFoo(true))
             .next(setBarTrue)
             .requestUpdate(event);
     }
@@ -259,15 +259,19 @@ class TestStateController1 extends StateController {
 }
 
 const testFunctionalStaticMethods = (product:Product<ITestState>) => {
-    Product.next(setFooTrue);
-    Product.tap(setBarTrueWithTap);
+    Product.next(setFooTrue)(product);
+    Product.tap(setBarTrueWithTap)(product);
     Product.getState(product);
-    Product.dispatchHostEvent(new CurrentStateEvent(product.getState()));
-    Product.requestUpdate("test");
-    Product.tapWith(product);
-    Product.nextWith(product);
+    Product.dispatchHostEvent(new CurrentStateEvent(product.getState()))(product);
+    Product.requestUpdate("test")(product);
+    Product.tapWith(product)(setBarTrueWithTap)
+    Product.nextWith(product)(setFooTrue);
 };
 
+
+const setFoo = (isFoo:boolean) => (state:ITestState) => {
+    state.foo = isFoo;
+};
 
 const setFooTrue = (state:ITestState) => {
     state.foo = true;
