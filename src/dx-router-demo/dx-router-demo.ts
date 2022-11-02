@@ -7,6 +7,7 @@ import "@domx/router/domx-route";
 import "@domx/router/domx-route-not-found";
 import "./dx-page-not-found";
 import "./dx-pages";
+import "./dx-state-test";
 import { dxStyles } from "./dxStyles";
 
 
@@ -83,7 +84,13 @@ export class DxRouterDemo extends LitElement {
       <div class="highlight">
         <h3>Container</h3>
       </div>
-    `
+      <div>
+        <h3>State Controller Test</h3>
+        <dx-state-test input-id="1">1</dx-state-test>
+        <dx-state-test input-id="1">1</dx-state-test>
+        <dx-state-test input-id="2">2</dx-state-test>
+      </div>
+    `;
   }
 
   testNavigate() {

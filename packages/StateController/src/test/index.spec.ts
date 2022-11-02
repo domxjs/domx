@@ -3,7 +3,9 @@ import {
     StateController,
     hostEvent,
     windowEvent,
-    trackState    
+    stateProperty,
+    Product,
+    connectRdtLogger
 } from "../index";
 
 describe("DataElement index", () => {
@@ -11,6 +13,8 @@ describe("DataElement index", () => {
         expect(StateController).toBeDefined();
         expect(hostEvent).toBeDefined();
         expect(windowEvent).toBeDefined();
-        expect(trackState).toBeDefined();
+        expect(stateProperty).toBeDefined();
+        expect(Product).toBeDefined();
+        expect(connectRdtLogger).toBeDefined();
     });
 });

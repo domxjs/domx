@@ -1,4 +1,5 @@
-/index.*
-/StateChange.*
 /decorators.*
-/rdtLogging.*
+/index.*
+/Product.*
+/StateController.*
+/connectRdtLogger.*

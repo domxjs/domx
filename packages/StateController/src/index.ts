@@ -1,2 +1,4 @@
 export { StateController } from "./StateController";
-export { trackState, hostEvent, windowEvent } from "./decorators";
+export { stateProperty, hostEvent, windowEvent } from "./decorators";
+export { Product } from "./Product";
+export { connectRdtLogger } from "./connectRdtLogger";

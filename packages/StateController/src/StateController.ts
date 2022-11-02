@@ -2,14 +2,21 @@ import { LitElement, ReactiveController, ReactiveControllerHost } from "lit";
 
 
 
-class RootStateChangeEvent extends Event {
+export class RootStateChangeEvent extends Event {
     static eventType = "rootstate-change";
     event:Event|string;
     rootState:RootStateContainer;
-    constructor(event:Event|string, rootState:RootStateContainer) {
+    controller:any;
+    statePath:string;
+    state:any;
+    constructor(event:Event|string, rootState:RootStateContainer,
+        controller:any, statePath:string, state:any) {
         super(RootStateChangeEvent.eventType)
         this.event = event;
-        this.rootState = rootState;
+        this.rootState = {...rootState};
+        this.controller = controller;
+        this.statePath = statePath;
+        this.state = {...state};
     }
 };
 
@@ -27,11 +34,15 @@ class StatePathChangeEvent extends Event {
 
 type RootStateContainer = {[key:string]: any};
 type StateChangeEventListener = (event:StatePathChangeEvent) => void;
+type RootStateChangeEventListener = (event:RootStateChangeEvent) => void;
 
 
-const rootState:RootStateContainer = {};
+let rootState:RootStateContainer = {};
 
-class RootState {
+/**
+ * Class used to track root state changes
+ */
+export class RootState {
 
     private static bus = new EventTarget();
 
@@ -49,7 +60,13 @@ class RootState {
             if (count === 0) {
                 delete rootState[statePath];
             }
-        }); 
+        });
+    }
+
+    static addRootStateChangeEventListener(listener:RootStateChangeEventListener, signal?:AbortSignal) {
+        this.bus.addEventListener(RootStateChangeEvent.eventType,
+            listener as EventListener,
+            {signal} as AddEventListenerOptions);
     }
 
     static get<T>(name:string):T|null {
@@ -60,49 +77,70 @@ class RootState {
     static change<T>(controller:any, event:Event|string, statePath:string, state:T):true {
         rootState[statePath] = state;
         this.bus.dispatchEvent(new StatePathChangeEvent(controller, statePath, state));
-        this.bus.dispatchEvent(new RootStateChangeEvent(event, rootState));
+        this.bus.dispatchEvent(new RootStateChangeEvent(event, rootState, controller, statePath, state));
         return true;
     }
+
+    static push(state:RootStateContainer) {
+        rootState = state;
+        Object.keys(state).forEach(key =>
+            this.bus.dispatchEvent(new StatePathChangeEvent(null, key, rootState[key])));
+    }
+
+    static get current():RootStateContainer { return rootState; };
 }
 
 
 
 const stateControllerIndexedProxyHandler:ProxyHandler<StateController> = {
     get: (target:StateController, property:string) => target[property],
-    set: (target:StateController, property:string, value:any):true =>
-        target[property] = value && true
+    set: (target:StateController, property:string, value:any) =>
+        target[property] = value
 };
 
 
 
 export class StateController implements ReactiveController {
+    static stateProperties:Array<string> = [];
+
     [name:string]: any;
 
+    /** Returns the stateId property from the host element if defined */
     get stateId():string|null { return this.host.stateId !== undefined ? 
         this.host.stateId : null };
 
+    /**
+     * Initializes the StateController
+     */
     constructor(host: LitElement) {
-        (this.host = host).addController(this);
+        this.host = host;
+        this.abortController = new AbortController();
+        this.host.addController(this);
         return new Proxy(this, stateControllerIndexedProxyHandler);
     }
 
+    /** The element that the controller is attached to */
     host: LitElement & {stateId?:string};
 
-    private stateProperties:Array<string> = [];
-    abortController:AbortController = new AbortController();
+    /** Used to signal when the host has been disconnected */
+    abortController:AbortController;
 
-    trackState(name:string):void {
-        this.stateProperties.push(name);
+    private get stateProperties():Array<string> {
+        return (this.constructor as typeof StateController).stateProperties;
     }
 
-    hostConnected() {
-        this.stateProperties.forEach(this.initState);
-    }
-
+    /**
+     * Notifies the root state of the change and calls requestUpdate on the host.
+     * @param event The event responsible for the update
+     */
     requestUpdate(event:Event|string) {
         this.stateProperties.forEach(name =>
             RootState.change(this, event, this.getStateName(name), this[name]));
         this.host.requestUpdate();
+    }
+
+    hostConnected() {
+        this.stateProperties.forEach(name => this.initState(name));
     }
 
     hostDisconnected() {
@@ -119,7 +157,7 @@ export class StateController implements ReactiveController {
         const statePath = this.getStateName(name);
         const initialState = RootState.get(statePath);
         if (initialState === null) {
-            RootState.change(this, `${this.constructor.name}.trackState(${name})`, statePath, this[name]);
+            RootState.change(this, `Init.${this.constructor.name}.(${name})`, statePath, this[name]);
         } else {
             this[name] = initialState;
         }
