@@ -214,7 +214,7 @@ class TestStateController1 extends StateController {
     @hostEvent(TestNextEvent)
     testNext(event:TestNextEvent) {
         Product.of<ITestState>(this, "state")
-            .next(setFooTrue)
+            .next(setFoo(true))
             .next(setBarTrue)
             .requestUpdate(event);
     }
@@ -268,6 +268,10 @@ const testFunctionalStaticMethods = (product:Product<ITestState>) => {
     Product.nextWith(product)(setFooTrue);
 };
 
+
+const setFoo = (isFoo:boolean) => (state:ITestState) => {
+    state.foo = isFoo;
+};
 
 const setFooTrue = (state:ITestState) => {
     state.foo = true;
