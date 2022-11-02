@@ -1,17 +1,17 @@
 import { html, LitElement } from "lit";
 import { customElement, property } from "lit/decorators.js";
 import { StateController, RootState } from "../StateController";
-import { trackState, windowEvent, hostEvent } from "../decorators";
+import { stateProperty, windowEvent, hostEvent } from "../decorators";
 import { fixture } from "@domx/testutils/fixture";
 
 
 describe("StateController/decorators", () => {
     
     describe("trackState", () => {
-        it("it adds a state property to the controller", () => {
+        it("it adds a state property to the controller constructor", () => {
             const el = fixture<TestElement1>(html`<test-element-1></test-element-1>`);
             expect(el.testState instanceof StateController).toBe(true);
-            expect(el.testState.stateProperties[0]).toBe("state");
+            expect((el.testState.constructor as typeof StateController).stateProperties[0]).toBe("state");
             el.restore();
         });
     });
@@ -58,13 +58,6 @@ describe("StateController/decorators", () => {
     
 });
 
-// jch StateController tasks
-// Document code
-// Product.of()
-// RDT logging
-//  -> need a method to push changes to root state without firing the RootState Changed method
-//  -> similar to RootState.change
-
 
 interface ITestControllerStateData {
     foo: string
@@ -91,7 +84,7 @@ class TestHostEvent extends Event {
 class TestStateController1 extends StateController {
     static defaultState:ITestControllerStateData = { foo: "bar"};
 
-    @trackState()
+    @stateProperty()
     state:ITestControllerStateData = TestStateController1.defaultState;
 
     @windowEvent(TestWindowEvent)

@@ -34,10 +34,12 @@ const eventDecorator = (eventTarget:string, eventClass:EventClass,
     };
 
 
-export const trackState = () =>
+export const stateProperty = () =>
     (target: StateController, propertyKey: string) => {
-        if (!target.stateProperties) {
-            target.stateProperties = new Array();
+        const ctor = target.constructor as typeof StateController;
+        if (ctor.stateProperties === StateController.stateProperties) {
+            // shadow the static state properties field
+            ctor.stateProperties = [];
         }
-        target.stateProperties.push(propertyKey);
+        ctor.stateProperties.push(propertyKey);
     };

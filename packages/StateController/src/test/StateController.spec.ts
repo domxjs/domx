@@ -12,14 +12,6 @@ describe("StateController", () => {
             el.restore();
         });
 
-        it("can track state", () => {
-            const el = fixture<TestElement1>(html`<test-element-1></test-element-1>`);
-            expect(el.testState.stateProperties[0]).toBe("state");
-            el.testState.trackState("foo");
-            expect(el.testState.stateProperties[1]).toBe("foo");
-            el.restore();
-        });
-
         it("sets the initial state", () => {
             const el = fixture<TestElement1>(html`<test-element-1></test-element-1>`);
             expect(RootState.current['TestStateController1.test1-uid.state']).toMatchObject({ foo: "bar"})
@@ -202,24 +194,22 @@ class TestEvent extends Event {
 
 /** Without stateId */
 class TestStateController2 extends StateController {
+    static stateProperties = ["state"];
     static defaultState:ITestControllerStateData = { foo: "bar"};
 
     state:ITestControllerStateData = TestStateController2.defaultState;
-
-    constructor(host:LitElement) {
-        super(host);
-        this.trackState("state");
-    }
 }
 
 class TestStateController1 extends StateController {
+    static stateProperties = ["state"];
+
     static defaultState:ITestControllerStateData = { foo: "bar"};
 
     state:ITestControllerStateData = TestStateController1.defaultState;
 
+    // pattern for the host to require a stateId
     constructor(host:LitElement & {stateId:string}) {
         super(host);
-        this.trackState("state");
     }
 }
 

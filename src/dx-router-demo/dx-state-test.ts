@@ -1,6 +1,6 @@
 import { css, html, LitElement } from "lit";
 import { customElement, property } from "lit/decorators.js";
-import { hostEvent, Product, StateController, trackState } from "@domx/statecontroller";
+import { hostEvent, Product, StateController, stateProperty } from "@domx/statecontroller";
 import { connectRdtLogger } from "@domx/statecontroller";
 
 connectRdtLogger("test-state-logger");
@@ -70,7 +70,7 @@ class TestInputEvent extends Event {
 
 class TestStateController extends StateController {
 
-    @trackState()
+    @stateProperty()
     state:ITestState = { placeholder: "Enter input", value: "" }
 
     @hostEvent(TestInputEvent)

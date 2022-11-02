@@ -101,6 +101,8 @@ const stateControllerIndexedProxyHandler:ProxyHandler<StateController> = {
 
 
 export class StateController implements ReactiveController {
+    static stateProperties:Array<string> = [];
+
     [name:string]: any;
 
     /** Returns the stateId property from the host element if defined */
@@ -112,7 +114,6 @@ export class StateController implements ReactiveController {
      */
     constructor(host: LitElement) {
         this.host = host;
-        this.stateProperties = this.stateProperties || [];
         this.abortController = new AbortController();
         this.host.addController(this);
         return new Proxy(this, stateControllerIndexedProxyHandler);
@@ -121,15 +122,11 @@ export class StateController implements ReactiveController {
     /** The element that the controller is attached to */
     host: LitElement & {stateId?:string};
 
-    /** An array of state property names */
-    stateProperties!:Array<string>;
-
     /** Used to signal when the host has been disconnected */
     abortController:AbortController;
 
-    /** Adds a state property name to track; can also use the @{link trackState} decorator */
-    trackState(name:string):void {
-        this.stateProperties.push(name);
+    private get stateProperties():Array<string> {
+        return (this.constructor as typeof StateController).stateProperties;
     }
 
     /**
@@ -160,7 +157,7 @@ export class StateController implements ReactiveController {
         const statePath = this.getStateName(name);
         const initialState = RootState.get(statePath);
         if (initialState === null) {
-            RootState.change(this, `${this.constructor.name}.trackState(${name})`, statePath, this[name]);
+            RootState.change(this, `Init.${this.constructor.name}.(${name})`, statePath, this[name]);
         } else {
             this[name] = initialState;
         }
