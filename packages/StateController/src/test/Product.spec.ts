@@ -2,7 +2,7 @@ import { fixture } from "@domx/testutils";
 import { describe, it, expect } from "@jest/globals";
 import { html, LitElement } from "lit";
 import { customElement } from "lit/decorators.js";
-import { hostEvent, trackState } from "../decorators";
+import { hostEvent, stateProperty } from "../decorators";
 import { StateController } from "../StateController";
 import { Product } from "../Product";
 
@@ -208,7 +208,7 @@ class TestElement1 extends LitElement {
 class TestStateController1 extends StateController {
     static defaultState:ITestState = { foo: false, bar: false };
 
-    @trackState()
+    @stateProperty()
     state:ITestState = TestStateController1.defaultState;
 
     @hostEvent(TestNextEvent)

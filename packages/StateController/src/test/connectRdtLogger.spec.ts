@@ -2,7 +2,7 @@ import { html, LitElement } from "lit";
 import { customElement, property } from "lit/decorators.js";
 import { StateController, RootState } from "../StateController";
 import { fixture } from "@domx/testutils/fixture";
-import { trackState } from "../decorators";
+import { stateProperty } from "../decorators";
 import { connectRdtLogger, DevToolsExtension, DevToolsInstance, RdtLogger } from "../connectRdtLogger";
 import { Product } from "../Product";
 
@@ -169,7 +169,7 @@ class TestElement1 extends LitElement {
 }
 
 class TestController1 extends StateController {
-    @trackState()
+    @stateProperty()
     state = { status: "unknown" };
 
     test1() {
@@ -197,7 +197,7 @@ class TestElement2 extends LitElement {
 }
 
 class TestController2 extends StateController {
-    @trackState()
+    @stateProperty()
     user =  { userName: "unknown" };
 }
 
