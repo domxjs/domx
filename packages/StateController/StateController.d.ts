@@ -34,16 +34,28 @@ export declare class RootState {
 }
 export declare class StateController implements ReactiveController {
     [name: string]: any;
+    /** Returns the stateId property from the host element if defined */
     get stateId(): string | null;
+    /**
+     * Initializes the StateController
+     */
     constructor(host: LitElement);
+    /** The element that the controller is attached to */
     host: LitElement & {
         stateId?: string;
     };
+    /** An array of state property names */
     stateProperties: Array<string>;
+    /** Used to signal when the host has been disconnected */
     abortController: AbortController;
+    /** Adds a state property name to track; can also use the @{link trackState} decorator */
     trackState(name: string): void;
-    hostConnected(): void;
+    /**
+     * Notifies the root state of the change and calls requestUpdate on the host.
+     * @param event The event responsible for the update
+     */
     requestUpdate(event: Event | string): void;
+    hostConnected(): void;
     hostDisconnected(): void;
     private initState;
     private syncStateValue;

@@ -15,8 +15,9 @@ let _rdtLogger:RdtLogger|null|undefined = undefined;
 /**
  * Logs root state changes to redux dev tools
  * and pushes previous state snapshots from rdt
- * to the root state and any connected controllers
+ * to the root state and any connected controllers.
  * @param name the name of the dev tools instance
+ * @returns a connected RdtLogger or null if it cannot connect.
  */
 const connectRdtLogger = (name?:string):RdtLogger|null => {
     // singleton; return if defined
@@ -29,9 +30,9 @@ const connectRdtLogger = (name?:string):RdtLogger|null => {
 };
 
 
-class RdtLogger {
+export class RdtLogger {
+    isConnected:boolean;
     private name?:string;
-    private isConnected:boolean;
     private rdtExtension:DevToolsExtension;
     private rdt:DevToolsInstance|null;
     private abortController:AbortController;
@@ -62,6 +63,7 @@ class RdtLogger {
         
         this.rdt?.unsubscribe();
         this.abortController.abort();
+        this.isConnected = false;
         _rdtLogger = undefined;
     }
 
@@ -72,7 +74,7 @@ class RdtLogger {
     private connectToDevTools(name?:string):DevToolsInstance {
         const dt =  this.rdtExtension.connect({name});
         dt.init(RootState.current);
-        dt.subscribe(this.updateFromDevTools);
+        dt.subscribe(this.updateFromDevTools.bind(this));
         return dt;
     };
 
@@ -100,8 +102,8 @@ class RdtLogger {
             return;
         }
     
-        if (this.canHandleUpdate(data)) {
-            RootState.push(data.state);
+        if (this.canHandleUpdate(data)) {            
+            RootState.push(JSON.parse(data.state));
         } else {
             this.rdt?.error(`DataElement RDT logging does not support payload type: ${data.type}:${data.payload.type}`);
         }
