@@ -1,4 +1,4 @@
-import { StateController } from "./StateController";
+import { StateController } from "../StateController";
 import { produce } from "immer";
 export { produce }
 

@@ -2,9 +2,9 @@ import { fixture } from "@domx/testutils";
 import { describe, it, expect } from "@jest/globals";
 import { html, LitElement } from "lit";
 import { customElement } from "lit/decorators.js";
-import { hostEvent, stateProperty } from "../decorators";
-import { StateController } from "../StateController";
-import { Product } from "../Product";
+import { hostEvent, stateProperty } from "../../decorators";
+import { StateController } from "../../StateController";
+import { Product } from "../../Product";
 
 
 describe("Product", () => {
