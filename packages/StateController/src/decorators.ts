@@ -5,25 +5,32 @@ interface EventClass {
     eventType:string;
 }
 
+interface IEventHandlerOptions { 
+    /** set this option to false to not have `stopImmediatePropagation` from being called on the event */
+    capture: boolean
+}
 
-export const windowEvent = (eventClass:EventClass) =>
+export const windowEvent = (eventClass:EventClass, options?:IEventHandlerOptions) =>
     (controllerClass:StateController, propertyKey:string) => 
-        eventDecorator("window", eventClass, controllerClass, propertyKey);
+        eventDecorator("window", eventClass, controllerClass, propertyKey, options);
 
 
 
-export const hostEvent = (eventClass:EventClass) =>
+export const hostEvent = (eventClass:EventClass, options?:IEventHandlerOptions) =>
     (controllerClass:StateController, propertyKey:string) => 
-        eventDecorator("host", eventClass, controllerClass, propertyKey);
+        eventDecorator("host", eventClass, controllerClass, propertyKey, options);
 
 
 
 const eventDecorator = (eventTarget:string, eventClass:EventClass,
-    controllerClass:StateController, propertyKey:string) => {
+    controllerClass:StateController, propertyKey:string, options?:IEventHandlerOptions) => {
         controllerClass.hostConnected = new Proxy(controllerClass.hostConnected, {
             apply: (hostConnected, thisArg:StateController, args) => {
                 (eventTarget === "window" ? window : thisArg.host)
                     .addEventListener(eventClass.eventType, async (event:Event) => {
+                        if (!options || !options.capture === false) {
+                            event.stopImmediatePropagation();
+                        }
                         thisArg[propertyKey](event);
                 }, {
                     signal: thisArg.abortController.signal

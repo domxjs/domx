@@ -11,7 +11,7 @@ that provides state to a `LitElement`.
 [Defining State Properties](#defining-state-properties) \
 [Handling Events](#handling-events) \
 [StateController "instances"](#statecontroller-instances) \
-[requestUpdate](#requestupdate) \
+[Requesting Updates](#requesting-updates) \
 [Using Product (Immer)](#using-product-immer) \
 [Root State and State Syncing](#root-state-and-state-syncing) \
 [Redux DevTools](#redux-devtools)
@@ -22,7 +22,7 @@ that provides state to a `LitElement`.
 * Its simple to use.
 * It helps keep state changes and business logic out of the UI layer.
 * Supports the unidirectional data flow state management pattern.
-* Tracks a global state tree to sync state changes across controllers. 
+* Tracks a global state tree to sync state changes across controllers and elements. 
 * Works with [Immer](https://github.com/immerjs/immer) which
   eliminates object creation fatigue when working with immutable state.
 * Contains a Product monad like class for functional state changes (similar to Redux reducers).
@@ -43,24 +43,7 @@ This is a contrived example to show a simple usage scenario.
 import { StateController } from "@domx/statecontroller";
 import { stateProperty, hostEvent } from "@domx/statecontroller/decorators";
 
-
-export class UserLoggedInEvent extends Event {
-    static eventType = "user-logged-in";
-    userName:string;
-    fullName:string;
-    constructor(userName:string, fullName:string) {
-        super(UserLoggedInEvent.eventType);
-        this.userName = userName;
-        this.fullName = fullName;
-    }
-}
-
-interface ISessionState {
-    loggedInUserName: string;
-    loggedInUsersFullName: string;
-}
-
-export class SessonStateController extends StateController {
+export class SessionStateController extends StateController {
 
     @stateProperty()
     state:ISessionState = {
@@ -78,26 +61,42 @@ export class SessonStateController extends StateController {
         this.requestUpdate(event);
     }
 }
+
+export class UserLoggedInEvent extends Event {
+    static eventType = "user-logged-in";
+    userName:string;
+    fullName:string;
+    constructor(userName:string, fullName:string) {
+        super(UserLoggedInEvent.eventType);
+        this.userName = userName;
+        this.fullName = fullName;
+    }
+}
+
+interface ISessionState {
+    loggedInUserName: string;
+    loggedInUsersFullName: string;
+}
 ```
 > By subclassing the Event class, The `UserLoggedInEvent` acts 
 as a great way to document what events a StateController can handle.
 This is similar to action creators in Redux. They can be defined
-in the same file as the DataElement (or in a separate file
+in the same file as the StateController (or in a separate file
 if that works better for you) and used by UI components
 to trigger events.
 
 
 ### UI Component
-The `SessonStateController` can be used with any LitElement.
+The `SessionStateController` can be used with any LitElement.
 
 ```js
 import { LitElement, html } from "lit";
 import { customElement } from "lit/decorators.js";
-import { SessonStateController, UserLoggedInEvent } from "./SessonStateController";
+import { SessionStateController, UserLoggedInEvent } from "./SessionStateController";
 
-@customElement("current-user)
+@customElement("current-user")
 class CurrentUser extends LitElement {
-    session = new SessonStateController(this);
+    session = new SessionStateController(this);
 
     render() {
         const state = this.session.state;
@@ -118,11 +117,12 @@ class CurrentUser extends LitElement {
 
 
 ## Defining State Properties
-To set a property as a state property, simply use the `@stateProperty()` decorator.
+To set a property as a state property, simply use the `@stateProperty()` decorator
+as in the example above.
 
 This can also be done by defining a static field on the controller.
 ```js
-export class SessonStateController extends StateController {
+export class SessionStateController extends StateController {
     static stateProperties = ["state"];
 
     state:ISessionState = {
@@ -176,6 +176,19 @@ export class SomeEvent extends Event {
     }
 }
 ```
+### Event Capturing
+By default, all events handled when using the decorators have `stopImmediatePropagation` called on the event
+so it is not handled by multiple controllers.
+
+There are some cases where you may want multiple controllers to handle the same event. For this, you can
+set a `capture` option to false.
+```js
+@windowEvent(SomeWindowEvent, {capture: false})
+someWindowEvent(event:SomeWindowEvent) {
+    this.state = {/*...*/};
+    this.requestUpdate(event);
+}
+```
 
 
 ## StateController "instances"
@@ -187,11 +200,12 @@ To keep instance state separate, the UI element can declare a `stateId` getter.
 ```js
 import { LitElement, html } from "lit";
 import { customElement, property } from "lit/decorators.js";
-import { SomeStateController } from "./SessonStateController";
+import { SomeStateController } from "./SessionStateController";
 
-@customElement("user-card)
+@customElement("user-card")
 class UserCard extends LitElement {
 
+    // declaring a stateId
     get stateId() { return this.userId; }
 
     @property({type:String, attribute: "user-id"})
@@ -206,17 +220,17 @@ class UserCard extends LitElement {
 Controllers that control instance type data can require using a stateId with a simple type constraint.
 ```js
 class SomeStateController extends StateController {
-    // pattern for the controller to require a stateId on the host
+    // this controller requires a stateId on the host
     constructor(host:LitElement & {stateId:string}) {
         super(host);
     }
 }
 ```
 
-## requestUpdate
+## Requesting Updates
 The `requestUpdate` method is a pass through to the `ReactiveController` requestUpdate method.
 
-It also has an `event` argument which can be an instance of the `Event` class or a string description.
+It also has an `event` argument which can be an instance of an `Event` class or a `string` description.
 
 This event is primarily for logging and debugging purposes to track what action occurred to require the update.
 
@@ -246,11 +260,13 @@ export class SomeController extends StateController {
     @stateProperty()
     state = { foo: "bar" };
 
-    @hostEvent(SomeHostEvent)
-    someHostEvent(event:SomeHostEvent) {
+    @hostEvent(FooChangedEvent)
+    someHostEvent(event:FooChangedEvent) {
+        // using Immer's produce method directly
         this.state = produce(this.state, state => {
-            state.foo = "baz";
+            state.foo = event.foo;
         });
+        this.requestUpdate(event);
     }
 }
 ```
@@ -265,7 +281,7 @@ class. This allows state to be synced across the same StateController if used mu
 The `RootState` class contains an object mapping to all state that is "connected" (in the DOM).
 Every StateController has a state path / key that is used to reference its state in the `RootState`.
 
-This key is the derived using `<ClassName>.<StateId?>.<StateName>`.
+This key is the derived using "`<ClassName>.<StateId?>.<StateName>`".
 
 
 ### Initialization
@@ -282,7 +298,7 @@ The RootState class has a small set of static methods. It is mostly used for int
 but has a few methods that may be useful for logging/debugging purposes.
 
 The most important being the **`addRootStateChangeEventListener`** which provides updates to
-every change made to the RootState
+every change made to the RootState:
 ```js
 import { RootState, RootStateChangeEvent } from "@domx/statecontroller"
 
@@ -290,15 +306,18 @@ const abortController = new AbortController();
 RootState.addRootStateChangeEventListener((event:RootStateChangeEvent) => {
     const changeEvent = event.changeEvent; // the Event or string description for the change
     const rootState = event.rootState; // the key/object state mapping
+    
+    // add logging or a break point for debugging
 
 }, abortController.signal);
 
+// detach the listener
 abortController.abort();
 ```
-> The `RootStateChangeEvent` contains a handful of properties, the most useful being the changeEvent
-and the rootState.
+> The `RootStateChangeEvent` contains a handful of properties, the most useful being the `changeEvent`
+and the `rootState`.
 
-> The abort controller is optional and allows you to detach the listener. 
+> The abort controller is optional and allows you to detach the listener when calling abort.
 
 
 
@@ -325,7 +344,7 @@ rdtLogger.disconnect();
 
 ## StateController Composition
 StateControllers can use other StateControllers which can provide for some
-useful patterns and code re-use.
+useful patterns and code re-use:
 ```js
 class UserProductsController implements StateController {
   private userState: UserStateController;
@@ -342,13 +361,5 @@ class UserProductsController implements StateController {
 ```
 > The getters can also do additional transformations of the data specific to the
 `UserProductsController`
-
-
-
-TODO
-// have to call stopPropagation on the events. And IEventOptions
-// rename event to changeEvent on the root state change event
-@hostEvent(Event, { capture: false })
-// add documentation for this
 
 
