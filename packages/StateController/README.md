@@ -12,7 +12,7 @@ that provides state to a `LitElement`.
 [Handling Events](#handling-events) \
 [StateController "instances"](#statecontroller-instances) \
 [requestUpdate](#requestupdate) \
-[Using Product (Immer)](@using-product-immer) \
+[Using Product (Immer)](#using-product-immer) \
 [Root State and State Syncing](#root-state-and-state-syncing) \
 [Redux DevTools](#redux-devtools)
 [StateController Composition](#stateController-composition)
@@ -223,7 +223,6 @@ This event is primarily for logging and debugging purposes to track what action 
 See the [Root State and State Syncing](#root-state-and-state-syncing) section below. 
 
 
-
 ## Using Product (Immer)
 Since LitElement works with immutable state, it can get tedious to make changes to large state objects.
 
@@ -233,112 +232,10 @@ Since LitElement works with immutable state, it can get tedious to make changes 
 There is a `Product` "Monad like" class which integrates Immer with a StateController to provide a more
 functional approach to state changes (similar to Redux reducers).
 
-```js
-import { StateController, Product } from "@domx/statecontroller";
-import { stateProperty, hostEvent } from "@domx/statecontroller/decorators";
+> See the **[Product](src/Product/README.md)** documentation.
 
-export class SomeController extends StateController {
-    @stateProperty()
-    state = { foo: "bar", isSet: false };
+**Using Immer directly**
 
-    @hostEvent(SomeHostEvent)
-    someHostEvent(event:SomeHostEvent) {
-        Product.of(this, "state")
-            .next(setFoo(event.foo))
-            .next(setIsSetToTrue)
-            .requestUpdate(event);
-    }
-}
-
-const setFoo = foo => state => {
-    state.foo = foo;
-};
-
-const setIsSetToTrue => state => {
-    state.isSet = true;
-};
-```
-> The `of` static method is a lifting function that simply creates 
-a new Product monad: `return new Product(controller, stateProperty)`
-
-> `next` calls the function with the state so it can be mutated safely
-
-> `requestUpdate` is a pass through to `controller.requestUpdate`
-
-This pattern allows you to create many reusable chunks of state changes. When logic gets
-more complex and there are more moving parts, this allows for more options to organize,
-re-use, and test your functions. This is similar to reducers in Redux.
-
-### Other methods on Product
-There are a small handful of other methods that you can use on Product.
-All methods return the product monad itself so they are chainable.
-
-**tap**
-The tap method is for branching / asynchronous methods. It receives the product monad itself
-as its argument.
-```js
-Product.of(this, "state")
-    .tap(requestUsers);
-
-const requestUsers = async product => {
-    const response = await fetch("/users");
-    const users = await response.json();
-    product.next(setUsers(users)).requestUpdate("requestUsers");
-};
-```
-> Since tap is a branching function, you end up changing state again after some amount time.
-Another option besides calling `product.next` after the async code, is to dispatch another event
-to handle the response on the controller class.
-```js
-const requestUsers = async product => {
-    const response = await fetch("/users");
-    const users = await response.json();
-    product.dispatchHostEvent(new UsersReceivedEvent(users));
-};
-```
-> Now the controller can add a method that handles the event and updates state.
-That is a little more effort but some may prefer that pattern.
-
-**getState**
-This method returns the current state from the controller.
-```js
-const state = product.getState();
-```
-
-**dispatchHostEvent**
-This will dispatch a DOM event on the controllers host element.
-```js
-product.dispatchHostEvent(new Event("users-changed"));
-```
-
-**pipeNext**
-This is the same as `next` but allows for passing multiple methods in the same call.
-```js
-product.pipeNext(setIsLoading(true), resetPageCount);
-// same as
-product.next(setIsLoading(true)).next(resetPageCount);
-```
-**pipeTap**
-This is the same as `tap` but allows vor passing multiple methods in the same call.
-```js
-product.pipeTap(requestUsers, requestProducts);
-// same as
-product.tap(requestUsers).tap(requestProducts);
-```
-### Product functional static methods
-Product also has a handful of static methods that do the same things as the methods noted above,
-but can be used with a functional programming style to support composition patterns
-familiar to those who like that style.
-* **Product.nextWith(product)** a lifting function that calls next
-* **Product.tapWith(product)** a lifting function that calls tap
-* **Product.requestUpdate(event)**  a chainable call to requestUpdate
-* **Product.dispatchHostEvent(event)** a chainable call to dispatchHostEvent
-* **Product.next(fn)** a chainable call to next
-* **Product.tap(fn)** a chainable call to tap
-* **Product.getState(product)** a chainable call to getState
-
-
-### Using Immer directly
 The StateController makes the Immer `produce` method available if you would like to use it directly.
 ```js
 import { produce } from "@domx/statecontroller/product";
@@ -362,54 +259,96 @@ export class SomeController extends StateController {
 
 
 ## Root State and State Syncing
-One of the features of the StateController is that any state in the controller is stored in a `RootState`
+One of the features of the StateController is that all state in the controller is stored in a `RootState`
 class. This allows state to be synced across the same StateController if used multiple times in the DOM.
 
-initialization
-change propagation
-RootState
+The `RootState` class contains an object mapping to all state that is "connected" (in the DOM).
+Every StateController has a state path / key that is used to reference its state in the `RootState`.
+
+This key is the derived using `<ClassName>.<StateId?>.<StateName>`.
 
 
+### Initialization
+When a StateControllers element is connected to the DOM, the state will be looked up using its key.
+If found, the state is initialized with the state that is already connected to the DOM. If not found,
+the controllers state will be pushed to the RootState.
+
+### Change Propagation
+Any time a call to `requestUpdate` is made, the state change is pushed to the `RootState`.
+All connected controllers with the same state key are also updated.
+
+### RootState
+The RootState class has a small set of static methods. It is mostly used for internal purposes
+but has a few methods that may be useful for logging/debugging purposes.
+
+The most important being the **`addRootStateChangeEventListener`** which provides updates to
+every change made to the RootState
+```js
+import { RootState, RootStateChangeEvent } from "@domx/statecontroller"
+
+const abortController = new AbortController();
+RootState.addRootStateChangeEventListener((event:RootStateChangeEvent) => {
+    const changeEvent = event.changeEvent; // the Event or string description for the change
+    const rootState = event.rootState; // the key/object state mapping
+
+}, abortController.signal);
+
+abortController.abort();
+```
+> The `RootStateChangeEvent` contains a handful of properties, the most useful being the changeEvent
+and the rootState.
+
+> The abort controller is optional and allows you to detach the listener. 
 
 
 
 
 ## Redux DevTools
+The StateController contains a method that can connect the RootState to Redux DevTools.
+```js
+import { connectRdtLogger } from "@domx/statecontroller";
 
+connectRdtLogger("my-logger");
+```
+> The method takes a single optional argument which will be the name of the RDT instance. The default
+is the document title.
 
+This method returns an instance of the logger which can be used to disconnect the logger.
+```js
+const rdtLogger = connectRdtLogger("my-logger");
+rdtLogger.disconnect();
+```
 
 
 
 
 
 ## StateController Composition
-How can a state controller pull in multiple others and change it's state based on those others?
-Research on Lit
+StateControllers can use other StateControllers which can provide for some
+useful patterns and code re-use.
 ```js
-class DualClockController implements ReactiveController {
-  private clock1: ClockController;
-  private clock2: ClockController;
+class UserProductsController implements StateController {
+  private userState: UserStateController;
+  private productsState: ProductsStateController;
 
-  constructor(host: ReactiveControllerHost, delay1: number, delay2: number) {
-    this.clock1 = new ClockController(host, delay1);
-    this.clock2 = new ClockController(host, delay2);
+  constructor(host: LitElement) {
+    this.userState = new UserStateController(host);
+    this.productsState = new ProductsStateController(host);
   }
 
-  get time1() { return this.clock1.value; }
-  get time2() { return this.clock2.value; }
+  get user() { return this.userState.user; }
+  get userProducts() { return this.productsState.products; }
 }
 ```
+> The getters can also do additional transformations of the data specific to the
+`UserProductsController`
 
 
 
 TODO
 // have to call stopPropagation on the events. And IEventOptions
+// rename event to changeEvent on the root state change event
 @hostEvent(Event, { capture: false })
-Move Product to a folder so the imports are
-import { Product } from "@domx/statecontroller"
-//or
-import { Product } from "@domx/statecontroller/product"
-//and
-import { produce } from "@domx/statecontroller/product
-// and a readme.md file will be there
+// add documentation for this
+
 
