@@ -1,4 +1,4 @@
-import { LitElement, ReactiveController, ReactiveControllerHost } from "lit";
+import { LitElement, ReactiveController } from "lit";
 
 
 
@@ -63,6 +63,11 @@ export class RootState {
         });
     }
 
+    /**
+     * Adds an event listener for any changes to the root state.
+     * @param listener 
+     * @param signal provide a signal for removing the listener
+     */
     static addRootStateChangeEventListener(listener:RootStateChangeEventListener, signal?:AbortSignal) {
         this.bus.addEventListener(RootStateChangeEvent.eventType,
             listener as EventListener,

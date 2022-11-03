@@ -56,6 +56,38 @@ describe("StateController/decorators", () => {
         });
     });
     
+    describe("capture", () => {
+
+        it("stops propagation when the capture option is not set", () => {
+            const el = fixture<TestElement1>(html`<test-element-1></test-element-1>`);
+            const el2 = document.createElement("test-element-1") as TestElement1;
+            el.parentElement?.appendChild(el2);
+
+            const elSpy = jest.spyOn( el.testState, "testHostEvent");
+            const el2Spy = jest.spyOn(el2.testState, "testHostEvent");
+            el.testHostEvent("foo");
+            expect(elSpy).toBeCalledTimes(1);
+            expect(el2Spy).toBeCalledTimes(0);
+            el2.parentElement?.removeChild(el2);
+            el.restore();
+        });
+
+        it("does not stop propagation when the capture option is set to false", () => {
+            const el = fixture<TestElement1>(html`<test-element-1></test-element-1>`);
+            const el2 = document.createElement("test-element-1") as TestElement1;
+            el.parentElement?.appendChild(el2);
+
+            const elSpy = jest.spyOn( el.testState, "testWindowEvent");
+            const el2Spy = jest.spyOn(el2.testState, "testWindowEvent");
+            el.testWindowEvent("foo");
+            expect(elSpy).toBeCalledTimes(1);
+            expect(el2Spy).toBeCalledTimes(1);
+            el2.parentElement?.removeChild(el2);
+            el.restore();
+
+        });
+
+    });
 });
 
 
@@ -87,7 +119,7 @@ class TestStateController1 extends StateController {
     @stateProperty()
     state:ITestControllerStateData = TestStateController1.defaultState;
 
-    @windowEvent(TestWindowEvent)
+    @windowEvent(TestWindowEvent, {capture: false})
     testWindowEvent(event:TestWindowEvent) {
         this.state = { foo: event.testValue };
     }
