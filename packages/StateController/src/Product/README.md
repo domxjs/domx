@@ -21,7 +21,7 @@ export class SomeController extends StateController {
 
     @hostEvent(SomeHostEvent)
     someHostEvent(event:SomeHostEvent) {
-        Product.of(this, "state")
+        Product.of(this)
             .next(setFoo(event.foo))
             .next(setIsSetToTrue)
             .requestUpdate(event);
@@ -46,6 +46,7 @@ a new Product monad, and is the same as:
 ```js
 const product = new Product(controller, stateProperty)
 ```
+> The default stateProperty is `state`
 ### product.next(fn)
 The `next` method calls the provided function with the state so it can be mutated safely, then
 returns the product so it can be chained.

@@ -18,7 +18,7 @@ export class Product {
      * Creates a new Product object.
      */
     static of(controller, stateName) {
-        return new Product(controller, stateName);
+        return new Product(controller, stateName || "state");
     }
     /**
      * Returns a snapshot of the state property.

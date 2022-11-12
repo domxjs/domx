@@ -11,7 +11,7 @@ export declare class Product<TState> {
     /**
      * Creates a new Product object.
      */
-    static of<TState>(controller: StateController, stateName: string): Product<TState>;
+    static of<TState>(controller: StateController, stateName?: string): Product<TState>;
     /** A lifting function that calls next */
     static nextWith: <TState_1>(product: Product<TState_1>) => (fn: NextFunction<TState_1>) => Product<TState_1>;
     /** A lifting function that calls tap */
@@ -32,7 +32,7 @@ export declare class Product<TState> {
      * @param stateName
      */
     constructor(controller: StateController, stateName: string);
-    private controller;
+    controller: StateController;
     private stateName;
     /**
      * Returns a snapshot of the state property.
