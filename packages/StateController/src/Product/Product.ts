@@ -14,8 +14,8 @@ export class Product<TState> {
     /**
      * Creates a new Product object.
      */
-    static of<TState>(controller: StateController, stateName:string) {
-        return new Product<TState>(controller, stateName);
+    static of<TState>(controller: StateController, stateName?:string) {
+        return new Product<TState>(controller, stateName || "state");
     }
 
     /** A lifting function that calls next */
@@ -44,7 +44,7 @@ export class Product<TState> {
         this.stateName = stateName;
     }
 
-    private controller:StateController;
+    public controller:StateController;
     private stateName:string;
 
     /**
