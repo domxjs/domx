@@ -24,6 +24,7 @@ export { DomxRouteNotFound }
     private _activeElement:HTMLElement|null = null;
     private _isSubroute:boolean = false;
     private _routesToCheck!:Array<DomxRoute>;
+    private _abortController:AbortController = new AbortController();
 
     connectedCallback() {
         super.connectedCallback && super.connectedCallback();
@@ -41,10 +42,20 @@ export { DomxRouteNotFound }
             this._routesToCheck = Array.from((this.getRootNode() as Element).children)
                 .filter(e => e.tagName === "DOMX-ROUTE") as Array<DomxRoute>;
         }
+
+        window.addEventListener("route-not-found", (event:Event) => {
+            event.preventDefault();
+            //@ts-ignore
+            event.foo = "bar";
+        }, {
+            signal: this._abortController.signal
+        });
     }
 
     disconnectedCallback() {
         super.disconnectedCallback && super.disconnectedCallback();
+        this._abortController.abort();
+        this._abortController = new AbortController();
         this.deactivate();
     }
 
@@ -83,13 +94,22 @@ export { DomxRouteNotFound }
             throw new Error("An element is required.");
         }
 
-        const el = document.createElement(this.element);
-        appendElement(this, el);
-        this._activeElement = el;
+        if (this._activeElement === null) {
+            this._activeElement = document.createElement(this.element);
+            console.debug("DomxRouteNotFound: appending element:", this._activeElement.tagName);
+            appendElement(this, this._activeElement);
+        }
+        this._activeElement.setAttribute("pathname", location.pathname);
+        console.debug(`DomxRouteNotFound: ${this._activeElement.tagName}.setAttribute("pathName", "${location.pathname}")`);
     }
 
     deactivate() {
-        this._activeElement?.remove();
+        if (this._activeElement === null) {
+            return;
+        }
+
+        console.debug("DomxRouteNotFound: removed element:", this._activeElement.tagName);
+        this._activeElement.remove();
         this._activeElement = null;
     }
  }

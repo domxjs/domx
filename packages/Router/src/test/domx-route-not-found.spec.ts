@@ -53,6 +53,16 @@ describe("domx-route-not-found", () => {
         testEl.restore();
     });
 
+    
+    it("calls preventDefault on the route-not-found event", async () => {
+        const testEl = fixture<TestElement>(html`<test-element></test-element>`);
+        await testEl.updateComplete;
+        await testEl.$routeNotFound.updateComplete;
+        (testEl.shadowRoot?.querySelector("#not-found-link") as HTMLAnchorElement).click();
+        expect(testEl.$routeNotFound.isActive).toBe(true);
+        testEl.restore();
+    });
+
     it("throws an error if an element is not defined", async () => {    
         Router.replaceUrl("/test");   
         const testEl = fixture<TestElement>(html`<test-element></test-element>`)
@@ -99,6 +109,7 @@ class TestElement extends LitElement {
                 id="routeNotFound"
                 element="test-not-found-element"
             ></domx-route-not-found>
+            <a href="/not-found" id="not-found-link">not found</a>
         `;
     }
 }
