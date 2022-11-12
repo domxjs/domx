@@ -203,13 +203,13 @@ const routerOnBodyClick = (event:MouseEvent) => {
     // see if a route matches the URL
     const url = `${anchor.pathname}${anchor.search}`;
     if (!routesMatch(url)) {
-        console.debug(`Router: no routes match \"${url}\"`);
         const notFoundEvent = new CustomEvent("route-not-found", {
             detail: {url}
         });
         notFoundEvent.preventDefault = () => { event.preventDefault(); };
         window.dispatchEvent(notFoundEvent);
         if (!event.defaultPrevented) {
+            console.debug(`Router: no routes match \"${url}\"`);
             return;
         }
     }
