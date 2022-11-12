@@ -10,7 +10,7 @@ import { Product } from "../../Product";
 describe("Product", () => {
 
   describe("next", () => {
-    it("sets the state", () => {
+    it("sets the state with the default as 'state' for the stateName", () => {
       const el = fixture<TestElement1>(html`<test-element-1></test-element-1>`);
       expect(el.testState.state.foo).toBe(false);
       expect(el.testState.state.bar).toBe(false);
@@ -213,7 +213,7 @@ class TestStateController1 extends StateController {
 
     @hostEvent(TestNextEvent)
     testNext(event:TestNextEvent) {
-        Product.of<ITestState>(this, "state")
+        Product.of<ITestState>(this)
             .next(setFoo(true))
             .next(setBarTrue)
             .requestUpdate(event);
