@@ -145,6 +145,8 @@ export class StateController implements ReactiveController {
     }
 
     hostConnected() {
+        // store the stateId
+        this._stateId = this.stateId;
         this.stateProperties.forEach(name => this.initState(name));
     }
 
@@ -152,6 +154,16 @@ export class StateController implements ReactiveController {
         this.abortController.abort();
         this.abortController = new AbortController();
     }
+
+    refreshState(force?:boolean) {
+        if (force === true || this._stateId !== this.stateId) {
+            this.hostDisconnected();
+            this.hostConnected();
+            this.host.requestUpdate();
+        }
+    }
+
+    private _stateId:string|null = null;
 
     private initState(name:string) {
         this.syncStateValue(name);
