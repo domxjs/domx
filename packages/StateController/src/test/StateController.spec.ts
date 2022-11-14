@@ -87,8 +87,20 @@ describe("StateController", () => {
             expect(el.testState.state.foo).toBe("bar");
             el.restore();
         });
+    });
 
-        
+    describe("refreshState", () => {
+
+        it("refreshes state if the stateId changes", () => {
+            const el = fixture<TestElement1>(html`<test-element-1></test-element-1>`);
+            expect(RootState.current['TestStateController1.test1-uid.state']).toMatchObject({ foo: "bar"});
+            const rootState = RootState.current;
+            rootState['TestStateController1.test1-uid-2.state'] = { foo: "test1-uid-2" };
+            el.setAttribute("uid", "test1-uid-2");
+            el.testState.refreshState();
+            expect(el.testState.state.foo).toBe("test1-uid-2");
+            el.restore();
+        });
 
     });
 

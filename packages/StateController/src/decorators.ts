@@ -31,6 +31,7 @@ const eventDecorator = (eventTarget:string, eventClass:EventClass,
                         if (!options || !options.capture === false) {
                             event.stopImmediatePropagation();
                         }
+                        thisArg.refreshState();
                         thisArg[propertyKey](event);
                 }, {
                     signal: thisArg.abortController.signal
