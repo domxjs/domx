@@ -227,6 +227,27 @@ class SomeStateController extends StateController {
 }
 ```
 
+### `refreshState()` for stateId changes
+If the host elements stateId changes, the internal state of the StateController will be out of sync.
+Calling `refreshState()` on the controller will check if the stateId has in fact changed,
+and if so, the controllers `hostDisconneced` and `hostConnected` methods will be called.
+
+To force a state refresh, you can call `refreshState(true)`.
+
+> If you are using the event decorators, `refreshState()` is called for you.
+
+#### **Design Note**
+Because `refreshState` disconnects and reconnects the controller, it is not a good
+idea to have state initialization in the `hostConnected` method. If there are
+multiple state controllers in the DOM with the same stateId, this could cause
+multiple requests to re-fetch data.
+
+Instead, use a host or window event handler since when handled, the events do not
+automatically propagate and state will be synced during the expected lifecycle.
+
+
+
+
 ## Requesting Updates
 The `requestUpdate` method is a pass through to the `ReactiveController` requestUpdate method.
 
