@@ -384,3 +384,31 @@ class UserProductsController implements StateController {
 `UserProductsController`
 
 
+### StateController.stateUpdated
+Anytime the state is updated a noop `stateUpdated` method is called on the controller.
+
+This allows controllers to react to other controllers being updated and can be useful during composition.
+```js
+class UserProductsController implements StateController {
+  private userState: UserStateController;
+  private productsState: ProductsStateController;
+
+  constructor(host: LitElement) {
+    this.userState = new UserStateController(host);
+    this.userState.stateUpdated = this.stateUpdated;
+    this.productsState = new ProductsStateController(host);
+    this.productState.stateUpdated = this.stateUpdated;
+  }
+
+  // override the base class stateUpdated noop method
+  stateUpdated() {
+    // react to state change
+  }
+
+  get user() { return this.userState.user; }
+  get userProducts() { return this.productsState.products; }
+}
+```
+
+
+

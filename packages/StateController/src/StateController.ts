@@ -177,7 +177,7 @@ export class StateController implements ReactiveController {
         const statePath = this.getStateName(name);
         const initialState = RootState.get(statePath);
         if (initialState === null) {
-            RootState.change(this, `Init.${this.constructor.name}.(${name})`, statePath, this[name]);
+            RootState.change(this, `Init.${this.constructor.name}("${name}")`, statePath, this[name]);
         } else {
             this[name] = initialState;
         }

@@ -10,6 +10,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ## [Unreleased]
 ### Updated
 - statecontroller package to 0.3.0
+- statecontroller package to 0.4.0
 
 ## [1.2.0] 2022-11-12
 ### Updated

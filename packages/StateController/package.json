@@ -1,7 +1,7 @@
 {
   "name": "@domx/statecontroller",
   "type": "module",
-  "version": "0.3.0",
+  "version": "0.4.0",
   "license": "MIT",
   "author": "John Horback",
   "description": "A StateController base class for handling data state changes on a LitElement",
