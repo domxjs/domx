@@ -163,6 +163,9 @@ export class StateController implements ReactiveController {
         }
     }
 
+    /** Override this method to react to state changes */
+    stateUpdated() {}
+
     private _stateId:string|null = null;
 
     private initState(name:string) {
@@ -185,6 +188,7 @@ export class StateController implements ReactiveController {
         RootState.addStateChangeEventListener(statePath, (event:StatePathChangeEvent) => {
             if (event.controller !== this) {
                 this[name] = event.state;
+                this.stateUpdated();
                 this.host.requestUpdate();
             }
         }, this.abortController.signal);
